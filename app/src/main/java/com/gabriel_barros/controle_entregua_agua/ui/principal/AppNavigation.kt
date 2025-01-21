@@ -1,0 +1,16 @@
+package com.gabriel_barros.controle_entregua_agua.ui.principal
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+
+@Composable
+fun AppNavigation(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") { HomeScreen(navController) }
+        composable("screen1") { Screen1() }
+        composable("screen2") { Screen2() }
+        composable("screen3") { Screen3() }
+    }
+}
