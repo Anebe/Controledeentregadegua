@@ -54,7 +54,7 @@ import java.time.LocalDate
 
 data class PedidoItemState(
     val id: Int = -1,
-    val cliente: MutableState<Pair<String, Int>> = mutableStateOf(Pair("",-1)),
+    val cliente: MutableState<Pair<String, Long>> = mutableStateOf(Pair("",-1)),
     //var cliente: String = "",
     val qtdAgua: MutableIntState = mutableIntStateOf(0),
     val troco: MutableIntState = mutableIntStateOf(0),
@@ -63,7 +63,7 @@ data class PedidoItemState(
     fun to(): Pedido {
         return Pedido(
             this.id,
-            this.cliente.value.second,
+            this.cliente.value.second.toInt(),
             qtdAgua.intValue,
             entrega.value,
             troco.intValue)

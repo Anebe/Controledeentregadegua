@@ -6,7 +6,7 @@ import java.time.LocalDate
 @Serializable
 data class Pedido(
     val id: Int = -1,
-    var clienteId: Int = -1,
+    var clienteId: Int  = -1,
     var qtd_agua: Int = 0,
     @Serializable(with = LocalDateSerializer::class)
     var entrega: LocalDate = LocalDate.MIN,

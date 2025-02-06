@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,67 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import java.time.LocalDate
 
+@Composable
+fun DropDownMenu( itens: Map<String,Long>, onChange: () -> Unit){
+    val focusManager = LocalFocusManager.current
+    var expandedClientes by remember { mutableStateOf(false) }
+    val choosenItem = remember { mutableStateOf(Pair("", 0L)) }
+    val filteredItems = remember(choosenItem.value.first)  {
+        names.filter { it.key.contains(choosenItem.value.first, ignoreCase = true) }
+            .entries
+            .take(3)
+            .toList()
+    }
+
+    Column (
+        modifier = Modifier.pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                focusManager.clearFocus()
+            })
+        }
+    ){
+        TextField(
+            value = choosenItem.value.first,
+            onValueChange = { newValue:String ->
+                if(!expandedClientes) expandedClientes = true
+                choosenItem.value = Pair(newValue, -1)
+                val id = names[newValue]
+                id?.let {
+                    choosenItem.value = Pair(newValue, id)
+                }
+            },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
+                focusManager.clearFocus()
+            }),
+            label = { Text("Cliente") },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    if (!it.hasFocus) {
+                        expandedClientes = false
+                    }
+                }
+                .clickable { expandedClientes = true },
+        )
+        if(expandedClientes){
+            Row {
+                filteredItems.forEach { item ->
+                    Card(
+                        onClick = {
+                            choosenItem.value = item.toPair()
+                            expandedClientes = false
+                        },modifier = Modifier.padding(horizontal = 3.dp)
+                    ){
+                        Text(item.key, modifier = Modifier.padding(6.dp))
+                    }
+                }
+            }
+        }
+    }
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -128,7 +190,7 @@ fun FormPedido(data: PedidoItemState) {
                     Text(text = "Troco para ${data.troco.intValue}")
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "More"
+                        contentDescription = "Mais"
                     )
                 }
                 DropdownMenu(

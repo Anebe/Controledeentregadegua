@@ -18,9 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
 import com.gabriel_barros.controle_entregua_agua.model.Pedido
+import com.gabriel_barros.controle_entregua_agua.ui.components.DropDownMenu
+import com.gabriel_barros.controle_entregua_agua.ui.names
 import com.gabriel_barros.controle_entregua_agua.ui.principal.ListaPedidosScreen
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeÁguaTheme
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
@@ -32,16 +36,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 
 
-val supabase = createSupabaseClient(
-    supabaseUrl = "https://vfqisgektavejjzqlayg.supabase.co",
-    supabaseKey = BuildConfig.SUPABASE_KEY
-){
-    install(Auth)
-    install(Postgrest)
-    //install other modules
-}
 
-
+val supabase = SupabaseClientProvider.supabase
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +62,8 @@ fun principal(){
 //                val navController = rememberNavController()
 //                AppNavigation(navController = navController)
 //                list()
-                ListaPedidosScreen(pedidos = listOf(Pedido()))
+//                ListaPedidosScreen(pedidos = listOf(Pedido()))
+                DropDownMenu(names) {}
             }
         }
     }
