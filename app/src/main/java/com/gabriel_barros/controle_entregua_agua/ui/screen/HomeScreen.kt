@@ -1,4 +1,4 @@
-package com.gabriel_barros.controle_entregua_agua.ui.principal
+package com.gabriel_barros.controle_entregua_agua.ui.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -25,19 +25,26 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = { navController.navigate("screen1") }) {
-            Text(text = "Ir para Tela 1")
+            Text(text = "Cliente")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = { navController.navigate("screen2") }) {
-            Text(text = "Ir para Tela 2")
+            Text(text = "Pendência`")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = { navController.navigate("screen3") }) {
-            Text(text = "Ir para Tela 3")
+            Text(text = "Dívida")
+        }
+        
+        Button(onClick = {}){
+            Text(text = "Relatório")
+        }
+        Button(onClick = {}){
+            Text(text = "Possíveis Pedidos")
         }
     }
 }

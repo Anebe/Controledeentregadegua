@@ -6,26 +6,26 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Pedido
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.PedidoComEntrega
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.PedidoComPagamento
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.PedidoRoom
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.PedidoComEntregaRoom
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.PedidoComPagamentoRoom
 
 @Dao
 interface PedidoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPedido(pedido: Pedido)
+    suspend fun insertPedido(pedidoRoom: PedidoRoom)
 
     @Transaction
-    @Query("SELECT * FROM Pedido WHERE id = :pedidoId")
-    suspend fun getPedidoComEntregas(pedidoId: Long): PedidoComEntrega
+    @Query("SELECT * FROM PedidoRoom WHERE id = :pedidoId")
+    suspend fun getPedidoComEntregas(pedidoId: Long): PedidoComEntregaRoom
 
     @Transaction
-    @Query("SELECT * FROM Pedido WHERE id = :pedidoId")
-    suspend fun getPedidoComPagamentos(pedidoId: Long): PedidoComPagamento
+    @Query("SELECT * FROM PedidoRoom WHERE id = :pedidoId")
+    suspend fun getPedidoComPagamentos(pedidoId: Long): PedidoComPagamentoRoom
 
-    @Query("SELECT * FROM Pedido")
-    suspend fun getAllPedidos(): List<Pedido>
+    @Query("SELECT * FROM PedidoRoom")
+    suspend fun getAllPedidos(): List<PedidoRoom>
 
     @Delete
-    suspend fun deletePedido(pedido: Pedido)
+    suspend fun deletePedido(pedidoRoom: PedidoRoom)
 }

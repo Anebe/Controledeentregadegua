@@ -5,16 +5,16 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Pagamento
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.PagamentoRoom
 
 @Dao
 interface PagamentoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPagamento(pagamento: Pagamento)
+    suspend fun insertPagamento(pagamentoRoom: PagamentoRoom)
 
-    @Query("SELECT * FROM Pagamento")
-    suspend fun getAllPagamentos(): List<Pagamento>
+    @Query("SELECT * FROM PagamentoRoom")
+    suspend fun getAllPagamentos(): List<PagamentoRoom>
 
     @Delete
-    suspend fun deletePagamento(pagamento: Pagamento)
+    suspend fun deletePagamento(pagamentoRoom: PagamentoRoom)
 }

@@ -5,16 +5,16 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Entrega
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.EntregaRoom
 
 @Dao
 interface EntregaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEntrega(entrega: Entrega)
+    suspend fun insertEntrega(entregaRoom: EntregaRoom)
 
-    @Query("SELECT * FROM Entrega")
-    suspend fun getAllEntregas(): List<Entrega>
+    @Query("SELECT * FROM EntregaRoom")
+    suspend fun getAllEntregas(): List<EntregaRoom>
 
     @Delete
-    suspend fun deleteEntrega(entrega: Entrega)
+    suspend fun deleteEntrega(entregaRoom: EntregaRoom)
 }

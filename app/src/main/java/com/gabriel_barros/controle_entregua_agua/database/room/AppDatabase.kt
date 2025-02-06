@@ -9,19 +9,19 @@ import com.gabriel_barros.controle_entregua_agua.database.room.dao.EntregaDao
 import com.gabriel_barros.controle_entregua_agua.database.room.dao.GalaoDao
 import com.gabriel_barros.controle_entregua_agua.database.room.dao.PagamentoDao
 import com.gabriel_barros.controle_entregua_agua.database.room.dao.PedidoDao
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Entrega
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Galao
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Pagamento
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Pedido
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.ClienteRoom
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.EntregaRoom
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.GalaoRoom
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.PagamentoRoom
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.PedidoRoom
 
 @Database(
     entities = [
-        Cliente::class,
-        Entrega::class,
-        Galao::class,
-        Pagamento::class,
-        Pedido::class], version = 1)
+        ClienteRoom::class,
+        EntregaRoom::class,
+        GalaoRoom::class,
+        PagamentoRoom::class,
+        PedidoRoom::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun clienteDao(): ClienteDao
     abstract fun entregaDao(): EntregaDao

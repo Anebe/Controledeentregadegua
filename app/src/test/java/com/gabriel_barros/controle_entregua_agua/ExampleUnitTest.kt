@@ -1,22 +1,6 @@
 package com.gabriel_barros.controle_entregua_agua
 
-import com.gabriel_barros.controle_entregua_agua.api.PedidoRequest
-import com.gabriel_barros.controle_entregua_agua.api.RetrofitInstance
-import com.gabriel_barros.controle_entregua_agua.database.exposed.MainViewModel
-import com.gabriel_barros.controle_entregua_agua.model.Pedido
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).

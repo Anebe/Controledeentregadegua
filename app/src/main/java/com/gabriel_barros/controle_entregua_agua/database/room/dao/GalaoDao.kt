@@ -6,21 +6,21 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.Galao
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.GalaoComEntrega
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.GalaoRoom
+import com.gabriel_barros.controle_entregua_agua.database.room.entity.GalaoComEntregaRoom
 
 @Dao
 interface GalaoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGalao(galao: Galao)
+    suspend fun insertGalao(galaoRoom: GalaoRoom)
 
     @Transaction
-    @Query("SELECT * FROM Galao WHERE id = :galaoId")
-    suspend fun getGalaoComEntregas(galaoId: Long): GalaoComEntrega
+    @Query("SELECT * FROM GalaoRoom WHERE id = :galaoId")
+    suspend fun getGalaoComEntregas(galaoId: Long): GalaoComEntregaRoom
 
-    @Query("SELECT * FROM Galao")
-    suspend fun getAllGaloes(): List<Galao>
+    @Query("SELECT * FROM GalaoRoom")
+    suspend fun getAllGaloes(): List<GalaoRoom>
 
     @Delete
-    suspend fun deleteGalao(galao: Galao)
+    suspend fun deleteGalao(galaoRoom: GalaoRoom)
 }

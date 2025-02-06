@@ -17,24 +17,26 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.gabriel_barros.controle_entregua_agua.ui.pedido.CadastroPedido
-import com.gabriel_barros.controle_entregua_agua.ui.principal.AppNavigation
+import androidx.lifecycle.lifecycleScope
+import com.gabriel_barros.controle_entregua_agua.model.Pedido
+import com.gabriel_barros.controle_entregua_agua.ui.principal.ListaPedidosScreen
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeÁguaTheme
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
-import io.ktor.websocket.WebSocketDeflateExtension.Companion.install
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 
 
 val supabase = createSupabaseClient(
-    supabaseUrl = "",
-    supabaseKey = ""
-) {
-    //install(Auth)
+    supabaseUrl = "https://vfqisgektavejjzqlayg.supabase.co",
+    supabaseKey = BuildConfig.SUPABASE_KEY
+){
+    install(Auth)
     install(Postgrest)
     //install other modules
 }
@@ -43,6 +45,9 @@ val supabase = createSupabaseClient(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            supabase.auth.signInAnonymously()
+        }
         enableEdgeToEdge()
         setContent {
             principal()
@@ -60,7 +65,8 @@ fun principal(){
                 //CadastroPedido()
 //                val navController = rememberNavController()
 //                AppNavigation(navController = navController)
-                list()
+//                list()
+                ListaPedidosScreen(pedidos = listOf(Pedido()))
             }
         }
     }
