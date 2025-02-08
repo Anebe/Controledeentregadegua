@@ -1,4 +1,4 @@
-package com.gabriel_barros.controle_entregua_agua.ui.principal
+package com.gabriel_barros.controle_entregua_agua.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

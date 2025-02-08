@@ -24,19 +24,23 @@ fun HomeScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = { navController.navigate("screen1") }) {
+        Button(onClick = { navController.navigate("clienteScreen") }) {
             Text(text = "Cliente")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = { navController.navigate("screen2") }) {
-            Text(text = "Pendência`")
+        Button(onClick = { navController.navigate("testeScreen") }) {
+            Text(text = "TesteScreen")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { navController.navigate("screen3") }) {
+        Button(onClick = { navController.navigate("pedidoScreen") }) {
+            Text(text = "Pedidos`")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = { navController.navigate("") }) {
             Text(text = "Dívida")
         }
         

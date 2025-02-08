@@ -18,17 +18,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
 import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
-import com.gabriel_barros.controle_entregua_agua.model.Pedido
-import com.gabriel_barros.controle_entregua_agua.ui.components.DropDownMenu
-import com.gabriel_barros.controle_entregua_agua.ui.names
-import com.gabriel_barros.controle_entregua_agua.ui.principal.ListaPedidosScreen
+import com.gabriel_barros.controle_entregua_agua.ui.AppNavigation
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeÁguaTheme
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,11 +53,12 @@ fun principal(){
                 //PedidoList()
                 //formCadastro()
                 //CadastroPedido()
-//                val navController = rememberNavController()
-//                AppNavigation(navController = navController)
+                val navController = rememberNavController()
+                AppNavigation(navController = navController)
 //                list()
 //                ListaPedidosScreen(pedidos = listOf(Pedido()))
-                DropDownMenu(names) {}
+                //ComboBoxComponent(names) {}
+
             }
         }
     }

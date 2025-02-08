@@ -7,12 +7,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Cliente(
     val id: Long = 0,
-    val nome: String,
-    val ano: Int,
-    val qtdGalao: Int,
-    val qtdGalaoEmprestado: Int,
-    val mediaDeEntrega: Float,
-    val caixa: Float,
-    val apelidos: List<String>,
-    val descricao: String,
+    val nome: String = "",
+    val ano_validade_galao: Int? = 0,
+    val qtd_galao: Int? = 0,
+    val qtd_galao_emprestado: Int? = 0,
+    val media_de_entrega: Float ? = 0f,
+    val caixa: Float ? = 0f,
+    val apelidos: List<String>? = emptyList<String>(),
+    val descricao: String? = "",
 )

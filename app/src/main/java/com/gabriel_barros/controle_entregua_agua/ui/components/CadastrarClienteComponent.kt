@@ -19,10 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabriel_barros.controle_entregua_agua.model.Cliente
+import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.Cliente
 
 @Composable
-fun CadastroClienteScreen(onSave: (Cliente) -> Unit) {
+fun CadastrarClienteComponent(onSave: (Cliente) -> Unit) {
     var nome by remember { mutableStateOf("") }
     var anoDePreferencia by remember { mutableStateOf("") }
     var qtdGalao by remember { mutableStateOf("") }
@@ -81,7 +81,7 @@ fun CadastroClienteScreen(onSave: (Cliente) -> Unit) {
                     onSave(
                         Cliente(
                             nome = nome,
-                            anoDePreferencia = anoDePreferencia.toInt(),
+                            ano_validade_galao = anoDePreferencia.toInt(),
                             qtd_galao = qtdGalao.toInt(),
                             descricao = descricao
                         )
@@ -98,7 +98,7 @@ fun CadastroClienteScreen(onSave: (Cliente) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun CadastroClienteScreenPreview(){
-    CadastroClienteScreen {
+    CadastrarClienteComponent {
 
     }
 }

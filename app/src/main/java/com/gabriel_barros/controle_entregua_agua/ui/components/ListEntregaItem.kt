@@ -1,4 +1,4 @@
-package com.gabriel_barros.controle_entregua_agua.ui
+package com.gabriel_barros.controle_entregua_agua.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
