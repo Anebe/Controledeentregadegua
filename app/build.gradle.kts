@@ -7,6 +7,7 @@ plugins {
 
     kotlin("plugin.serialization") version "1.9.0"
     id("com.google.devtools.ksp")
+    kotlin("kapt")
 
 }
 
@@ -110,4 +111,8 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:auth-kt")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
     implementation("io.ktor:ktor-client-android:3.0.3")
+
+    implementation("io.insert-koin:koin-android:4.0.2")
+    implementation ("io.insert-koin:koin-androidx-compose:4.0.2")
+
 }

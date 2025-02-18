@@ -1,7 +1,6 @@
 package com.gabriel_barros.controle_entregua_agua.api
 
-import com.gabriel_barros.controle_entregua_agua.model.LocalDateSerializer
-import com.gabriel_barros.controle_entregua_agua.model.Pedido
+import com.gabriel_barros.controle_entregua_agua.database.LocalDateSerializer
 import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
@@ -13,7 +12,7 @@ import java.time.LocalDate
 @Serializable
 data class PedidoRequest(
     val entity: String,
-    val data: List<Pedido>
+    val data: List<PedidoEntityApi>
 )
 
 @Serializable

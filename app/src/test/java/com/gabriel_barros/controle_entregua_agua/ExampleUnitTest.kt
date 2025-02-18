@@ -1,6 +1,12 @@
 package com.gabriel_barros.controle_entregua_agua
 
+import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
+import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.ClienteDAO
+import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
+import com.gabriel_barros.controle_entregua_agua.domain.entity.Endereco
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -10,16 +16,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExampleUnitTest {
 
-//    @Test
-//    fun apiPost(): Unit = runBlocking{
-//        val a = RetrofitInstance.pedido.post(
-//            PedidoRequest("pedido",
-//            listOf(
-//                Pedido(clienteId = 1, qtd_agua = 3, troco = 40),
-//                Pedido(clienteId = 2, qtd_agua = 1, troco = 30),
-//            )))
-//        println(a)
-//    }
+    @Test
+    fun apiPost(): Unit = runBlocking{
+//        SupabaseClientProvider.supabase.auth.signInAnonymously()
+        val dao = ClienteDAO(SupabaseClientProvider.supabase)
+        dao.saveCliente(Cliente(nome = "ggggggggg", descricao = "fffffff", enderecos =
+            listOf(Endereco(cep = "asdasd")),
+            apelidos = mutableListOf("rrrrr","qqqqqqq")
+        ))
+    }
 //
 //    @Test
 //    fun apiGet(): Unit = runBlocking{

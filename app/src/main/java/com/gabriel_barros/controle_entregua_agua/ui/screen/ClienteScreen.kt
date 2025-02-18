@@ -13,21 +13,22 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
 import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.ClienteDAO
-import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarClienteComponent
+import com.gabriel_barros.controle_entregua_agua.domain.service.ClienteService
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.ClienteListComponent
-import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @Composable
 fun ClienteScreen(navController: NavController){
-    val coroutineScope = rememberCoroutineScope()
-    val clienteDAO = remember { ClienteDAO(SupabaseClientProvider.supabase) }
+//    val clienteDAO = remember { ClienteService(ClienteDAO(SupabaseClientProvider.supabase)) }
+    val clienteDAO = koinInject<ClienteUseCase>()
+
     val clientes = remember { mutableStateListOf<String>() }
 
     LaunchedEffect(Unit) {
         val clienteList = clienteDAO.getAllClientes() // Método fictício para buscar clientes
         clientes.clear()
-        clientes.addAll(clienteList.map { it.id.toString() }.toList())
+        clientes.addAll(clienteList.map { it.nome }.toList())
     }
     Column {
         ClienteListComponent(strings = clientes)

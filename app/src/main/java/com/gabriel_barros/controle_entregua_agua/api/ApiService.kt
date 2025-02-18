@@ -1,17 +1,9 @@
 package com.gabriel_barros.controle_entregua_agua.api
 
-import com.gabriel_barros.controle_entregua_agua.model.Pedido
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.ResponseBody
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
 
 
 // Representa uma entidade

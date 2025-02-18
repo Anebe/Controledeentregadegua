@@ -1,6 +1,7 @@
 package com.gabriel_barros.controle_entregua_agua.database.supabase
 
 import com.gabriel_barros.controle_entregua_agua.BuildConfig
+import com.google.gson.Gson
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
@@ -11,12 +12,9 @@ object SupabaseClientProvider {
         supabaseUrl = "https://vfqisgektavejjzqlayg.supabase.co",
         supabaseKey = BuildConfig.SUPABASE_KEY
     ) {
-        install(Auth)
+//        install(Auth)
         install(Postgrest)
-        //install other modules
     }
-    suspend fun signInAnonymously() {
-        supabase.auth.signInAnonymously()
-    }
+
 
 }

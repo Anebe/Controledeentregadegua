@@ -1,74 +1,83 @@
 package com.gabriel_barros.controle_entregua_agua.database.supabase.dao
 
-import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
-import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.Cliente
+import com.gabriel_barros.controle_entregua_agua.database.supabase.Mapper
+import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.ClienteSupabase
+import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.EnderecoSupabase
+import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
+import com.gabriel_barros.controle_entregua_agua.domain.portout.ClientePortOut
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
-import io.ktor.util.reflect.instanceOf
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ClienteDAO(
-    private val supabase: SupabaseClient,
-    private val TABLE: String = "clientes")
+    val supabase: SupabaseClient,
+    ): ClientePortOut
 {
-//    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private val TABLE: String = "clientes"
 
-//    init {
-//        coroutineScope.launch {
-//            SupabaseClientProvider.signInAnonymously()
-//        }
-//    }
-    suspend fun getClienteById(id: Long): Cliente? {
-        return supabase.from(TABLE)
-            .select(columns = Columns.list("*")) {
-                filter { Cliente::id eq id }
+    override fun getClienteById(id: Long): Cliente? {
+        return runBlocking {
+             val cliente = supabase.from(TABLE)
+                .select() {
+                    filter { ClienteSupabase::id eq id }
+                }.decodeSingleOrNull<ClienteSupabase>()
+            return@runBlocking cliente?.let{Mapper.toCliente(it)}
+        }
+    }
+
+    override fun getAllClientes(): List<Cliente> {
+        return runBlocking {
+            val clientes = supabase.from(TABLE)
+                .select()
+                .decodeList<ClienteSupabase>()
+            return@runBlocking clientes.map { Mapper.toCliente(it) }
+        }
+    }
+
+    override fun saveCliente(cliente: Cliente): Cliente? {
+        return runBlocking {
+            val response = supabase.from(TABLE)
+                .insert(Mapper.toClienteSupabase(cliente)) { select() }
+                .decodeSingleOrNull<ClienteSupabase>()
+
+            response?.let {
+                var novoCliente = Mapper.toCliente(response)
+                if(cliente.enderecos.isNotEmpty()){
+                    val enderecosAtualizados = cliente.enderecos.map { it.copy(cliente_id = response.id) }
+
+                    val enderecosSupabase = supabase.from("enderecos")
+                        .insert(enderecosAtualizados.map { Mapper.toEnderecoSupabase(it) } ) { select() }
+                        .decodeList<EnderecoSupabase>()
+
+                    val enderecos = enderecosSupabase.map { Mapper.toEndereco(it) }
+                    novoCliente = novoCliente.copy(enderecos = enderecos)
+                }
+                return@runBlocking novoCliente
             }
-            .decodeSingleOrNull()
+            return@runBlocking null
+        }
     }
 
-    suspend fun getAllClientes(): List<Cliente> {
-        return supabase.from(TABLE)
-            .select(columns = Columns.list("*"))
-            .decodeList<Cliente>()
+    override fun deleteCliente(id: Long): Cliente? {
+        return runBlocking{
+
+            val cliente = supabase.from(TABLE)
+                .delete {
+                    filter { ClienteSupabase::id eq id }
+                    select()
+                }.decodeSingleOrNull<ClienteSupabase>()
+            return@runBlocking cliente?.let{ Mapper.toCliente(it)}
+        }
     }
 
-    suspend fun insertCliente(cliente: Cliente): Cliente? {
-        return supabase.from(TABLE)
-            .insert(cliente) { select() }
-            .decodeSingleOrNull()
-    }
-
-    suspend fun updateCliente(cliente: Cliente): Cliente? {
-        return supabase.from(TABLE)
-            .update ({
-                Cliente::nome setTo cliente.nome
-                Cliente::descricao setTo cliente.descricao
-            })
-            {
-                filter { Cliente::id eq cliente.id }
-                select()
-            }
-            .decodeSingleOrNull()
-    }
-
-    suspend fun deleteCliente(id: Long): Cliente? {
-        return supabase.from(TABLE)
-            .delete {
-                filter { Cliente::id eq id }
-                select()
-            }
-            .decodeSingleOrNull()
-    }
-
-    suspend fun getAllClientesNomes(): Map<String, Long> {
+    override fun getAllClientesNomes(): List<Pair<Long, String>> {
         val clientes = this.getAllClientes()
+
         val clienteMap = clientes.flatMap { cliente ->
-            val apelidosMap = cliente.apelidos?.takeIf { it.isNotEmpty() }?.map { it to cliente.id } ?: emptyList()
-            listOf(cliente.nome to cliente.id) + apelidosMap
-        }.toMap()
+            val apelidosMap = cliente.apelidos.takeIf {
+                it.isNotEmpty() }?.map { cliente.id to it } ?: emptyList()
+            listOf(cliente.id to cliente.nome) + apelidosMap
+        }.toList()
         return clienteMap
     }
 }
