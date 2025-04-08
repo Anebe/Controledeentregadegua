@@ -2,6 +2,7 @@ package com.gabriel_barros.controle_entregua_agua.ui.components.util
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,8 +31,10 @@ fun DatePicker (label: String = "", onChoose: (LocalDate) -> Unit){
         onClick = { calendarShow.show() }) {
         Row (horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.wrapContentWidth().width(10.dp.times(label.length+1))){
+            modifier = Modifier
+                .wrapContentWidth()){
             Text(label)
+            Spacer(modifier = Modifier.width(9.dp))
             Icon(imageVector = Icons.Default.DateRange, contentDescription = "Escolher Data")
         }
     }

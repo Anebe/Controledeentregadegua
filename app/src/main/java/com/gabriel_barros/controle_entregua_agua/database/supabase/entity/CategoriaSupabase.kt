@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CategoriaSupabase(
     val id: Long,
-    val categoria_pai: Long?,
+    val categoria_pai: Long,
     val nome: String
 )

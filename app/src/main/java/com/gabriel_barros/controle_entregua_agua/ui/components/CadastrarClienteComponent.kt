@@ -34,7 +34,7 @@ import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAgu
 
 @Composable
 fun CadastrarClienteComponent(onSave: (Cliente) -> Unit) {
-    var cliente by remember { mutableStateOf(Cliente(nome = "")) }
+    var cliente by remember { mutableStateOf(Cliente.emptyCliente()) }
     val enderecos = remember { mutableStateListOf<Endereco>() }
     val apelidos = remember { mutableStateListOf<String>() }
 
@@ -61,7 +61,7 @@ fun CadastrarClienteComponent(onSave: (Cliente) -> Unit) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Endereços")
-            IconButton(onClick = { enderecos.add(Endereco()) }) {
+            IconButton(onClick = { enderecos.add(Endereco.emptyEndereco()) }) {
                 Icon(imageVector = Icons.Default.AddCircle,
                     contentDescription = "Adicionar Endereço",
                     tint = MaterialTheme.colorScheme.primary)

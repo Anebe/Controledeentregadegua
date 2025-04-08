@@ -14,7 +14,7 @@ data class PagamentoSupabase(
     @Serializable(with = LocalDateSerializer::class)
     val data: LocalDate = LocalDate.MIN,
     val valor: Double = 0.0,
-    val pagamento: TipoPagamento = TipoPagamento.DINHEIRO
+    val pagamento: TipoPagamento = TipoPagamento.DINHEIRO,
 ){
 //    fun to(pedido: Pedido? = null): Pagamento{
 //        return Pagamento(

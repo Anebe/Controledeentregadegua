@@ -10,7 +10,7 @@ data class ClienteSupabase(
     val nome: String /*= ""*/,
     val credito: Double /*= 0.0*/,
     val apelidos: List<String> /*= arrayListOf()*/,
-    val descricao: String? /*= ""*/,
+    val descricao: String /*= ""*/,
 //    val enderecos: List<EnderecoSupabase> /*= arrayListOf()*/,
 ){
 //    companion object{

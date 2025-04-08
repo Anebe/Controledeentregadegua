@@ -1,7 +1,6 @@
 package com.gabriel_barros.controle_entregua_agua.database.supabase.entity
 
 import com.gabriel_barros.controle_entregua_agua.database.LocalDateSerializer
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
@@ -15,7 +14,8 @@ data class PedidoSupabase(
     @Serializable(with = LocalDateSerializer::class)
     val data_entrega: LocalDate = LocalDate.MIN,
     val troco: Double = 0.0,
-    val status: StatusPedido = StatusPedido.PENDENTE
+    val status: StatusPedido = StatusPedido.PENDENTE,
+    val valor_total: Double = 0.0
 ){
 //    fun to(): Pedido{
 //        return Pedido(

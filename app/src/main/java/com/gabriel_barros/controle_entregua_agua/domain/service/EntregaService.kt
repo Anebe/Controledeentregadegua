@@ -1,11 +1,14 @@
 package com.gabriel_barros.controle_entregua_agua.domain.service
 
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
+import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
 import com.gabriel_barros.controle_entregua_agua.domain.portout.EntregaPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaUseCase
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 
 class EntregaService(
-    private val entregaOut: EntregaPortOut
+    private val entregaOut: EntregaPortOut,
+    private val produtoService: ProdutoUseCase,
 ): EntregaUseCase {
     override fun getEntregaById(id: Long): Entrega? {
         return entregaOut.getEntregaById(id)
@@ -19,8 +22,21 @@ class EntregaService(
         return entregaOut.getAllEntregas()
     }
 
-    override fun saveEntrega(entrega: Entrega): Entrega? {
-        return entregaOut.saveEntrega(entrega)
+    override fun getAllItensByEntregaId(entregaId: Long): List<ItensEntrega> {
+        return entregaOut.getAllItensByEntregaId(entregaId)
+    }
+
+    override fun getAllEntregasByPedido(pedidoId: Long): List<Entrega> {
+        return entregaOut.getAllEntregasByPedido(pedidoId)
+    }
+
+    override fun saveEntrega(entrega: Entrega, produtosEntregues: List<ItensEntrega>): Entrega? {
+        //TODO atualizar estoque
+        //TODO criar um get produtos of pedido
+
+//        val produtos = produtosEntregues.map { produtoService.getProdutoById(it.) }
+//        return entregaOut.saveEntrega(entrega, produtosEntregues)
+        return null
     }
 
 

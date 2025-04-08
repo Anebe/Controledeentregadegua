@@ -14,8 +14,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
@@ -26,7 +28,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagamentoComponent
-import com.gabriel_barros.controle_entregua_agua.ui.components.MessageBoxComponent
+import com.gabriel_barros.controle_entregua_agua.ui.components.util.MessageBoxComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.PedidoItemDetalhado
 import com.gabriel_barros.controle_entregua_agua.ui.components.PedidoListComponent
 import kotlinx.coroutines.launch
@@ -54,14 +56,14 @@ fun PedidoScreen(navController: NavController) {
     var showAddPagamento by remember { mutableStateOf(false)}
 
 
-    var itemPedidoSupabase by remember { mutableStateOf(Pedido()) }
-    var itemClienteSupabase by remember { mutableStateOf(Cliente(nome = "")) }
+    var itemPedidoSupabase by remember { mutableStateOf(Pedido.emptyPedido()) }
+    var itemClienteSupabase by remember { mutableStateOf(Cliente.emptyCliente()) }
     var itemEntrega = remember { mutableStateListOf<Entrega>() }
 
     LaunchedEffect(Unit) {
         val pedidoList = pedidoDAO.getAllPedidos()
         pedidos.clear()
-        pedidos.addAll(pedidoList.map { Pair(it, clienteDAO.getClienteById(it.cliente_id)?: Cliente(nome = "")) })
+        pedidos.addAll(pedidoList.map { Pair(it, clienteDAO.getClienteById(it.cliente_id)?: Cliente.emptyCliente()) })
 
         galoes.clear()
         galoes.addAll(galaoDAO.getAllProdutos())
@@ -71,8 +73,9 @@ fun PedidoScreen(navController: NavController) {
         PedidoListComponent(pedidos){ pedido, cliente ->
             itemClienteSupabase = cliente
             itemPedidoSupabase = pedido
-            showPedidoDetalhado = true
+//            showPedidoDetalhado = true
             itemEntrega.addAll(entregaDAO.getEntregaByPedidoId(itemPedidoSupabase.id))
+            navController.navigate("pedidoDetalhe/${pedido.id}")
         }
         Button(onClick = { navController.navigate("cadastrarPedidoScreen") }) {
             Text(text = "Adicionar")
@@ -80,17 +83,20 @@ fun PedidoScreen(navController: NavController) {
     }
 
     if (showPedidoDetalhado){
-
         MessageBoxComponent(onDismiss = { showPedidoDetalhado = false }) {
             Box(modifier = Modifier.padding(10.dp)){
             PedidoItemDetalhado(
                 pedido = itemPedidoSupabase,
                 cliente = itemClienteSupabase,
                 entregas = itemEntrega.toList(),
+                emptyList(),
+                emptyList(), emptyList(),
                 { valorPago, qtdEntregue, qtdSeco ->
 
 
-                }, {}, {
+                },
+                {},
+                {
                     showAddEntrega = true
                 })
 
@@ -105,7 +111,7 @@ fun PedidoScreen(navController: NavController) {
                 galoes = galoes.associate { it.id to it.nome })
             { entrega, galoes ->
                 coroutineScope.launch{
-                    entregaDAO.saveEntrega(entrega)
+                    entregaDAO.saveEntrega(entrega, galoes)
 
                 }
                 showAddEntrega = false
@@ -123,4 +129,12 @@ fun PedidoScreen(navController: NavController) {
     }
     
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PedidoScreenPreview(){
+    val navController = rememberNavController()
+
+    PedidoScreen(navController = navController)
 }

@@ -12,15 +12,5 @@ data class ProdutoSupabase(
     val custo: Double,
     val estoque: Int,
     val descricao: String,
-){
-    fun to(categorias: List<Categoria>? = null): Produto{
-        return Produto(
-            id = id,
-            preco = preco,
-            nome = nome,
-            custo = custo,
-            estoque = estoque,
-            descricao = descricao,
-        )
-    }
-}
+    val reservado: Int,
+)

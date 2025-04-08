@@ -16,10 +16,12 @@ import androidx.compose.ui.unit.dp
 import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
 import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.ClienteDAO
 import com.gabriel_barros.controle_entregua_agua.domain.service.ClienteService
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagamentoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBox
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComponent
+import org.koin.compose.koinInject
 
 @Composable
 fun TesteScreen() {
@@ -28,7 +30,7 @@ fun TesteScreen() {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        val clienteDAO = remember { ClienteService(ClienteDAO(SupabaseClientProvider.supabase)) }
+        val clienteDAO: ClienteUseCase = koinInject()
 
         var nomesClientes by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
 

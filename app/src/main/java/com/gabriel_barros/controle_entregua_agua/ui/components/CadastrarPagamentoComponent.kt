@@ -26,7 +26,9 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CadastrarPagamentoComponent(clientes: List<Pair<Long, String>>, onSave: (PagamentoSupabase) -> Unit) {
+fun CadastrarPagamentoComponent(
+        clientes: List<Pair<Long, String>>,
+        onSave: (PagamentoSupabase) -> Unit) {
 
     var data by remember { mutableStateOf(LocalDate.now())}
     var valor by remember { mutableStateOf("")}

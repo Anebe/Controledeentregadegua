@@ -11,6 +11,6 @@ interface PagamentoPortOut {
 
     fun deletePagamento(id: Long): Pagamento?
 
-    fun getPagamentosByPedidoId(pedidoId: Long): List<Pagamento>?
+    fun getPagamentosByPedidoId(pedidoId: Long): List<Pagamento>
 
 }

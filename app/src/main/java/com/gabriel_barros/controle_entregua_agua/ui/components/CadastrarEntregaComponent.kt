@@ -10,7 +10,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,14 +18,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.EntregaSupabase
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoEntregador
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DatePicker
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropDownMenuComponent
-import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropdownWithQuantity
+import com.gabriel_barros.controle_entregua_agua.ui.components.util.MessageBoxComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.NumberPicker
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -88,12 +86,15 @@ fun CadastrarEntregaComponent (
             data = it
         }
 
-        DropDownMenuComponent(itens = TipoEntregador.entries.associateBy { it.name }, "Escolher Entregador") {
+        DropDownMenuComponent(
+            itens = TipoEntregador.entries.associateBy { it.name },
+            "Escolher Entregador") {
             tipoEntregador = it.second
         }
 
         Button(onClick = { onSave(
             Entrega(
+                id = 0,
             pedido_id = pedidoId,
             data = data,
             entregador = tipoEntregador,

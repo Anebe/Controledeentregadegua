@@ -17,7 +17,6 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPedidoComponent
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 
@@ -28,21 +27,22 @@ fun CadastrarPedidoScreen (navController: NavController) {
 //    val clienteDAO = remember { ClienteService(ClienteDAO(SupabaseClientProvider.supabase)) }
 //    val produtoDAO = remember { ProdutoService(ProdutoDAO(SupabaseClientProvider.supabase)) }
 
-    val pedidoDAO: PedidoUseCase = koinInject()
-    val clienteDAO: ClienteUseCase = koinInject()
-    val produtoDAO: ProdutoUseCase = koinInject()
+    val pedidoUseCase: PedidoUseCase = koinInject()
+    val clienteUseCase: ClienteUseCase = koinInject()
+    val produtoUseCase: ProdutoUseCase = koinInject()
 
     var nomesClientes by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
     var nomesProdutos by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
 
     LaunchedEffect(Unit) {
-        nomesClientes = clienteDAO.getAllClientesNomes()
-        nomesProdutos = produtoDAO.getAllProdutosNomes()
+        nomesClientes = clienteUseCase.getAllClientesNomes()
+        nomesProdutos = produtoUseCase.getAllProdutosNomes()
     }
     Box(modifier = Modifier.padding(10.dp)){
         CadastrarPedidoComponent(nomesClientes, nomesProdutos) { pedido, produtos ->
-            val prod = produtos.map { (id, quantidade) -> ItensPedido(produto_id =  id, qtd =  quantidade) }.toSet()
-            val newCliente = pedidoDAO.savePedido(pedido, prod)
+            val prod = produtos.map { (id, quantidade) ->
+                ItensPedido(produto_id =  id, qtd =  quantidade) }.toSet()
+            val newCliente = pedidoUseCase.savePedido(pedido, prod)
             newCliente?.let {
                 navController.popBackStack()
             }

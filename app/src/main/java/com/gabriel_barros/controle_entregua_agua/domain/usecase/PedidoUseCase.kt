@@ -9,7 +9,13 @@ interface PedidoUseCase {
 
     fun getPedidoByClienteId(clienteId: Long): List<Pedido>
 
+    fun getPedidosPendentes(): List<Pedido>
+
+    fun verificaPedidoEFinaliza(id: Long)
+
     fun getAllPedidos(): List<Pedido>
+
+    fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido>
 
     fun savePedido(pedido: Pedido, itensPedido: Set<ItensPedido>): Pedido?
 

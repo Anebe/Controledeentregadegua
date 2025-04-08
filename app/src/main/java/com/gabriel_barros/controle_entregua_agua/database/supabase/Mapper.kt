@@ -75,6 +75,7 @@ object Mapper {
             data_entrega = pedido.data_entrega,
             troco = pedido.troco,
             status = pedido.status,
+            valor_total = pedido.valor_total,
         )
     }
 
@@ -86,6 +87,7 @@ object Mapper {
             data_entrega = pedido.data_entrega,
             troco = pedido.troco,
             status = pedido.status,
+            valor_total = pedido.valor_total,
         )
     }
 
@@ -133,7 +135,7 @@ object Mapper {
             pedido_id = pagamento.pedido_id, // Pedido_id no lugar de um objeto completo
             data = pagamento.data,
             valor = pagamento.valor,
-            pagamento = pagamento.pagamento
+            pagamento = pagamento.pagamento,
         )
     }
 
@@ -143,7 +145,7 @@ object Mapper {
             pedido_id = pagamentoSupabase.pedido_id, // Pedido_id no lugar de um objeto completo
             data = pagamentoSupabase.data,
             valor = pagamentoSupabase.valor,
-            pagamento = pagamentoSupabase.pagamento
+            pagamento = pagamentoSupabase.pagamento,
         )
     }
     fun toProdutoSupabase(produto: Produto): ProdutoSupabase {
@@ -153,8 +155,8 @@ object Mapper {
             nome = produto.nome,
             custo = produto.custo,
             estoque = produto.estoque,
-            descricao = produto.descricao
-        )
+            descricao = produto.descricao,
+            reservado = produto.reservado)
     }
 
     fun toProduto(produtoSupabase: ProdutoSupabase): Produto {
@@ -164,7 +166,8 @@ object Mapper {
             nome = produtoSupabase.nome,
             custo = produtoSupabase.custo,
             estoque = produtoSupabase.estoque,
-            descricao = produtoSupabase.descricao
+            descricao = produtoSupabase.descricao,
+            reservado = produtoSupabase.reservado
         )
     }
     fun toEmprestimoPosseSupabase(emprestimo: EmprestimoPosse): EmprestimoPosseSupabase {

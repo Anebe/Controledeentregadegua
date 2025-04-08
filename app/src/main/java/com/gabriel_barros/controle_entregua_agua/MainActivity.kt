@@ -6,15 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
@@ -32,7 +25,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.portout.PedidoPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.portout.ProdutoPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.service.ClienteService
 import com.gabriel_barros.controle_entregua_agua.domain.service.EntregaService
-import com.gabriel_barros.controle_entregua_agua.domain.service.PagametoService
+import com.gabriel_barros.controle_entregua_agua.domain.service.PagamentoService
 import com.gabriel_barros.controle_entregua_agua.domain.service.PedidoService
 import com.gabriel_barros.controle_entregua_agua.domain.service.ProdutoService
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
@@ -42,39 +35,34 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.AppNavigation
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.postgrest.from
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
 val appModule = module {
     single { SupabaseClientProvider.supabase }
-    single<ClientePortOut> { ClienteDAO(get()) }
+    single<ClientePortOut> { ClienteDAO() }
     single<ClienteUseCase> { ClienteService(get()) }
 
-    single<PedidoPortOut> { PedidoDAO(get()) }
-    single<PedidoUseCase> { PedidoService(get()) }
+    single<PedidoPortOut> { PedidoDAO() }
+    single<PedidoUseCase> { PedidoService(get(), get(), lazy { get() }, get()) }
 
-    single<ProdutoPortOut> { ProdutoDAO(get()) }
+    single<ProdutoPortOut> { ProdutoDAO() }
     single<ProdutoUseCase> { ProdutoService(get()) }
 
-    single<EntregaPortOut> { EntregaDao(get()) }
-    single<EntregaUseCase> { EntregaService(get()) }
+    single<EntregaPortOut> { EntregaDao() }
+    single<EntregaUseCase> { EntregaService(get(),get()) }
 
-    single<PagamentoPortOut> { PagamentoDao(get()) }
-    single<PagamentoUseCase> { PagametoService(get()) }
+    single<PagamentoPortOut> { PagamentoDao() }
+    single<PagamentoUseCase> { PagamentoService(get(), get(), get()) }
 }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            SupabaseClientProvider.supabase.auth.signInAnonymously()
+//            SupabaseClientProvider.supabase.auth.signInAnonymously()
         }
 
         startKoin{

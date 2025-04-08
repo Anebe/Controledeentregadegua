@@ -12,6 +12,11 @@ interface PedidoPortOut {
 
     fun getAllPedidos(): List<Pedido>
 
+    fun getAllPedidosAsync(callback: (List<Pedido>) -> Unit)
+
+    fun getPedidosPendentes(): List<Pedido>
+
+    fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido>
 //    fun getAllPedidosWithClientes(): List<Pedido>
 
     fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido?

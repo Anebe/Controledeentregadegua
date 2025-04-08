@@ -48,24 +48,8 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import java.time.LocalDate
 
-data class PedidoItemState(
-    val cliente: MutableState<Pair<Long, String>> = mutableStateOf(Pair(-1, "")),
-    //var cliente: String = "",
-    val qtdAgua: MutableIntState = mutableIntStateOf(0),
-    val troco: MutableDoubleState = mutableDoubleStateOf(0.0),
-    val entrega: MutableState<LocalDate> = mutableStateOf(LocalDate.now().minusDays(3))
-) {
-    fun to(): Pedido {
-        return Pedido(
-            data = entrega.value,
-            troco = troco.doubleValue
-        )
-    }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun CadastrarPedidoComponent(
     nomes: List<Pair<Long, String>>,
     produtos: List<Pair<Long, String>>,
@@ -76,7 +60,7 @@ fun CadastrarPedidoComponent(
     var levarTroco by remember { mutableStateOf(false) }
     var troco by remember { mutableStateOf("") }
     val entregaShow = rememberUseCaseState(visible = false)
-    var pedido by remember { mutableStateOf(Pedido()) }
+    var pedido by remember { mutableStateOf(Pedido.emptyPedido()) }
     var produtosEscolhidos by remember { mutableStateOf(emptyMap<Long, Int>()) }
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -85,7 +69,7 @@ fun CadastrarPedidoComponent(
 
         ComboBoxComponent(itens = nomes, label = "Cliente") {
             //data.cliente.value = it
-            pedido = Pedido(cliente_id = it.first)
+            pedido = pedido.copy(cliente_id = it.first)
         }
 
         Row(

@@ -4,13 +4,28 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
 data class Pedido(
-    val id: Long = 0,
-    val cliente_id: Long = 0,
-    val data: LocalDate = LocalDate.now(),
-    val data_entrega: LocalDate = LocalDate.now(),
-    val troco: Double = 0.0,
-    val status: StatusPedido = StatusPedido.PENDENTE,
-)
+    val id: Long,
+    val cliente_id: Long,
+    val data: LocalDate,
+    val data_entrega: LocalDate,
+    val troco: Double,
+    val status: StatusPedido,
+    val valor_total: Double,
+){
+    companion object{
+        fun emptyPedido(): Pedido{
+            return Pedido(
+                id = 0,
+                        cliente_id = 0,
+                        data = LocalDate.now(),
+                        data_entrega = LocalDate.now(),
+                        troco = 0.0,
+                        status = StatusPedido.PENDENTE,
+                        valor_total = 0.0,
+            )
+        }
+    }
+}
 
 enum class StatusPedido {
     PENDENTE,

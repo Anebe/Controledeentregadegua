@@ -1,4 +1,4 @@
-package com.gabriel_barros.controle_entregua_agua.ui.components
+package com.gabriel_barros.controle_entregua_agua.ui.components.util
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
+import com.gabriel_barros.controle_entregua_agua.ui.components.PedidoItemDetalhado
 
 
 @Composable
@@ -52,10 +53,13 @@ fun MessageBoxComponent(
 fun MessageBoxComponentPreview(){
     MessageBoxComponent({}){
         PedidoItemDetalhado(
-            pedido = Pedido(),
-            cliente = Cliente(nome = ""),
+            pedido = Pedido.emptyPedido(),
+            cliente = Cliente.emptyCliente(),
             emptyList(),
-            onSave = { a,b,c -> /*TODO*/ }, {}) {
+            emptyList(),
+            emptyList(), emptyList(),
+            onSave = { a, b, c -> /*TODO*/ },
+            {}) {
             
         }
     }

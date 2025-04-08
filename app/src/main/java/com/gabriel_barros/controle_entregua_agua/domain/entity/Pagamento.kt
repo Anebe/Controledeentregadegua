@@ -5,12 +5,23 @@ import java.time.LocalDate
 
 data class Pagamento(
     val id: Long,
-//    val pedido: Pedido?,
     val pedido_id: Long,
     val data: LocalDate,
     val valor: Double,
-    val pagamento: TipoPagamento
-)
+    val pagamento: TipoPagamento,
+){
+    companion object{
+        fun emptyPagamento(): Pagamento{
+            return Pagamento(
+                id = 0,
+                        pedido_id = 0,
+                        data = LocalDate.now(),
+                        valor = 0.0,
+                        pagamento = TipoPagamento.DINHEIRO,
+            )
+        }
+    }
+}
 
 enum class TipoPagamento(tipo: String) {
     PIX("PIX"),
