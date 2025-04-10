@@ -9,8 +9,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.portout.ClientePortOut
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.runBlocking
 
-class ClienteDAO(
-    ): ClientePortOut
+class ClienteDAO(): ClientePortOut
 {
     private val schema = SupabaseClientProvider.schema
     private val supabase = SupabaseClientProvider.supabase
