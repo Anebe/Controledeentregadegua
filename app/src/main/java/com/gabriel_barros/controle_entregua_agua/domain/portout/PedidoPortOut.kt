@@ -4,22 +4,23 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 
 interface PedidoPortOut {
-    fun getPedidoById(id: Long): Pedido?
+    suspend fun getPedidoById(id: Long): Pedido?
 
-//    fun getPedidoByIdWithCliente(id: Long): Pedido?
+//    suspend fun getPedidoByIdWithCliente(id: Long): Pedido?
 
-    fun getPedidoByClienteId(clienteId: Long): List<Pedido>
+    suspend fun getPedidoByClienteId(clienteId: Long): List<Pedido>
 
-    fun getAllPedidos(): List<Pedido>
+    suspend fun getAllPedidos(): List<Pedido>
 
-    fun getAllPedidosAsync(callback: (List<Pedido>) -> Unit)
+    suspend fun getAllPedidosAsync(callback: (List<Pedido>) -> Unit)
 
-    fun getPedidosPendentes(): List<Pedido>
+    suspend fun getPedidosPendentes(): List<Pedido>
 
-    fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido>
-//    fun getAllPedidosWithClientes(): List<Pedido>
+    suspend fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido>
 
-    fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido?
+//    suspend fun getAllPedidosWithClientes(): List<Pedido>
 
-    fun deletePedido(id: Long): Pedido?
+    suspend fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido?
+
+    suspend fun deletePedido(id: Long): Pedido?
 }

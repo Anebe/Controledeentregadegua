@@ -13,19 +13,19 @@ class PagamentoService(
     private val pedidoService: PedidoUseCase,
     private val clienteService: ClienteUseCase,
 ): PagamentoUseCase {
-    override fun getPagamentoById(id: Long): Pagamento? {
+    override suspend fun getPagamentoById(id: Long): Pagamento? {
         return pagamentoOut.getPagamentoById(id)
     }
 
-    override fun getPagamentosByPedido(pedidoId: Long): List<Pagamento> {
+    override suspend fun getPagamentosByPedido(pedidoId: Long): List<Pagamento> {
         return pagamentoOut.getPagamentosByPedidoId(pedidoId)
     }
 
-    override fun getAllPagamentos(): List<Pagamento> {
+    override suspend fun getAllPagamentos(): List<Pagamento> {
         return pagamentoOut.getAllPagamentos()
     }
     //Quando salvar pagamento. Salva apenas até o limite do total do pedido. O excesso vira Credito em cliente
-    override fun savePagamento(clienteId: Long, valor: Double, tipoPagamento: TipoPagamento): List<Pagamento> {
+    override suspend fun savePagamento(clienteId: Long, valor: Double, tipoPagamento: TipoPagamento): List<Pagamento> {
         if(valor <= 0.0) return emptyList()
 
         var quantoSobrou = valor
@@ -84,7 +84,7 @@ class PagamentoService(
         return resultPagamentos
     }
 
-//    override fun savePagamento(pagamento: Pagamento): Pagamento? {
+//    override suspend fun savePagamento(pagamento: Pagamento): Pagamento? {
 //        val pedido = pedidoService.getPedidoById(pagamento.pedido_id) ?: return null
 //        pedidoService.getPedidoByClienteId()
 //        val resto = pagamento.valor - pagamento.valor_troco +  pedido.valor_total
@@ -104,7 +104,7 @@ class PagamentoService(
 //    }
 
 
-    override fun deletePagamento(id: Long): Pagamento? {
+    override suspend fun deletePagamento(id: Long): Pagamento? {
         return pagamentoOut.deletePagamento(id)
     }
 }

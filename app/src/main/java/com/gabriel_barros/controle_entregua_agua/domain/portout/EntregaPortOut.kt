@@ -5,17 +5,17 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
 
 interface EntregaPortOut {
 
-    fun getEntregaById(id: Long): Entrega?
+    suspend fun getEntregaById(id: Long): Entrega?
 
-    fun getEntregaByPedidoId(pedidoId: Long): List<Entrega>
+    suspend fun getEntregaByPedidoId(pedidoId: Long): List<Entrega>
 
-    fun getAllEntregas(): List<Entrega>
+    suspend fun getAllEntregas(): List<Entrega>
 
-    fun getAllItensByEntregaId(entregaId: Long): List<ItensEntrega>
+    suspend fun getAllItensByEntregaId(entregaId: Long): List<ItensEntrega>
 
-    fun getAllEntregasByPedido(pedidoId: Long): List<Entrega>
+    suspend fun getAllEntregasByPedido(pedidoId: Long): List<Entrega>
 
-    fun saveEntrega(entrega: Entrega, itens: List<ItensEntrega>): Entrega?
+    suspend fun saveEntrega(entrega: Entrega, itens: List<ItensEntrega>): Entrega?
 
-    fun deleteEntrega(id: Long): Entrega?
+    suspend fun deleteEntrega(id: Long): Entrega?
 }

@@ -28,9 +28,8 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagamentoComponent
+import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoListComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MessageBoxComponent
-import com.gabriel_barros.controle_entregua_agua.ui.components.PedidoItemDetalhado
-import com.gabriel_barros.controle_entregua_agua.ui.components.PedidoListComponent
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -74,7 +73,11 @@ fun PedidoScreen(navController: NavController) {
             itemClienteSupabase = cliente
             itemPedidoSupabase = pedido
 //            showPedidoDetalhado = true
-            itemEntrega.addAll(entregaDAO.getEntregaByPedidoId(itemPedidoSupabase.id))
+            //TODO melhorar esse async
+            coroutineScope.launch {
+                itemEntrega.addAll(entregaDAO.getEntregaByPedidoId(itemPedidoSupabase.id))
+
+            }
             navController.navigate("pedidoDetalhe/${pedido.id}")
         }
         Button(onClick = { navController.navigate("cadastrarPedidoScreen") }) {
@@ -85,20 +88,18 @@ fun PedidoScreen(navController: NavController) {
     if (showPedidoDetalhado){
         MessageBoxComponent(onDismiss = { showPedidoDetalhado = false }) {
             Box(modifier = Modifier.padding(10.dp)){
-            PedidoItemDetalhado(
-                pedido = itemPedidoSupabase,
-                cliente = itemClienteSupabase,
-                entregas = itemEntrega.toList(),
-                emptyList(),
-                emptyList(), emptyList(),
-                { valorPago, qtdEntregue, qtdSeco ->
-
-
-                },
-                {},
-                {
-                    showAddEntrega = true
-                })
+//            PedidoItemDetalhado(
+//                pedido = itemPedidoSupabase,
+//                cliente = itemClienteSupabase,
+//                entregas = itemEntrega.toList(),
+//                emptyList(),
+//                emptyList(), emptyList(),
+//                { valorPago, qtdEntregue, qtdSeco ->
+//                },
+//                {},
+//                {
+//                    showAddEntrega = true
+//                })
 
             }
         }

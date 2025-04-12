@@ -1,4 +1,4 @@
-package com.gabriel_barros.controle_entregua_agua.ui.components
+package com.gabriel_barros.controle_entregua_agua.ui.components.pedido
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,17 +31,19 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
+import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
+import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaResumidoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MyBox
-import com.gabriel_barros.controle_entregua_agua.ui.components.util.NumberPicker
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
 
 
 @Composable
 fun PedidoItemDetalhado(
+    produtos: List<Produto>,
     pedido: Pedido,
     cliente: Cliente,
     entregas: List<Entrega>,
-    produtos: List<ItensPedido>,
+    produtosPedidos: List<ItensPedido>,
     produtosEntregues: List<ItensEntrega>,
     pagamentos: List<Pagamento>,
     onSave: (valorPago: Double, entrega: Int, galaoSeco: Int) -> Unit,
@@ -52,65 +54,31 @@ fun PedidoItemDetalhado(
     var valorPago by remember { mutableStateOf("") }
     var entrega by remember { mutableIntStateOf(0) }
     var galaoSeco by remember { mutableIntStateOf(0) }
+    var showCadastroEntrega by remember { mutableStateOf(false) }
+
+
 
     Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
         Text(text = "Cliente: ${cliente.nome}")
 //        Text(text = "Galão(ões): ${pedidoSupabase.qtd} ")
-        MyBox{
-            Column {
-                Row{
-                    Text("Produto")
-                    Text("Entregue")
-                    Text("Retornado")
-                }
-                LazyColumn {
-                    produtos.forEachIndexed { index, itensPedido ->
-                        item {
-                            Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
-                                val entregue =
-                                    produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
-                                        .sumOf { it.qtdEntregue }
-                                val retornado =
-                                    produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
-                                        .sumOf { it.qtdRetornado }
-                                Text("${itensPedido.produto_id}")
-                                NumberPicker(value = entregue, onValueChange = {}, minValue = entregue, maxValue = itensPedido.qtd)
-                                NumberPicker(value = retornado, onValueChange = {}, minValue = retornado)
-                            }
-                        }
-                    }
-                }
+    MyBox(modifier = Modifier.fillMaxWidth()) {
+
+        if(showCadastroEntrega){
+            CadastrarEntregaResumidoComponent(
+                produtosEntregues = produtos,
+                entregasAnteriores = produtosEntregues,
+                itensPedido = produtosPedidos
+            ) {
+                showCadastroEntrega = false
+            }
+        }else{
+            EntregaRelatorioComponent(produtosPedidos, produtosEntregues)
+            Button(onClick = { showCadastroEntrega = true }) {
+                Text(text = "+")
             }
         }
-        MyBox {
-            Column {
-                Row (horizontalArrangement = Arrangement.spacedBy(15.dp)){
-                    Text("Total: R$${pedido.valor_total}")
-                    val total = pagamentos.sumOf { it.valor }
-                    var totalStr = total.toString()
-                    Row(modifier = Modifier.wrapContentWidth()) {
-                        Text("Pago: R$")
-                        OutlinedTextField(
-                            value = totalStr,
-                            onValueChange = { newText ->
-                                val numeric = newText.filter { it.isDigit() }
-                                val value = numeric.toDoubleOrNull() ?: 0
-                                totalStr = value.toString() // atualiza o texto mostrado
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.width(75.dp)
-
-                        )
-                    }
-                    Text("Falta: R$${pedido.valor_total - total} ")
-//                    Button(onClick = { /*TODO*/ },
-//                        modifier = Modifier.wrapContentSize()) {
-//                        Icon(imageVector = Icons.Default.Add, contentDescription = "Adicionar Entrega", modifier = Modifier.size(10.dp))
-//                    }
-                }
-            }
-
-        }
+    }
+        PagamentoRelatorioComponent(pedido, pagamentos)
 
         Text(text = "Fazer Entrega Em: ${pedido.data.dayOfMonth}/${pedido.data.monthValue}/${pedido.data.year}")
 
@@ -126,6 +94,67 @@ fun PedidoItemDetalhado(
 
 }
 
+@Composable
+fun PagamentoRelatorioComponent(pedido: Pedido, pagamentos: List<Pagamento>){
+    MyBox {
+        Column {
+            Row (horizontalArrangement = Arrangement.spacedBy(15.dp)){
+                Text("Total: R$${pedido.valor_total}")
+                val total = pagamentos.sumOf { it.valor }
+                var totalStr = total.toString()
+                Row(modifier = Modifier.wrapContentWidth()) {
+                    Text("Pago: R$")
+                    OutlinedTextField(
+                        value = totalStr,
+                        onValueChange = { newText ->
+                            val numeric = newText.filter { it.isDigit() }
+                            val value = numeric.toDoubleOrNull() ?: 0
+                            totalStr = value.toString() // atualiza o texto mostrado
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.width(75.dp)
+
+                    )
+                }
+                Text("Falta: R$${pedido.valor_total - total} ")
+//                    Button(onClick = { /*TODO*/ },
+//                        modifier = Modifier.wrapContentSize()) {
+//                        Icon(imageVector = Icons.Default.Add, contentDescription = "Adicionar Entrega", modifier = Modifier.size(10.dp))
+//                    }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun EntregaRelatorioComponent(produtos: List<ItensPedido>, produtosEntregues: List<ItensEntrega>){
+        Column {
+            Row{
+                Text("Produto")
+                Text("Entregue")
+                Text("Retornado")
+            }
+            LazyColumn {
+                produtos.forEachIndexed { index, itensPedido ->
+                    item {
+                        Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+                            val entregue =
+                                produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
+                                    .sumOf { it.qtdEntregue }
+                            val retornado =
+                                produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
+                                    .sumOf { it.qtdRetornado }
+                            Text("${itensPedido.produto_id}")
+                            Text("${entregue}/${itensPedido.qtd}")
+                            Text("${retornado}")
+                        }
+                    }
+                }
+            }
+        }
+
+}
 @Composable
 fun PedidoItemResumido(pedido: Pedido,
                        cliente: Cliente,
@@ -155,6 +184,8 @@ fun PedidoItemResumido(pedido: Pedido,
     }
 }
 
+
+
 @Preview(
     name = "Samsung J2 Core (Simulado)",
     device = "spec:shape=Normal,width=540,height=960,unit=px,dpi=220",
@@ -174,10 +205,11 @@ fun PedidoItemDetalhadoPreview(){
     ControleDeEntregaDeAguaTheme {
         Column (modifier = Modifier.fillMaxSize()){
             PedidoItemDetalhado(
+                produtos = emptyList(),
                 pedido = Pedido.emptyPedido(),
                 cliente = Cliente.emptyCliente(),
                 entregas = emptyList(),
-                produtos = itensPedido,
+                produtosPedidos = itensPedido,
                 produtosEntregues = itensEntrega,
                 emptyList(), onSave = { a, b, c ->/*TODO*/ }, {}, {}
             )

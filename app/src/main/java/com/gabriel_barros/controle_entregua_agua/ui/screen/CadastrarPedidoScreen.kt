@@ -16,7 +16,8 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
-import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPedidoComponent
+import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.CadastrarPedidoComponent
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 
@@ -42,9 +43,11 @@ fun CadastrarPedidoScreen (navController: NavController) {
         CadastrarPedidoComponent(nomesClientes, nomesProdutos) { pedido, produtos ->
             val prod = produtos.map { (id, quantidade) ->
                 ItensPedido(produto_id =  id, qtd =  quantidade) }.toSet()
-            val newCliente = pedidoUseCase.savePedido(pedido, prod)
-            newCliente?.let {
-                navController.popBackStack()
+            coroutineScope.launch {
+                val newCliente = pedidoUseCase.savePedido(pedido, prod)
+                newCliente?.let {
+                    navController.popBackStack()
+                }
             }
         }
     }

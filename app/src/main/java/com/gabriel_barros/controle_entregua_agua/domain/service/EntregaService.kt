@@ -10,27 +10,27 @@ class EntregaService(
     private val entregaOut: EntregaPortOut,
     private val produtoService: ProdutoUseCase,
 ): EntregaUseCase {
-    override fun getEntregaById(id: Long): Entrega? {
+    override suspend fun getEntregaById(id: Long): Entrega? {
         return entregaOut.getEntregaById(id)
     }
 
-    override fun getEntregaByPedidoId(pedidoId: Long): List<Entrega> {
+    override suspend fun getEntregaByPedidoId(pedidoId: Long): List<Entrega> {
         return entregaOut.getEntregaByPedidoId(pedidoId)
     }
 
-    override fun getAllEntregas(): List<Entrega> {
+    override suspend fun getAllEntregas(): List<Entrega> {
         return entregaOut.getAllEntregas()
     }
 
-    override fun getAllItensByEntregaId(entregaId: Long): List<ItensEntrega> {
+    override suspend fun getAllItensByEntregaId(entregaId: Long): List<ItensEntrega> {
         return entregaOut.getAllItensByEntregaId(entregaId)
     }
 
-    override fun getAllEntregasByPedido(pedidoId: Long): List<Entrega> {
+    override suspend fun getAllEntregasByPedido(pedidoId: Long): List<Entrega> {
         return entregaOut.getAllEntregasByPedido(pedidoId)
     }
 
-    override fun saveEntrega(entrega: Entrega, produtosEntregues: List<ItensEntrega>): Entrega? {
+    override suspend fun saveEntrega(entrega: Entrega, produtosEntregues: List<ItensEntrega>): Entrega? {
         //TODO atualizar estoque
         //TODO criar um get produtos of pedido
 
@@ -40,7 +40,7 @@ class EntregaService(
     }
 
 
-    override fun deleteEntrega(id: Long): Entrega? {
+    override suspend fun deleteEntrega(id: Long): Entrega? {
         return entregaOut.deleteEntrega(id)
     }
 }

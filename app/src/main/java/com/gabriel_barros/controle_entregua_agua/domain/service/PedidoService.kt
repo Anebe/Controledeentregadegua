@@ -20,20 +20,20 @@ class PedidoService(
     private val entregaService: EntregaUseCase
 ) :PedidoUseCase{
 
-    override fun getPedidoById(id: Long): Pedido? {
+    override suspend fun getPedidoById(id: Long): Pedido? {
         return pedidoOut.getPedidoById(id)
     }
 
 
-    override fun getPedidoByClienteId(clienteId: Long): List<Pedido> {
+    override suspend fun getPedidoByClienteId(clienteId: Long): List<Pedido> {
         return pedidoOut.getPedidoByClienteId(clienteId)
     }
 
-    override fun getPedidosPendentes(): List<Pedido> {
+    override suspend fun getPedidosPendentes(): List<Pedido> {
         return pedidoOut.getPedidosPendentes()
     }
 
-    override fun verificaPedidoEFinaliza(id: Long) {
+    override suspend fun verificaPedidoEFinaliza(id: Long) {
         var pedido = this.getPedidoById(id) ?: return
 
         val pagamentos = pagamentoService.value.getPagamentosByPedido(id)
@@ -61,15 +61,15 @@ class PedidoService(
 
     }
 
-    override fun getAllPedidos(): List<Pedido> {
+    override suspend fun getAllPedidos(): List<Pedido> {
         return pedidoOut.getAllPedidos()
     }
 
-    override fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido> {
+    override suspend fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido> {
         return pedidoOut.getAllItensByPedidoId(pedidoId)
     }
 
-    override fun savePedido(pedido: Pedido, itensPedido: Set<ItensPedido>): Pedido? {
+    override suspend fun savePedido(pedido: Pedido, itensPedido: Set<ItensPedido>): Pedido? {
         if (itensPedido.isEmpty() || pedido.troco < 0){
             return null
         }
@@ -88,7 +88,7 @@ class PedidoService(
     }
 
 
-    override fun deletePedido(id: Long): Pedido? {
+    override suspend fun deletePedido(id: Long): Pedido? {
         return pedidoOut.deletePedido(id)
     }
 }

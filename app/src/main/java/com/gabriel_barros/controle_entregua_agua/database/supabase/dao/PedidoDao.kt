@@ -12,29 +12,23 @@ import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class PedidoDAO(
-
-): PedidoPortOut {
+class PedidoDAO() : PedidoPortOut {
     private val schema = SupabaseClientProvider.schema
     private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "pedidos"
 
-    override fun getPedidoById(id: Long): Pedido? {
-        return runBlocking{
-            val pedido = supabase.from(schema, TABLE)
-                .select() {
-                    filter { PedidoSupabase::id eq id }
-                }.decodeSingleOrNull<PedidoSupabase>()
-            return@runBlocking pedido?.let { Mapper.toPedido(pedido) }
-        }
+    override suspend fun getPedidoById(id: Long): Pedido? {
+        val pedido = supabase.from(schema, TABLE).select() {
+                filter { PedidoSupabase::id eq id }
+            }.decodeSingleOrNull<PedidoSupabase>()
+        return pedido?.let { Mapper.toPedido(pedido) }
+
     }
 
 
-//    override fun getPedidoByIdWithCliente(id: Long): Pedido? {
+//    override suspend fun getPedidoByIdWithCliente(id: Long): Pedido? {
 //
-//        return runBlocking{
 //            val pedido = supabase.from(schema, TABLE)
 //                .select() {
 //                    filter { PedidoSupabase::id eq id }
@@ -48,68 +42,57 @@ class PedidoDAO(
 //                    }
 //                }.decodeSingle<ClienteSupabase>().let{ ClienteSupabase.to(it) }
 //
-//            return@runBlocking pedido?.to()
-//        }
+//            return pedido?.to()
+//
 //
 //    }
 
-    override fun getPedidoByClienteId(clienteId: Long): List<Pedido>{
-        return runBlocking {
-            val pedido = supabase.from(schema, TABLE)
-                .select(){
-                    filter { PedidoSupabase::cliente_id eq clienteId }
-                }
-                .decodeList<PedidoSupabase>()
-            return@runBlocking pedido.map { Mapper.toPedido(it) }
+    override suspend fun getPedidoByClienteId(clienteId: Long): List<Pedido> {
+        val pedido = supabase.from(schema, TABLE).select() {
+                filter { PedidoSupabase::cliente_id eq clienteId }
+            }.decodeList<PedidoSupabase>()
+        return pedido.map { Mapper.toPedido(it) }
 
-        }
     }
 
-    override fun getAllPedidosAsync(callback: (List<Pedido>) -> Unit) {
+    override suspend fun getAllPedidosAsync(callback: (List<Pedido>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
-            val pedidos = supabase.from(schema, TABLE)
-                .select()
-                .decodeList<PedidoSupabase>()
+            val pedidos = supabase.from(schema, TABLE).select().decodeList<PedidoSupabase>()
                 .map { Mapper.toPedido(it) }
 
             callback(pedidos) // já está no contexto de IO
         }
     }
 
-    override fun getPedidosPendentes(): List<Pedido> {
-        return runBlocking {
-            val pedidos = supabase.from(schema, TABLE)
-                .select { filter {
+    override suspend fun getPedidosPendentes(): List<Pedido> {
+        val pedidos = supabase.from(schema, TABLE).select {
+                filter {
                     PedidoSupabase::status eq StatusPedido.PENDENTE
-                } }.decodeList<PedidoSupabase>()
+                }
+            }.decodeList<PedidoSupabase>()
 
-            return@runBlocking pedidos.map { Mapper.toPedido(it) }
-        }
+        return pedidos.map { Mapper.toPedido(it) }
+
     }
 
-    override fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido> {
-        return runBlocking {
-            val itensPedidos = supabase.from(schema, "itens_pedidos")
-                .select { filter {
+    override suspend fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido> {
+        val itensPedidos = supabase.from(schema, "itens_pedidos").select {
+                filter {
                     ItensPedidoSupabase::pedido_id eq pedidoId
-                } }
-                .decodeList<ItensPedidoSupabase>()
-            return@runBlocking itensPedidos.map{ Mapper.toItensPedido(it) }
-        }
+                }
+            }.decodeList<ItensPedidoSupabase>()
+        return itensPedidos.map { Mapper.toItensPedido(it) }
+
     }
 
-    override fun getAllPedidos(): List<Pedido> {
-        return runBlocking{
-            val pedidos = supabase.from(schema, TABLE)
-                .select()
-                .decodeList<PedidoSupabase>()
-            return@runBlocking pedidos.map { Mapper.toPedido(it) }
-        }
+    override suspend fun getAllPedidos(): List<Pedido> {
+        val pedidos = supabase.from(schema, TABLE).select().decodeList<PedidoSupabase>()
+        return pedidos.map { Mapper.toPedido(it) }
+
     }
 
-//    override fun getAllPedidosWithClientes(): List<Pedido> {
+//    override suspend fun getAllPedidosWithClientes(): List<Pedido> {
 //
-//        return runBlocking{
 //            val pedidos = supabase.from(schema, TABLE)
 //                .select()
 //                .decodeList<PedidoSupabase>()
@@ -120,38 +103,34 @@ class PedidoDAO(
 //                        ClienteSupabase::id isIn listOf(id_clientes)
 //                    }
 //                }.decodeList<ClienteSupabase>().map { ClienteSupabase.to(it) }
-//            return@runBlocking pedidos.map {
-//                pedido -> pedido.to()
+//            return pedidos.map {
+//                pdido -> pedido.to()
 //            }
 //
 //        }
 //    }
 
-    override fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido? {
+    override suspend fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido? {
 
-        return runBlocking{
-             val novoPedido = supabase.from(schema, TABLE)
-                .upsert(Mapper.toPedidoSupabase(pedido)) { select() }
+        val novoPedido =
+            supabase.from(schema, TABLE).upsert(Mapper.toPedidoSupabase(pedido)) { select() }
                 .decodeSingleOrNull<PedidoSupabase>()
-            novoPedido?.let {
+        novoPedido?.let {
 
-                val item = itens.map { Mapper.toItensPedidoSupabase(it.copy(pedido_id = novoPedido.id))}
-                val itens = supabase.from(schema, "itens_pedidos")
-                    .upsert(item)
-            }
-            return@runBlocking novoPedido?.let { Mapper.toPedido(it) }
+            val item =
+                itens.map { Mapper.toItensPedidoSupabase(it.copy(pedido_id = novoPedido.id)) }
+            val itens = supabase.from(schema, "itens_pedidos").upsert(item)
         }
+        return novoPedido?.let { Mapper.toPedido(it) }
+
     }
 
-    override fun deletePedido(id: Long): Pedido? {
-        return runBlocking{
-            val pedido = supabase.from(schema, TABLE)
-                .delete {
-                    filter { PedidoSupabase::id eq id }
-                    select()
-                }
-                .decodeSingleOrNull<PedidoSupabase>()
-            return@runBlocking pedido?.let { Mapper.toPedido(it) }
-        }
+    override suspend fun deletePedido(id: Long): Pedido? {
+        val pedido = supabase.from(schema, TABLE).delete {
+                filter { PedidoSupabase::id eq id }
+                select()
+            }.decodeSingleOrNull<PedidoSupabase>()
+        return pedido?.let { Mapper.toPedido(it) }
+
     }
 }
