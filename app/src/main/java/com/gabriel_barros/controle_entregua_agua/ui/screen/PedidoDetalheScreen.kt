@@ -1,5 +1,6 @@
 package com.gabriel_barros.controle_entregua_agua.ui.screen
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -7,7 +8,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
@@ -21,6 +24,8 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoItemDetalhado
+import com.gabriel_barros.controle_entregua_agua.ui.components.util.H3
+import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
 import org.koin.compose.koinInject
 
 @Composable
@@ -55,16 +60,28 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
         val produtosNull = idProdutos.mapNotNull { produtoDAO.getProdutoById(it) }
         produtos.addAll(produtosNull)
     }
-    PedidoItemDetalhado(
-                produtos = produtos,
-                pedido = pedido,
-                cliente = cliente,
-                entregas = entregas,
-                produtosPedidos = itensPedido,
-                produtosEntregues = itensEntrega,
-                pagamentos = pagamento,
-                onSave = {valorPago, entrega, galaoSeco ->  },
-                onDelete = {},
-                onAddEntrega = {},
-    )
+    Column {
+        H3(text = "Detalhes do Pedido")
+        PedidoItemDetalhado(
+                    produtos = produtos,
+                    pedido = pedido,
+                    cliente = cliente,
+                    entregas = entregas,
+                    produtosPedidos = itensPedido,
+                    produtosEntregues = itensEntrega,
+                    pagamentos = pagamento,
+                    onSave = {valorPago, entrega, galaoSeco ->  },
+                    onDelete = {},
+                    onAddEntrega = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun preview(){
+    val navController = rememberNavController()
+    ControleDeEntregaDeAguaTheme {
+        PedidoDetalheScreen(navController = navController, idPedido = 0)
+    }
 }

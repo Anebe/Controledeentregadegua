@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +30,9 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagamentoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoListComponent
+import com.gabriel_barros.controle_entregua_agua.ui.components.util.H3
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MessageBoxComponent
+import com.gabriel_barros.controle_entregua_agua.ui.components.util.MySection
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -69,6 +72,12 @@ fun PedidoScreen(navController: NavController) {
     }
 
     Column (modifier = Modifier.padding(3.dp)){
+        MySection(){
+            H3(text = "Pedidos")
+            Button(onClick = { navController.navigate("cadastrarPedidoScreen") }) {
+                Text(text = "Adicionar")
+            }
+        }
         PedidoListComponent(pedidos){ pedido, cliente ->
             itemClienteSupabase = cliente
             itemPedidoSupabase = pedido
@@ -80,9 +89,7 @@ fun PedidoScreen(navController: NavController) {
             }
             navController.navigate("pedidoDetalhe/${pedido.id}")
         }
-        Button(onClick = { navController.navigate("cadastrarPedidoScreen") }) {
-            Text(text = "Adicionar")
-        }
+
     }
 
     if (showPedidoDetalhado){
@@ -134,8 +141,16 @@ fun PedidoScreen(navController: NavController) {
 
 @Preview(showBackground = true)
 @Composable
-fun PedidoScreenPreview(){
+private fun PedidoScreenPreview(){
     val navController = rememberNavController()
 
-    PedidoScreen(navController = navController)
+//    PedidoScreen(navController = navController)
+    Column {
+        H3(text = "Pedidos")
+        HorizontalDivider()
+        Text(text = "asdsa")
+        Button(onClick = { /*TODO*/ }) {
+            
+        }
+    }
 }
