@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,11 +56,14 @@ fun PedidoItemDetalhado(
     var entrega by remember { mutableIntStateOf(0) }
     var galaoSeco by remember { mutableIntStateOf(0) }
     var showCadastroEntrega by remember { mutableStateOf(false) }
+    var showCadastroPagamento by remember { mutableStateOf(false) }
 
 
 
-    Column(modifier = Modifier.padding(15.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)) {
+    Column(
+        modifier = Modifier.padding(15.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
         Text(text = "Cliente: ${cliente.nome}")
 //        Text(text = "Galão(ões): ${pedidoSupabase.qtd} ")
         MyBox(modifier = Modifier.fillMaxWidth()) {
@@ -76,14 +79,28 @@ fun PedidoItemDetalhado(
             } else {
                 EntregaRelatorioComponent(produtos, produtosPedidos, produtosEntregues)
                 Button(
-                    modifier = Modifier.width(100.dp).align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
                     onClick = { showCadastroEntrega = true }) {
-                    Text(text = "+")
+                    Text(text = "Adicionar")
                 }
             }
         }
         MyBox(modifier = Modifier.fillMaxWidth()) {
-            PagamentoRelatorioComponent(pedido, pagamentos)
+            if(showCadastroPagamento){
+                CadastrarPagamentoResumidoComponent(
+                    onSave = { showCadastroPagamento = false}
+                    //TODO Fazer a logica do pagamento
+                )
+            }else{
+                PagamentoRelatorioComponent(pedido, pagamentos)
+                Button(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    onClick = { showCadastroPagamento = true }) {
+                    Text(text = "Adicionar")
+                }
+            }
         }
 
         Text(text = "Fazer Entrega Em: ${pedido.data.dayOfMonth}/${pedido.data.monthValue}/${pedido.data.year}")
@@ -95,40 +112,49 @@ fun PedidoItemDetalhado(
 
 @Composable
 fun PagamentoRelatorioComponent(pedido: Pedido, pagamentos: List<Pagamento>) {
-    Column {
+    Column (modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally){
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
             Text("Total: R$${pedido.valor_total}")
             val total = pagamentos.sumOf { it.valor }
-            var totalStr = total.toString()
-            Row(modifier = Modifier.wrapContentWidth()) {
-                Text("Pago: R$")
-                OutlinedTextField(
-                    value = totalStr,
-                    onValueChange = { newText ->
-                        val numeric = newText.filter { it.isDigit() }
-                        val value = numeric.toDoubleOrNull() ?: 0
-                        totalStr = value.toString() // atualiza o texto mostrado
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.width(75.dp)
-
-                )
-            }
+            Text("Pago: R$${total}")
             Text("Falta: R$${pedido.valor_total - total} ")
-//                    Button(onClick = { /*TODO*/ },
-//                        modifier = Modifier.wrapContentSize()) {
-//                        Icon(imageVector = Icons.Default.Add, contentDescription = "Adicionar Entrega", modifier = Modifier.size(10.dp))
-//                    }
         }
     }
 }
 
 @Composable
-fun EntregaRelatorioComponent(produtos: List<Produto>, itensPedidos: List<ItensPedido>, produtosEntregues: List<ItensEntrega>) {
+fun CadastrarPagamentoResumidoComponent(onSave: (Double) -> Unit){
+    var totalStr by remember { mutableStateOf("") }
+    Row (modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround){
+        OutlinedTextField(
+            value = totalStr,
+            onValueChange = { newText ->
+                totalStr = ""
+                totalStr = newText.filter { it.isDigit() }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.width(75.dp)
+        )
+
+        Button(onClick = { onSave(totalStr.toDoubleOrNull() ?: 0.0) }) {
+            Text("Salvar")
+        }
+    }
+
+}
+@Composable
+fun EntregaRelatorioComponent(
+    produtos: List<Produto>,
+    itensPedidos: List<ItensPedido>,
+    produtosEntregues: List<ItensEntrega>
+) {
     Column {
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly) {
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             Text("Produto")
             Text("Entregue")
             Text("Retornado")
@@ -139,14 +165,15 @@ fun EntregaRelatorioComponent(produtos: List<Produto>, itensPedidos: List<ItensP
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly) {
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         val entregue =
                             produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
                                 .sumOf { it.qtdEntregue }
                         val retornado =
                             produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
                                 .sumOf { it.qtdRetornado }
-                        val prod = produtos.find { itensPedido.produto_id == it.id}?.nome
+                        val prod = produtos.find { itensPedido.produto_id == it.id }?.nome
                         Text("${prod}")
                         Text("${entregue}/${itensPedido.qtd}")
                         Text("${retornado}")
@@ -164,36 +191,64 @@ fun PedidoItemResumido(
     cliente: Cliente,
     onClick: () -> Unit
 ) {
+    var isEntregue by remember { mutableStateOf(false) }
+    var isPago by remember { mutableStateOf(false) }
 
-    Card(modifier = Modifier
-        .clickable { onClick() }
-        .padding(5.dp))
+    MyBox(
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(5.dp))
     {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalAlignment = Alignment.CenterHorizontally
         )
         {
-            Text(text = cliente.nome.toString())
-//            Text(text = pedidoSupabase.qtd.toString())
-//            val troco = pedidoSupabase.troco - pedidoSupabase.qtd * 7
-//            Text(text = "R$ ${troco.toString()}")
-            //Text(text = data.data.toString())
-            //IconButton(onClick = { /*TODO*/ }) {
-            //    Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
-            //}
-            //Checkbox(checked = false, onCheckedChange = {})
+            Text(text = cliente.nome)
+            HorizontalDivider(modifier = Modifier.fillMaxWidth(0.9f))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Text("QTD")
+                Text("TOTAL")
+                Text("TROCO")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                //TODO fazer a lógica de cadastro de entrega e pagamento rápido
+                //TODO substituir placeholder por qtd entregue, total a pagar e troco
+                //Text("Marcar como:")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.clickable{ isEntregue = !isEntregue}){
+                    Text("Entregue")
+                    Checkbox(checked = isEntregue, onCheckedChange = { isEntregue = it }, enabled = false)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable{ isPago = !isPago}){
+                    Text("Pago")
+                    Checkbox(checked = isPago, onCheckedChange = { isPago = it }, enabled = false)
+                }
+            }
         }
 
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun preview() {
+    ControleDeEntregaDeAguaTheme {
+        PedidoItemResumido(pedido = Pedido.emptyPedido(), cliente = Cliente.emptyCliente()) {
+
+        }
+    }
+}
 
 @Preview(
-    name = "Samsung J2 Core (Simulado)",
-    device = "spec:shape=Normal,width=540,height=960,unit=px,dpi=220",
     showBackground = true
 )
 @Composable

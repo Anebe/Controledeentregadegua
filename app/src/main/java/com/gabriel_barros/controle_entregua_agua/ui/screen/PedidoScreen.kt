@@ -1,7 +1,10 @@
 package com.gabriel_barros.controle_entregua_agua.ui.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
@@ -32,7 +35,7 @@ import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagament
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoListComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.H3
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MessageBoxComponent
-import com.gabriel_barros.controle_entregua_agua.ui.components.util.MySection
+import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -50,12 +53,12 @@ fun PedidoScreen(navController: NavController) {
     val galaoDAO: ProdutoUseCase = koinInject()
     val entregaDAO: EntregaUseCase = koinInject()
 
-    val galoes = remember { mutableStateListOf<Produto>()}
+    val galoes = remember { mutableStateListOf<Produto>() }
     val pedidos = remember { mutableStateListOf<Pair<Pedido, Cliente>>() }
 
-    var showPedidoDetalhado by remember { mutableStateOf(false)}
-    var showAddEntrega by remember { mutableStateOf(false)}
-    var showAddPagamento by remember { mutableStateOf(false)}
+    var showPedidoDetalhado by remember { mutableStateOf(false) }
+    var showAddEntrega by remember { mutableStateOf(false) }
+    var showAddPagamento by remember { mutableStateOf(false) }
 
 
     var itemPedidoSupabase by remember { mutableStateOf(Pedido.emptyPedido()) }
@@ -65,20 +68,29 @@ fun PedidoScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         val pedidoList = pedidoDAO.getAllPedidos()
         pedidos.clear()
-        pedidos.addAll(pedidoList.map { Pair(it, clienteDAO.getClienteById(it.cliente_id)?: Cliente.emptyCliente()) })
+        pedidos.addAll(pedidoList.map {
+            Pair(
+                it,
+                clienteDAO.getClienteById(it.cliente_id) ?: Cliente.emptyCliente()
+            )
+        })
 
         galoes.clear()
         galoes.addAll(galaoDAO.getAllProdutos())
     }
 
-    Column (modifier = Modifier.padding(3.dp)){
-        MySection(){
+    Column(modifier = Modifier.padding(30.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             H3(text = "Pedidos")
             Button(onClick = { navController.navigate("cadastrarPedidoScreen") }) {
                 Text(text = "Adicionar")
             }
         }
-        PedidoListComponent(pedidos){ pedido, cliente ->
+        HorizontalDivider()
+        PedidoListComponent(pedidos) { pedido, cliente ->
             itemClienteSupabase = cliente
             itemPedidoSupabase = pedido
 //            showPedidoDetalhado = true
@@ -92,9 +104,9 @@ fun PedidoScreen(navController: NavController) {
 
     }
 
-    if (showPedidoDetalhado){
+    if (showPedidoDetalhado) {
         MessageBoxComponent(onDismiss = { showPedidoDetalhado = false }) {
-            Box(modifier = Modifier.padding(10.dp)){
+            Box(modifier = Modifier.padding(10.dp)) {
 //            PedidoItemDetalhado(
 //                pedido = itemPedidoSupabase,
 //                cliente = itemClienteSupabase,
@@ -111,14 +123,14 @@ fun PedidoScreen(navController: NavController) {
             }
         }
     }
-    
-    if(showAddEntrega){
+
+    if (showAddEntrega) {
         MessageBoxComponent(onDismiss = { showAddEntrega = false }) {
             CadastrarEntregaComponent(
                 clientePedidoId = listOf(itemPedidoSupabase.id to itemClienteSupabase.nome),
                 galoes = galoes.associate { it.id to it.nome })
             { entrega, galoes ->
-                coroutineScope.launch{
+                coroutineScope.launch {
                     entregaDAO.saveEntrega(entrega, galoes)
 
                 }
@@ -126,31 +138,34 @@ fun PedidoScreen(navController: NavController) {
             }
         }
     }
-    
-    if(showAddPagamento){
+
+    if (showAddPagamento) {
         MessageBoxComponent(onDismiss = { showAddPagamento = false }) {
             CadastrarPagamentoComponent(clientes = listOf(itemClienteSupabase.id to itemClienteSupabase.nome)) {
 
             }
-            
+
         }
     }
-    
+
 
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PedidoScreenPreview(){
+private fun PedidoScreenPreview() {
     val navController = rememberNavController()
 
 //    PedidoScreen(navController = navController)
-    Column {
-        H3(text = "Pedidos")
-        HorizontalDivider()
-        Text(text = "asdsa")
-        Button(onClick = { /*TODO*/ }) {
-            
+    ControleDeEntregaDeAguaTheme {
+        Column {
+            H3(text = "Pedidos")
+            HorizontalDivider()
+            Text(text = "asdsa")
+            Button(onClick = { /*TODO*/ }) {
+
+            }
         }
+
     }
 }

@@ -1,6 +1,8 @@
 package com.gabriel_barros.controle_entregua_agua.ui.screen
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,7 +63,11 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
         produtos.addAll(produtosNull)
     }
     Column {
-        H3(text = "Detalhes do Pedido")
+        Box{
+            H3(text = "Detalhes do Pedido")
+
+        }
+        HorizontalDivider()
         PedidoItemDetalhado(
                     produtos = produtos,
                     pedido = pedido,
