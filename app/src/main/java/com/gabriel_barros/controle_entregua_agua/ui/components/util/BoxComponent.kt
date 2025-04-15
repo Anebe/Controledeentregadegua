@@ -14,6 +14,7 @@ fun MyBox(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    CardDefaults.cardColors()
     Card(
         modifier = modifier
         , elevation = CardDefaults.cardElevation(4.dp),

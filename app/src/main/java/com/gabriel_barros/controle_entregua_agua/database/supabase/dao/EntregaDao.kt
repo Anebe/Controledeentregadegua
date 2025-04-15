@@ -64,7 +64,7 @@ class EntregaDao() : EntregaPortOut {
             supabase.from(schema, TABLE).upsert(Mapper.toEntregaSupabase(entrega)) { select() }
                 .decodeSingleOrNull<EntregaSupabase>()
         novaEntrega?.let { ent ->
-            supabase.from(schema, TABLE)
+            supabase.from(schema, "itens_entregas")
                 .insert(itens.map { Mapper.toItensEntregaSupabase(it.copy(entrega_id = ent.id)) })
         }
         return novaEntrega?.let { Mapper.toEntrega(it) }

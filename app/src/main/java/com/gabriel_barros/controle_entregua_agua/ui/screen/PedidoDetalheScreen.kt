@@ -1,15 +1,19 @@
 package com.gabriel_barros.controle_entregua_agua.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -28,11 +32,12 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoItemDetalhado
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.H3
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
 fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
-
+    val corroutines = rememberCoroutineScope()
     val pedidoDAO: PedidoUseCase = koinInject()
     val clienteDAO: ClienteUseCase = koinInject()
     val galaoDAO: ProdutoUseCase = koinInject()
@@ -63,22 +68,40 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
         produtos.addAll(produtosNull)
     }
     Column {
-        Box{
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)){
             H3(text = "Detalhes do Pedido")
 
         }
         HorizontalDivider()
         PedidoItemDetalhado(
-                    produtos = produtos,
-                    pedido = pedido,
-                    cliente = cliente,
-                    entregas = entregas,
-                    produtosPedidos = itensPedido,
-                    produtosEntregues = itensEntrega,
-                    pagamentos = pagamento,
-                    onSave = {valorPago, entrega, galaoSeco ->  },
-                    onDelete = {},
-                    onAddEntrega = {},
+            produtos = produtos,
+            pedido = pedido,
+            cliente = cliente,
+            entregas = entregas,
+            produtosPedidos = itensPedido,
+            produtosEntregues = itensEntrega,
+            pagamentos = pagamento,
+            onSave = { valorPago, entrega, galaoSeco -> },
+            onDelete = {},
+            onAddEntrega = {},
+            onSaveEntrega = { entregaForSave, itensEntregaForSave ->
+                corroutines.launch {
+                    val newEntrega = entregaDAO.saveEntrega(entregaForSave, itensEntregaForSave)
+                    if (newEntrega != null){
+                        entregas.add(newEntrega)
+                        itensEntrega.addAll(entregaDAO.getAllItensByEntregaId(newEntrega.id))
+                    }
+                }
+            },
+            onSavePagamento = {clienteId, valor, tipoPagamento ->
+                corroutines.launch {
+                    val newPagamento = pagamentoDAO.savePagamento(clienteId, valor, tipoPagamento)
+                    if(newPagamento != null){
+                        pagamento.addAll(newPagamento)
+
+                    }
+                }
+            }
         )
     }
 }

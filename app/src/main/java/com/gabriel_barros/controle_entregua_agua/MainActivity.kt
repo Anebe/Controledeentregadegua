@@ -46,13 +46,13 @@ val appModule = module {
     single<ClienteUseCase> { ClienteService(get()) }
 
     single<PedidoPortOut> { PedidoDAO() }
-    single<PedidoUseCase> { PedidoService(get(), get(), lazy { get() }, get()) }
+    single<PedidoUseCase> { PedidoService(get(), get(), lazy { get() }, lazy { get() }) }
 
     single<ProdutoPortOut> { ProdutoDAO() }
     single<ProdutoUseCase> { ProdutoService(get()) }
 
     single<EntregaPortOut> { EntregaDao() }
-    single<EntregaUseCase> { EntregaService(get(),get()) }
+    single<EntregaUseCase> { EntregaService(get(),get(), get()) }
 
     single<PagamentoPortOut> { PagamentoDao() }
     single<PagamentoUseCase> { PagamentoService(get(), get(), get()) }

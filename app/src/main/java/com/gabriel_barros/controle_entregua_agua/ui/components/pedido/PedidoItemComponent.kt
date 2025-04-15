@@ -33,6 +33,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
+import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaResumidoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MyBox
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
@@ -50,6 +51,8 @@ fun PedidoItemDetalhado(
     onSave: (valorPago: Double, entrega: Int, galaoSeco: Int) -> Unit,
     onDelete: () -> Unit,
     onAddEntrega: () -> Unit,
+    onSaveEntrega: (Entrega, List<ItensEntrega>) -> Unit,
+    onSavePagamento: (Long, Double, TipoPagamento) -> Unit
 ) {
 
     var valorPago by remember { mutableStateOf("") }
@@ -73,8 +76,9 @@ fun PedidoItemDetalhado(
                     produtosEntregues = produtos,
                     entregasAnteriores = produtosEntregues,
                     itensPedido = produtosPedidos
-                ) {
+                ) { entrega, itensEntrega ->
                     showCadastroEntrega = false
+                    onSaveEntrega(entrega, itensEntrega)
                 }
             } else {
                 EntregaRelatorioComponent(produtos, produtosPedidos, produtosEntregues)
@@ -89,8 +93,10 @@ fun PedidoItemDetalhado(
         MyBox(modifier = Modifier.fillMaxWidth()) {
             if(showCadastroPagamento){
                 CadastrarPagamentoResumidoComponent(
-                    onSave = { showCadastroPagamento = false}
-                    //TODO Fazer a logica do pagamento
+                    onSave = {
+                        showCadastroPagamento = false
+                        onSavePagamento(cliente.id, it, TipoPagamento.DINHEIRO)
+                    }
                 )
             }else{
                 PagamentoRelatorioComponent(pedido, pagamentos)
@@ -125,6 +131,7 @@ fun PagamentoRelatorioComponent(pedido: Pedido, pagamentos: List<Pagamento>) {
 
 @Composable
 fun CadastrarPagamentoResumidoComponent(onSave: (Double) -> Unit){
+    //TODO Adicionar Tipo do pagamento na UI
     var totalStr by remember { mutableStateOf("") }
     Row (modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround){
@@ -272,7 +279,9 @@ fun PedidoItemDetalhadoPreview() {
                 entregas = emptyList(),
                 produtosPedidos = itensPedido,
                 produtosEntregues = itensEntrega,
-                emptyList(), onSave = { a, b, c ->/*TODO*/ }, {}, {}
+                emptyList(), onSave = { a, b, c ->/*TODO*/ }, {}, {},
+                onSaveEntrega = { } as (Entrega, List<ItensEntrega>) -> Unit,
+                onSavePagamento = TODO()
             )
         }
 

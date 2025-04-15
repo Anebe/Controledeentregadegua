@@ -1,23 +1,19 @@
 package com.gabriel_barros.controle_entregua_agua.domain.service
 
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
-import com.gabriel_barros.controle_entregua_agua.domain.portout.ClientePortOut
 import com.gabriel_barros.controle_entregua_agua.domain.portout.PedidoPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
-import org.koin.compose.koinInject
-import java.util.concurrent.Flow
 
 class PedidoService(
     private val pedidoOut: PedidoPortOut,
     private val produtoService: ProdutoUseCase,
     private val pagamentoService: Lazy<PagamentoUseCase>,
-    private val entregaService: EntregaUseCase
+    private val entregaService: Lazy<EntregaUseCase>
 ) :PedidoUseCase{
 
     override suspend fun getPedidoById(id: Long): Pedido? {
@@ -37,7 +33,7 @@ class PedidoService(
         var pedido = this.getPedidoById(id) ?: return
 
         val pagamentos = pagamentoService.value.getPagamentosByPedido(id)
-        val entregas = entregaService.getAllEntregasByPedido(id)
+        val entregas = entregaService.value.getAllEntregasByPedido(id)
         //TODO
         val somaPagamentos = pagamentos.sumOf { it.valor }
         val itensPedidos = this.getAllItensByPedidoId(id)
@@ -46,7 +42,7 @@ class PedidoService(
         itensPedidos.forEachIndexed { index, itensPedido ->
             var qtdItem = itensPedido.qtd
             entregas.forEachIndexed { indexEntrega, entrega ->
-                entregaService.getAllItensByEntregaId(entrega.id).forEach { itemEntrega ->
+                entregaService.value.getAllItensByEntregaId(entrega.id).forEach { itemEntrega ->
                     if (itensPedido.id == itemEntrega.itemPedido_id){
                         qtdItem -= itemEntrega.qtdEntregue
                     }

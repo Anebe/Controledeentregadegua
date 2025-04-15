@@ -204,7 +204,7 @@ object Mapper {
     fun toItensEntregaSupabase(itensEntrega: ItensEntrega): ItensEntregaSupabase {
         return ItensEntregaSupabase(
             entrega_id = itensEntrega.entrega_id, // Mapeia `entregaId` para `entrega_id`
-            ItemPedido_id = itensEntrega.itemPedido_id, // Mapeia `itemPedidoId` para `ItemPedido_id`
+            itemPedido_id = itensEntrega.itemPedido_id, // Mapeia `itemPedidoId` para `ItemPedido_id`
             qtdEntregue = itensEntrega.qtdEntregue,
             qtdRetornado = itensEntrega.qtdRetornado
         )
@@ -212,7 +212,7 @@ object Mapper {
     fun toItensEntrega(itensEntregaSupabase: ItensEntregaSupabase): ItensEntrega {
         return ItensEntrega(
             entrega_id = itensEntregaSupabase.entrega_id, // Mapeia `entrega_id` para `entregaId`
-            itemPedido_id = itensEntregaSupabase.ItemPedido_id, // Mapeia `ItemPedido_id` para `itemPedidoId`
+            itemPedido_id = itensEntregaSupabase.itemPedido_id, // Mapeia `ItemPedido_id` para `itemPedidoId`
             qtdEntregue = itensEntregaSupabase.qtdEntregue,
             qtdRetornado = itensEntregaSupabase.qtdRetornado
         )

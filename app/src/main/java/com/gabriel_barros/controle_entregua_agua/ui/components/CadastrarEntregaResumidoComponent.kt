@@ -14,12 +14,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
+import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusEntrega
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MyBox
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.NumberPicker
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import java.time.LocalDate
 
 
 @Composable
@@ -27,9 +30,9 @@ fun CadastrarEntregaResumidoComponent(
     produtosEntregues: List<Produto>,
     entregasAnteriores: List<ItensEntrega>,
     itensPedido: List<ItensPedido>,
-    onSave: (List<ItensEntrega>) -> Unit){
-
-    val result = ArrayList<ItensEntrega>()
+    onSave: (Entrega, List<ItensEntrega>) -> Unit){
+    //TODO Adicionar Tipo do pagamento na UI
+    val resultItensEntregue = ArrayList<ItensEntrega>()
 
 
     Column {
@@ -51,7 +54,7 @@ fun CadastrarEntregaResumidoComponent(
                 val qtdFalta = qtdPedida - qtdEntregue
 
                 var entregaAtual by remember { mutableStateOf(ItensEntrega(0, produtoPedido.id, 0, 0)) }
-                result.add(entregaAtual)
+                resultItensEntregue.add(entregaAtual)
                 Row (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -67,7 +70,11 @@ fun CadastrarEntregaResumidoComponent(
         }
         Button(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = { onSave(result) }) {
+            onClick = {
+                val resultEntrega = Entrega(id=0,data= LocalDate.now(), status = StatusEntrega.FINALIZADO,
+                    pedido_id = itensPedido[0].pedido_id)
+                onSave(resultEntrega, resultItensEntregue)
+            }) {
             Text(text = "Salvar")
         }
     }
@@ -78,7 +85,8 @@ fun CadastrarEntregaResumidoComponent(
 private fun preview(){
     ControleDeEntregaDeAguaTheme {
         MyBox {
-            CadastrarEntregaResumidoComponent(emptyList(), emptyList(), emptyList(), { })
+            CadastrarEntregaResumidoComponent(emptyList(), emptyList(), emptyList(),
+                { } as (Entrega, List<ItensEntrega>) -> Unit)
         }
     }
 }
