@@ -34,7 +34,6 @@ class PedidoService(
 
         val pagamentos = pagamentoService.value.getPagamentosByPedido(id)
         val entregas = entregaService.value.getAllEntregasByPedido(id)
-        //TODO
         val somaPagamentos = pagamentos.sumOf { it.valor }
         val itensPedidos = this.getAllItensByPedidoId(id)
         val isPagamentoFeito = somaPagamentos == pedido.valor_total

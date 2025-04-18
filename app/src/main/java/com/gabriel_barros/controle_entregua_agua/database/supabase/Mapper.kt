@@ -12,7 +12,7 @@ import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.ProdutoSupabase
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Categoria
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.domain.entity.EmprestimoPosse
+import com.gabriel_barros.controle_entregua_agua.domain.entity.EmprestimoAndPosseOfProdutoRetornavel
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Endereco
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
@@ -170,7 +170,7 @@ object Mapper {
             reservado = produtoSupabase.reservado
         )
     }
-    fun toEmprestimoPosseSupabase(emprestimo: EmprestimoPosse): EmprestimoPosseSupabase {
+    fun toEmprestimoPosseSupabase(emprestimo: EmprestimoAndPosseOfProdutoRetornavel): EmprestimoPosseSupabase {
         return EmprestimoPosseSupabase(
             qtd_emprestado = emprestimo.qtd_emprestado,
             qtd_posse = emprestimo.qtd_posse,
@@ -179,8 +179,8 @@ object Mapper {
         )
     }
 
-    fun toEmprestimoPosse(emprestimoSupabase: EmprestimoPosseSupabase): EmprestimoPosse {
-        return EmprestimoPosse(
+    fun toEmprestimoPosse(emprestimoSupabase: EmprestimoPosseSupabase): EmprestimoAndPosseOfProdutoRetornavel {
+        return EmprestimoAndPosseOfProdutoRetornavel(
             qtd_emprestado = emprestimoSupabase.qtd_emprestado,
             qtd_posse = emprestimoSupabase.qtd_posse,
             cliente_id = emprestimoSupabase.cliente_id, // O cliente é identificado pelo id

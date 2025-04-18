@@ -14,3 +14,18 @@ interface PagamentoUseCase {
 
     suspend fun deletePagamento(id: Long): Pagamento?
 }
+
+interface PagamentoManager{
+    data class PagamentoDTO(val valor: Double, val tipoPagamento: TipoPagamento)
+
+    suspend fun processPagamento(clienteId: Long, pagamento: PagamentoDTO): List<Pagamento>
+    suspend fun payPedido(pedidoId: Long, pagamento: PagamentoDTO)
+    suspend fun payDebts(clienteId: Long, pagamento: PagamentoDTO)
+    suspend fun increaseCredit(clienteId: Long, pagamento: PagamentoDTO)
+}
+
+interface PagamentoQuery {
+    suspend fun getPagamentoById(pagamentoId: Long): Pagamento?
+    suspend fun getPagamentosByPedido(pedidoId: Long): List<Pagamento>
+    suspend fun getAllPagamentos(): List<Pagamento>
+}

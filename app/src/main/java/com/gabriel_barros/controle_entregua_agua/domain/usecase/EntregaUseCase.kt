@@ -20,3 +20,18 @@ interface EntregaUseCase {
 
     suspend fun deleteEntrega(id: Long): Entrega?
 }
+
+interface EntregaManagerRegister {
+    suspend fun registerEntrega(entrega: Entrega, produtosEntregues: List<ItensEntrega>): Entrega?
+
+}
+
+interface EntregaQuery {
+
+    suspend fun getEntregaById(entregaId: Long): Entrega?
+    suspend fun getEntregaById(entregaIds: List<Long>): List<Entrega>
+    suspend fun getAllEntregas(): List<Entrega>
+    suspend fun getAllItensByEntregaId(entregaId: Long): List<ItensEntrega>
+    suspend fun getAllEntregasByPedido(pedidoId: Long): List<Entrega>
+
+}

@@ -13,3 +13,10 @@ interface ClienteUseCase {
 
     suspend fun deleteCliente(id: Long): Cliente?
 }
+
+interface ClienteManagerRegister {
+    suspend fun registerCliente(cliente: Cliente): Cliente
+
+    suspend fun deleteCliente(id: Long): Cliente
+}
+

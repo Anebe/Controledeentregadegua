@@ -1,10 +1,8 @@
 package com.gabriel_barros.controle_entregua_agua.database.supabase.dao
 
-import com.gabriel_barros.controle_entregua_agua.database.supabase.Mapper
 import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
-import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.ClienteSupabase
-import com.gabriel_barros.controle_entregua_agua.database.supabase.entity.EnderecoSupabase
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
+import com.gabriel_barros.controle_entregua_agua.domain.entity.Endereco
 import com.gabriel_barros.controle_entregua_agua.domain.portout.ClientePortOut
 import io.github.jan.supabase.postgrest.from
 
@@ -15,34 +13,34 @@ class ClienteDAO() : ClientePortOut {
 
     override suspend fun getClienteById(id: Long): Cliente? {
         val cliente = supabase.from(schema, TABLE).select() {
-                filter { ClienteSupabase::id eq id }
-            }.decodeSingleOrNull<ClienteSupabase>()
-        return cliente?.let { Mapper.toCliente(it) }
+                filter { Cliente::id eq id }
+            }.decodeSingleOrNull<Cliente>()
+        return cliente
 
     }
 
     override suspend fun getAllClientes(): List<Cliente> {
-        val clientes = supabase.from(schema, TABLE).select().decodeList<ClienteSupabase>()
-        return clientes.map { Mapper.toCliente(it) }
+        val clientes = supabase.from(schema, TABLE).select().decodeList<Cliente>()
+        return clientes
 
     }
 
     override suspend fun saveCliente(cliente: Cliente): Cliente? {
         val response =
-            supabase.from(schema, TABLE).upsert(Mapper.toClienteSupabase(cliente)) { select() }
-                .decodeSingleOrNull<ClienteSupabase>()
+            supabase.from(schema, TABLE).upsert(cliente) { select() }
+                .decodeSingleOrNull<Cliente>()
 
         response?.let {
-            var novoCliente = Mapper.toCliente(response)
+            var novoCliente =response
             if (cliente.enderecos.isNotEmpty()) {
                 val enderecosAtualizados =
                     cliente.enderecos.map { it.copy(cliente_id = response.id) }
 
                 val enderecosSupabase = supabase.from(schema, "enderecos")
-                    .upsert(enderecosAtualizados.map { Mapper.toEnderecoSupabase(it) }) { select() }
-                    .decodeList<EnderecoSupabase>()
+                    .upsert(enderecosAtualizados) { select() }
+                    .decodeList<Endereco>()
 
-                val enderecos = enderecosSupabase.map { Mapper.toEndereco(it) }
+                val enderecos = enderecosSupabase
                 novoCliente = novoCliente.copy(enderecos = enderecos)
             }
             return novoCliente
@@ -52,10 +50,10 @@ class ClienteDAO() : ClientePortOut {
 
     override suspend fun deleteCliente(id: Long): Cliente? {
         val cliente = supabase.from(schema, TABLE).delete {
-                filter { ClienteSupabase::id eq id }
+                filter { Cliente::id eq id }
                 select()
-            }.decodeSingleOrNull<ClienteSupabase>()
-        return cliente?.let { Mapper.toCliente(it) }
+            }.decodeSingleOrNull<Cliente>()
+        return cliente
 
     }
 

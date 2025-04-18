@@ -1,5 +1,7 @@
 package com.gabriel_barros.controle_entregua_agua
 
+import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.AndImp
+import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.EntregaDao
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
@@ -7,13 +9,16 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
+import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoUseCase
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.query.PedidoQueryImp
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.test.KoinTest
@@ -39,8 +44,20 @@ class ExampleUnitTest() : KoinTest {
     val clientePort: ClienteUseCase by inject()
 
     @Test
-    fun add(){
-// Criando produtos
+    fun aaaaaaa() = runTest{
+        val ent = EntregaDao()
+
+        print(ent.aaaaa(1, AndImp()))
+    }
+    @Test
+    fun bbbbbbb() = runTest{
+        val ent = PedidoQueryImp()
+
+        print(ent.getByStatus(StatusPedido.PENDENTE).getByClienteId(1).buildExecuteAsSList())
+    }
+    @Test
+    fun add() = runTest {
+    // Criando produtos
         val produto1 = Produto.emptyProduto().copy(id = 1, preco = 10.0, nome = "Coca-Cola", custo = 5.0, estoque = 50, descricao = "Refrigerante 2L")
         val produto2 = Produto.emptyProduto().copy(id = 2, preco = 5.0, nome = "Chocolate", custo = 2.5, estoque = 30, descricao = "Chocolate ao leite")
         val produto3 = Produto.emptyProduto().copy(id = 3, preco = 20.0, nome = "Pizza", custo = 12.0, estoque = 10, descricao = "Pizza grande de calabresa")
@@ -122,7 +139,7 @@ class ExampleUnitTest() : KoinTest {
     }
 
     @Test
-    fun delete(){
+    fun delete() = runTest {
         produtoPort.getAllProdutos().forEach {
             produtoPort.deleteProduto(it.id)
         }

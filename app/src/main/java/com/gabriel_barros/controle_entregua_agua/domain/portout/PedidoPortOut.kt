@@ -12,8 +12,6 @@ interface PedidoPortOut {
 
     suspend fun getAllPedidos(): List<Pedido>
 
-    suspend fun getAllPedidosAsync(callback: (List<Pedido>) -> Unit)
-
     suspend fun getPedidosPendentes(): List<Pedido>
 
     suspend fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido>

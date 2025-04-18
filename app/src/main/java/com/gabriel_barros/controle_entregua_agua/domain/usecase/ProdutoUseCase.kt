@@ -14,3 +14,8 @@ interface ProdutoUseCase {
     suspend fun deleteProduto(id: Long): Produto?
 
 }
+
+interface ProdutoManager {
+    suspend fun registerProduto(produto: Produto): Produto?
+
+}

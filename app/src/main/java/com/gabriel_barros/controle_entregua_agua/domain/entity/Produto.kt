@@ -1,5 +1,8 @@
 package com.gabriel_barros.controle_entregua_agua.domain.entity
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Produto(
     val id: Long = 0,
     val preco: Double,

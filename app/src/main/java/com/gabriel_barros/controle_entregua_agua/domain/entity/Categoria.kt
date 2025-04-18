@@ -1,5 +1,9 @@
 package com.gabriel_barros.controle_entregua_agua.domain.entity
 
+import kotlinx.serialization.Serializable
+
+
+@Serializable
 data class Categoria(
     val id: Long,
     val categoria_pai: Long,

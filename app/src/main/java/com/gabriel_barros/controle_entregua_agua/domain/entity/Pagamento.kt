@@ -1,12 +1,14 @@
 package com.gabriel_barros.controle_entregua_agua.domain.entity
 
+import com.gabriel_barros.controle_entregua_agua.database.LocalDateSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
-
+@Serializable
 data class Pagamento(
     val id: Long,
     val pedido_id: Long,
-    val data: LocalDate,
+    @Serializable(with = LocalDateSerializer::class)
+    val data: LocalDate,//TODO alterar nome para algo dê a entender que é a data do registro do pagamento e não do pagamento em si
     val valor: Double,
     val pagamento: TipoPagamento,
 ){
