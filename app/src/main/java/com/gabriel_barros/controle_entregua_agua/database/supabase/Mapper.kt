@@ -20,7 +20,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-
+@Deprecated("")
 object Mapper {
     fun toClienteSupabase(cliente: Cliente): ClienteSupabase {
         return ClienteSupabase(
@@ -39,7 +39,7 @@ object Mapper {
             credito = clienteSupabase.credito,
             apelidos = clienteSupabase.apelidos,
             descricao = clienteSupabase.descricao,
-            enderecos = emptyList(),
+            //enderecos = emptyList(),
         )
     }
 

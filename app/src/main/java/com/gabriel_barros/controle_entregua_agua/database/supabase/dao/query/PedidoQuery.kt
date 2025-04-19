@@ -1,17 +1,17 @@
-package com.gabriel_barros.controle_entregua_agua.database.supabase.dao
+package com.gabriel_barros.controle_entregua_agua.database.supabase.dao.query
 
 import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.query.ItemPedidoQueryBuilder
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.query.PedidoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemPedidoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
 import io.github.jan.supabase.auth.PostgrestFilterDSL
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder
 
 
-class ItemPedidoQueryImp: ItemPedidoQueryBuilder{
+class ItemPedidoQuery : ItemPedidoQueryBuilder {
     private val schema = SupabaseClientProvider.schema
     private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "itens_pedidos"
@@ -24,29 +24,32 @@ class ItemPedidoQueryImp: ItemPedidoQueryBuilder{
 
     override suspend fun buildExecuteAsSList(): List<ItensPedido> {
         return supabase.from(schema, TABLE).select {
-            filter {
-                query.forEach { it() }
+            if (query.isNotEmpty()) {
+                filter {
+                    query.forEach { it() }
+                }
             }
         }.decodeList<ItensPedido>()
     }
 }
 
-class PedidoQueryImp: PedidoQueryBuilder {
+class PedidoQuery : PedidoQueryBuilder {
     private val schema = SupabaseClientProvider.schema
     private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "pedidos"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
-    override fun getPedidoById(id: Long): PedidoQueryImp {
+    override fun getPedidoById(id: Long): PedidoQuery {
         query.add { eq(Pedido::id.name, id) }
         return this
     }
-    override fun getPedidoByClienteId(clienteId: Long): PedidoQueryImp{
+
+    override fun getPedidoByClienteId(clienteId: Long): PedidoQuery {
         query.add { eq(Pedido::cliente_id.name, clienteId) }
         return this
     }
 
-    override fun getPedidoByStatus(statusPedido: StatusPedido): PedidoQueryImp{
+    override fun getPedidoByStatus(statusPedido: StatusPedido): PedidoQuery {
         query.add { eq(Pedido::status.name, statusPedido) }
         return this
     }
@@ -55,18 +58,27 @@ class PedidoQueryImp: PedidoQueryBuilder {
         return this
     }
 
-    override suspend fun buildExecuteAsSingle(): Pedido{
-        return supabase.from(schema, TABLE).select {
-            filter {
-                query.forEach { it() }
+    override suspend fun buildExecuteAsSingle(): Pedido {
+        val result = supabase.from(schema, TABLE).select {
+            if (query.isNotEmpty()) {
+                filter {
+                    query.forEach { it() }
+                }
             }
         }.decodeSingle<Pedido>()
+        query.clear()
+        return result
     }
-    override suspend fun buildExecuteAsSList(): List<Pedido>{
-        return supabase.from(schema, TABLE).select {
-            filter {
-                query.forEach { it() }
+
+    override suspend fun buildExecuteAsSList(): List<Pedido> {
+        val result = supabase.from(schema, TABLE).select {
+            if (query.isNotEmpty()) {
+                filter {
+                    query.forEach { it() }
+                }
             }
         }.decodeList<Pedido>()
+        query.clear()
+        return result
     }
 }

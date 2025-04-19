@@ -12,10 +12,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ProdutoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoManager
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.CadastrarPedidoComponent
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -28,24 +29,27 @@ fun CadastrarPedidoScreen (navController: NavController) {
 //    val clienteDAO = remember { ClienteService(ClienteDAO(SupabaseClientProvider.supabase)) }
 //    val produtoDAO = remember { ProdutoService(ProdutoDAO(SupabaseClientProvider.supabase)) }
 
-    val pedidoUseCase: PedidoUseCase = koinInject()
-    val clienteUseCase: ClienteUseCase = koinInject()
-    val produtoUseCase: ProdutoUseCase = koinInject()
+    val pedidoManager: PedidoManager = koinInject()
+    val clienteManager: ClienteManager = koinInject()
+    val produtoManager: ProdutoManager = koinInject()
+    val clienteQuery: ClienteQueryBuilder = koinInject()
+    val produtoQuery: ProdutoQueryBuilder = koinInject()
 
     var nomesClientes by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
     var nomesProdutos by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
 
     LaunchedEffect(Unit) {
-        nomesClientes = clienteUseCase.getAllClientesNomes()
-        nomesProdutos = produtoUseCase.getAllProdutosNomes()
+        nomesClientes = clienteQuery.getAllClientes().buildExecuteAsSList().map { Pair(it.id,it.nome) }
+        nomesProdutos = produtoQuery.getAllProdutos().buildExecuteAsSList().map { Pair(it.id,it.nome) }
     }
     Box(modifier = Modifier.padding(10.dp)){
         CadastrarPedidoComponent(nomesClientes, nomesProdutos) { pedido, produtos ->
             val prod = produtos.map { (id, quantidade) ->
-                ItensPedido(produto_id =  id, qtd =  quantidade) }.toSet()
+                PedidoManager.ItemDoPedido(produtoId = id, qtd =  quantidade) }.toSet()
+            val pedidoDto = PedidoManager.PedidoDTO(pedido.cliente_id, prod)
             coroutineScope.launch {
-                val newCliente = pedidoUseCase.savePedido(pedido, prod)
-                newCliente?.let {
+                val newCliente = pedidoManager.makePedido(pedidoDto)
+                newCliente.let {
                     navController.popBackStack()
                 }
             }

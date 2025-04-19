@@ -7,26 +7,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
-import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.ClienteDAO
-import com.gabriel_barros.controle_entregua_agua.domain.service.ClienteService
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.ui.components.ClienteListComponent
 import org.koin.compose.koinInject
 
 @Composable
 fun ClienteScreen(navController: NavController){
 //    val clienteDAO = remember { ClienteService(ClienteDAO(SupabaseClientProvider.supabase)) }
-    val clienteDAO = koinInject<ClienteUseCase>()
+    val clienteDAO: ClienteQueryBuilder = koinInject()
 
     val clientes = remember { mutableStateListOf<String>() }
 
     LaunchedEffect(Unit) {
-        val clienteList = clienteDAO.getAllClientes() // Método fictício para buscar clientes
+        val clienteList = clienteDAO.getAllClientes().buildExecuteAsSList()
         clientes.clear()
         clientes.addAll(clienteList.map { it.nome }.toList())
     }

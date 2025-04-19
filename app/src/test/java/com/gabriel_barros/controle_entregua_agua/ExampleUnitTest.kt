@@ -1,22 +1,21 @@
 package com.gabriel_barros.controle_entregua_agua
 
-import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.AndImp
-import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.EntregaDao
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
-import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.query.PedidoQueryImp
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ProdutoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -37,23 +36,39 @@ class ExampleUnitTest() : KoinTest {
             modules(appModule)
         }
     }
-    val produtoPort: ProdutoUseCase by inject()
-    val pedidoPort: PedidoUseCase by inject()
-    val pagamentoPort: PagamentoUseCase by inject()
-    val entregaPort: EntregaUseCase by inject()
-    val clientePort: ClienteUseCase by inject()
+    val produtoPort: ProdutoManager by inject()
+    val pedidoPort: PedidoManager by inject()
+    val pagamentoPort: PagamentoManager by inject()
+    val entregaPort: EntregaManager by inject()
+    val clientePort: ClienteManager by inject()
 
-    @Test
-    fun aaaaaaa() = runTest{
-        val ent = EntregaDao()
+    val produtoQuery: ProdutoQueryBuilder by inject()
+    val pedidoQuery: PedidoQueryBuilder by inject()
+    val pagamentoQuery: PagamentoQueryBuilder by inject()
+    val entregaQuery: EntregaQueryBuilder by inject()
+    val clienteQuery: ClienteQueryBuilder by inject()
 
-        print(ent.aaaaa(1, AndImp()))
-    }
     @Test
     fun bbbbbbb() = runTest{
-        val ent = PedidoQueryImp()
+        println(clienteQuery.getClienteById(1).buildExecuteAsSingle())
+        println(clienteQuery.getClienteById(2).buildExecuteAsSingle())
+        println(clienteQuery.getClienteById(3).buildExecuteAsSingle())
+        println(clienteQuery.getClienteById(4).buildExecuteAsSingle())
 
-        print(ent.getByStatus(StatusPedido.PENDENTE).getByClienteId(1).buildExecuteAsSList())
+//        println(pedidoQuery.getPedidoById(1).buildExecuteAsSingle())
+//        println(pedidoQuery.getPedidoById(2).buildExecuteAsSingle())
+//        println(pedidoQuery.getPedidoById(3).buildExecuteAsSingle())
+//        println(pedidoQuery.getPedidoById(4).buildExecuteAsSingle())
+
+//        val pedidoList = pedidoQuery.getAllPedidos().buildExecuteAsSList()
+//        val pedidos = mutableListOf<Pair<Pedido, Cliente>>()
+//        pedidos.addAll(pedidoList.map {
+//            Pair(
+//                it,
+//                clienteQuery.getClienteById(it.cliente_id).buildExecuteAsSingle()
+//            )
+//        })
+//        print(pedidos)
     }
     @Test
     fun add() = runTest {
@@ -63,37 +78,38 @@ class ExampleUnitTest() : KoinTest {
         val produto3 = Produto.emptyProduto().copy(id = 3, preco = 20.0, nome = "Pizza", custo = 12.0, estoque = 10, descricao = "Pizza grande de calabresa")
         val produto4 = Produto.emptyProduto().copy(id = 4, preco = 8.0, nome = "Suco de Laranja", custo = 4.0, estoque = 20, descricao = "Suco natural 500ml")
 
-        produtoPort.saveProduto(produto1)
-        produtoPort.saveProduto(produto2)
-        produtoPort.saveProduto(produto3)
-        produtoPort.saveProduto(produto4)
+        produtoPort.registerProduto(produto1)
+        produtoPort.registerProduto(produto2)
+        produtoPort.registerProduto(produto3)
+        produtoPort.registerProduto(produto4)
 
 // Criando clientes
-        val cliente1 = Cliente(id = 1, nome = "João Silva", credito = 00.0, emptyList(), "", emptyList())
-        val cliente2 = Cliente(id = 2, nome = "Maria Souza", credito = 00.0, emptyList(), "", emptyList())
-        val cliente3 = Cliente(id = 3, nome = "Carlos Oliveira", credito = 0.0, emptyList(), "", emptyList())
-        val cliente4 = Cliente(id = 4, nome = "Ana Pereira", credito = 00.0, emptyList(), "", emptyList())
+        val cliente1 = Cliente(id = 1, nome = "João Silva", credito = 00.0, emptyList(), "", )
+        val cliente2 = Cliente(id = 2, nome = "Maria Souza", credito = 00.0, emptyList(), "", )
+        val cliente3 = Cliente(id = 3, nome = "Carlos Oliveira", credito = 0.0, emptyList(), "", )
+        val cliente4 = Cliente(id = 4, nome = "Ana Pereira", credito = 00.0, emptyList(), "", )
 
-        clientePort.saveCliente(cliente1)
-        clientePort.saveCliente(cliente2)
-        clientePort.saveCliente(cliente3)
-        clientePort.saveCliente(cliente4)
+        clientePort.registerCliente(cliente1)
+        clientePort.registerCliente(cliente2)
+        clientePort.registerCliente(cliente3)
+        clientePort.registerCliente(cliente4)
 
 // Criando pedidos
-        val pedido1 = Pedido.emptyPedido().copy(cliente_id = 1)
-        val pedido2 = Pedido.emptyPedido().copy(cliente_id = 2)
-        val pedido3 = Pedido.emptyPedido().copy(cliente_id = 3)
-        val pedido4 = Pedido.emptyPedido().copy(cliente_id = 4)
 
-        val itensPedido1 = setOf(ItensPedido(id = 1, pedido_id = 1, produto_id = 1, qtd = 1))
-        val itensPedido2 = setOf(ItensPedido(id = 2, pedido_id = 2, produto_id = 2, qtd = 2))
-        val itensPedido3 = setOf(ItensPedido(id = 3, pedido_id = 3, produto_id = 3, qtd = 2))
-        val itensPedido4 = setOf(ItensPedido(id = 4, pedido_id = 4, produto_id = 4, qtd = 1))
+        val itensPedido1 = setOf(PedidoManager.ItemDoPedido(produtoId = 1, qtd = 1))
+        val itensPedido2 = setOf(PedidoManager.ItemDoPedido(produtoId = 2, qtd = 2))
+        val itensPedido3 = setOf(PedidoManager.ItemDoPedido(produtoId = 3, qtd = 2))
+        val itensPedido4 = setOf(PedidoManager.ItemDoPedido(produtoId = 4, qtd = 1))
 
-        pedidoPort.savePedido(pedido1, itensPedido1)
-        pedidoPort.savePedido(pedido2, itensPedido2)
-        pedidoPort.savePedido(pedido3, itensPedido3)
-        pedidoPort.savePedido(pedido4, itensPedido4)
+        val pedido1 = PedidoManager.PedidoDTO(clienteId = 1, itensPedido1)
+        val pedido2 = PedidoManager.PedidoDTO(clienteId = 2, itensPedido2)
+        val pedido3 = PedidoManager.PedidoDTO(clienteId = 3, itensPedido3)
+        val pedido4 = PedidoManager.PedidoDTO(clienteId = 4, itensPedido4)
+
+        pedidoPort.makePedido(pedido1)
+        pedidoPort.makePedido(pedido2)
+        pedidoPort.makePedido(pedido3)
+        pedidoPort.makePedido(pedido4)
 
 // Criando pagamentos
         val pagamento1 = Pagamento(id = 1, pedido_id = 1, data = LocalDate.now(), valor = 100.0, pagamento = TipoPagamento.PIX)
@@ -101,10 +117,10 @@ class ExampleUnitTest() : KoinTest {
         val pagamento3 = Pagamento(id = 3, pedido_id = 3, data = LocalDate.now(), valor = 40.0, pagamento = TipoPagamento.CARTAO)
         val pagamento4 = Pagamento(id = 4, pedido_id = 4, data = LocalDate.now(), valor = 8.0, pagamento = TipoPagamento.PIX)
 
-        pagamentoPort.savePagamento(1, pagamento1.valor, pagamento1.pagamento)
-        pagamentoPort.savePagamento(2, pagamento2.valor, pagamento2.pagamento)
-        pagamentoPort.savePagamento(3, pagamento3.valor, pagamento3.pagamento)
-        pagamentoPort.savePagamento(4, pagamento4.valor, pagamento4.pagamento)
+        pagamentoPort.processPagamento(1, PagamentoManager.PagamentoDTO(pagamento1.valor, pagamento1.pagamento))
+        pagamentoPort.processPagamento(2, PagamentoManager.PagamentoDTO(pagamento2.valor, pagamento2.pagamento))
+        pagamentoPort.processPagamento(3, PagamentoManager.PagamentoDTO(pagamento3.valor, pagamento3.pagamento))
+        pagamentoPort.processPagamento(4, PagamentoManager.PagamentoDTO(pagamento4.valor, pagamento4.pagamento))
 
 // Criando entregas
         val entrega1 = Entrega(id = 1, data = LocalDate.now(), pedido_id = 1)
@@ -131,29 +147,29 @@ class ExampleUnitTest() : KoinTest {
         )
 
 
-        entregaPort.saveEntrega(entrega1,itensEntrega1)
-        entregaPort.saveEntrega(entrega2,itensEntrega2)
-        entregaPort.saveEntrega(entrega3,itensEntrega3)
-        entregaPort.saveEntrega(entrega4,itensEntrega4)
+        entregaPort.registerEntrega(entrega1,itensEntrega1)
+        entregaPort.registerEntrega(entrega2,itensEntrega2)
+        entregaPort.registerEntrega(entrega3,itensEntrega3)
+        entregaPort.registerEntrega(entrega4,itensEntrega4)
 
     }
 
-    @Test
-    fun delete() = runTest {
-        produtoPort.getAllProdutos().forEach {
-            produtoPort.deleteProduto(it.id)
-        }
-        pedidoPort.getAllPedidos().forEach {
-            pedidoPort.deletePedido(it.id)
-        }
-        pagamentoPort.getAllPagamentos().forEach {
-            pagamentoPort.deletePagamento(it.id)
-        }
-        entregaPort.getAllEntregas().forEach {
-            entregaPort.deleteEntrega(it.id)
-        }
-        clientePort.getAllClientes().forEach {
-            clientePort.deleteCliente(it.id)
-        }
-    }
+//    @Test
+//    fun delete() = runTest {
+//        produtoQuery.getAllProdutos().buildExecuteAsSList().forEach {
+//            produtoPort.deleteProduto(it.id)
+//        }
+//        pedidoQuery.getAllPedidos().buildExecuteAsSList().forEach {
+//            pedidoPort.deletePedido(it.id)
+//        }
+//        pagamentoQuery.getAllPagamentos().buildExecuteAsSList().forEach {
+//            pagamentoPort.deletePagamento(it.id)
+//        }
+//        entregaQuery.getAllEntregas().buildExecuteAsSList().forEach {
+//            entregaPort.deleteEntrega(it.id)
+//        }
+//        clienteQuery.getAllClientes().buildExecuteAsSList().forEach {
+//            clientePort.deleteCliente(it.id)
+//        }
+//    }
 }

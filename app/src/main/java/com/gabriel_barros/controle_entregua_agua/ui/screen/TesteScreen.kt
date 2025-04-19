@@ -3,7 +3,6 @@ package com.gabriel_barros.controle_entregua_agua.ui.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -13,13 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
-import com.gabriel_barros.controle_entregua_agua.database.supabase.dao.ClienteDAO
-import com.gabriel_barros.controle_entregua_agua.domain.service.ClienteService
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
-import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaComponent
-import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagamentoComponent
-import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBox
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComponent
 import org.koin.compose.koinInject
 
@@ -30,13 +24,14 @@ fun TesteScreen() {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        val clienteDAO: ClienteUseCase = koinInject()
+        val clienteDAO: ClienteManager = koinInject()
+        val clienteQuery: ClienteQueryBuilder = koinInject()
 
         var nomesClientes by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
 
 
         LaunchedEffect(Unit) {
-            nomesClientes = clienteDAO.getAllClientesNomes()
+            nomesClientes = clienteQuery.getAllClientes().buildExecuteAsSList().map { Pair(it.id, it.nome)}
 
         }
         ComboBoxComponent(itens =nomesClientes ) {

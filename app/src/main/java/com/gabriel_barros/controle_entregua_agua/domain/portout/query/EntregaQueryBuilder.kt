@@ -1,4 +1,4 @@
-package com.gabriel_barros.controle_entregua_agua.domain.usecase.query
+package com.gabriel_barros.controle_entregua_agua.domain.portout.query
 
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
@@ -15,7 +15,8 @@ interface EntregaQueryBuilder {
 
 interface ItemEntregaQueryBuilder {
 
-    fun getAllItensByEntregaId(entregaId: Long): EntregaQueryBuilder
+    fun getAllItensByEntregaId(entregaId: Long): ItemEntregaQueryBuilder
+    fun getAllItensByItemPedidoId(itemPedidoId: Long): ItemEntregaQueryBuilder
 
     suspend fun buildExecuteAsSingle(): ItensEntrega
     suspend fun buildExecuteAsSList(): List<ItensEntrega>

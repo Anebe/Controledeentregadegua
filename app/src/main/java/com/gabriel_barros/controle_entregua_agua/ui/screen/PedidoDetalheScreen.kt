@@ -24,11 +24,18 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemEntregaQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemPedidoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ProdutoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoManager
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoItemDetalhado
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.H3
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
@@ -38,12 +45,20 @@ import org.koin.compose.koinInject
 @Composable
 fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
     val corroutines = rememberCoroutineScope()
-    val pedidoDAO: PedidoUseCase = koinInject()
-    val clienteDAO: ClienteUseCase = koinInject()
-    val galaoDAO: ProdutoUseCase = koinInject()
-    val entregaDAO: EntregaUseCase = koinInject()
-    val pagamentoDAO: PagamentoUseCase = koinInject()
-    val produtoDAO: ProdutoUseCase = koinInject()
+    val pedidoDAO: PedidoManager = koinInject()
+    val clienteDAO: ClienteManager = koinInject()
+    val galaoDAO: ProdutoManager = koinInject()
+    val entregaDAO: EntregaManager = koinInject()
+    val pagamentoDAO: PagamentoManager = koinInject()
+    val produtoDAO: ProdutoManager = koinInject()
+
+    val clienteQuery: ClienteQueryBuilder = koinInject()
+    val produtoQuery: ProdutoQueryBuilder = koinInject()
+    val pedidoQuery: PedidoQueryBuilder = koinInject()
+    val itemPedidoQuery: ItemPedidoQueryBuilder = koinInject()
+    val entregaQuery: EntregaQueryBuilder = koinInject()
+    val itemEntregaQuery: ItemEntregaQueryBuilder = koinInject()
+    val pagamentoQuery: PagamentoQueryBuilder = koinInject()
 
     val itensPedido = remember { mutableStateListOf<ItensPedido>() }
     var itensEntrega = remember { mutableStateListOf<ItensEntrega>() }
@@ -54,21 +69,23 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
     var produtos = remember { mutableStateListOf<Produto>() }
 
     LaunchedEffect(Unit) {
-        pedido = pedidoDAO.getPedidoById(idPedido)?: Pedido.emptyPedido()
-        itensPedido.addAll(pedidoDAO.getAllItensByPedidoId(pedido.id))
-        entregas.addAll(entregaDAO.getAllEntregasByPedido(pedido.id))
+        pedido = pedidoQuery.getPedidoById(idPedido).buildExecuteAsSingle()
+        itensPedido.addAll(itemPedidoQuery.getAllItensByPedidoId(pedido.id).buildExecuteAsSList())
+        entregas.addAll(entregaQuery.getAllEntregasByPedido(pedido.id).buildExecuteAsSList())
         entregas.forEach {
-            itensEntrega.addAll(entregaDAO.getAllItensByEntregaId(it.id))
+            itensEntrega.addAll(
+                itemEntregaQuery.getAllItensByEntregaId(it.id).buildExecuteAsSList()
+            )
         }
-        cliente = clienteDAO.getClienteById(pedido.id) ?: Cliente.emptyCliente()
-        pagamento.addAll(pagamentoDAO.getPagamentosByPedido(pedido.id))
+        cliente = clienteQuery.getClienteById(pedido.id).buildExecuteAsSingle()
+        pagamento.addAll(pagamentoQuery.getPagamentosByPedido(pedido.id).buildExecuteAsSList())
         //TODO
         val idProdutos = itensPedido.map { it.produto_id }
-        val produtosNull = idProdutos.mapNotNull { produtoDAO.getProdutoById(it) }
+        val produtosNull = idProdutos.map { produtoQuery.getProdutoById(it).buildExecuteAsSingle() }
         produtos.addAll(produtosNull)
     }
     Column {
-        Box(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)){
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)) {
             H3(text = "Detalhes do Pedido")
 
         }
@@ -86,20 +103,23 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
             onAddEntrega = {},
             onSaveEntrega = { entregaForSave, itensEntregaForSave ->
                 corroutines.launch {
-                    val newEntrega = entregaDAO.saveEntrega(entregaForSave, itensEntregaForSave)
-                    if (newEntrega != null){
-                        entregas.add(newEntrega)
-                        itensEntrega.addAll(entregaDAO.getAllItensByEntregaId(newEntrega.id))
-                    }
+                    val newEntrega = entregaDAO.registerEntrega(entregaForSave, itensEntregaForSave)
+                    entregas.add(newEntrega)
+                    itensEntrega.addAll(
+                        itemEntregaQuery.getAllItensByEntregaId(newEntrega.id).buildExecuteAsSList()
+                    )
+
                 }
             },
-            onSavePagamento = {clienteId, valor, tipoPagamento ->
+            onSavePagamento = { clienteId, valor, tipoPagamento ->
                 corroutines.launch {
-                    val newPagamento = pagamentoDAO.savePagamento(clienteId, valor, tipoPagamento)
-                    if(newPagamento != null){
-                        pagamento.addAll(newPagamento)
+                    val newPagamento = pagamentoDAO.processPagamento(
+                        clienteId,
+                        PagamentoManager.PagamentoDTO(valor, tipoPagamento)
+                    )
+                    pagamento.addAll(newPagamento)
 
-                    }
+
                 }
             }
         )
@@ -108,7 +128,7 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
 
 @Preview(showBackground = true)
 @Composable
-private fun preview(){
+private fun preview() {
     val navController = rememberNavController()
     ControleDeEntregaDeAguaTheme {
         PedidoDetalheScreen(navController = navController, idPedido = 0)

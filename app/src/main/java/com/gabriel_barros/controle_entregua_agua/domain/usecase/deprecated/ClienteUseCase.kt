@@ -1,7 +1,8 @@
-package com.gabriel_barros.controle_entregua_agua.domain.usecase
+package com.gabriel_barros.controle_entregua_agua.domain.usecase.deprecated
 
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 
+@Deprecated("Subsituido por Manager e Query Builder")
 interface ClienteUseCase {
     suspend fun getAllClientesNomes(): List<Pair<Long, String>>
 
@@ -12,11 +13,5 @@ interface ClienteUseCase {
     suspend fun saveCliente(cliente: Cliente): Cliente?
 
     suspend fun deleteCliente(id: Long): Cliente?
-}
-
-interface ClienteManagerRegister {
-    suspend fun registerCliente(cliente: Cliente): Cliente
-
-    suspend fun deleteCliente(id: Long): Cliente
 }
 

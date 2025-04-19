@@ -4,6 +4,13 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 
 interface PedidoPortOut {
+    suspend fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido
+
+    suspend fun deletePedido(id: Long): Pedido
+}
+
+@Deprecated("Substituido por Query Builder")
+interface PedidoGet {
     suspend fun getPedidoById(id: Long): Pedido?
 
 //    suspend fun getPedidoByIdWithCliente(id: Long): Pedido?
@@ -17,8 +24,4 @@ interface PedidoPortOut {
     suspend fun getAllItensByPedidoId(pedidoId: Long): List<ItensPedido>
 
 //    suspend fun getAllPedidosWithClientes(): List<Pedido>
-
-    suspend fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido?
-
-    suspend fun deletePedido(id: Long): Pedido?
 }

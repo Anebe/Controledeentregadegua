@@ -1,4 +1,4 @@
-package com.gabriel_barros.controle_entregua_agua.domain.usecase.query
+package com.gabriel_barros.controle_entregua_agua.domain.portout.query
 
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 

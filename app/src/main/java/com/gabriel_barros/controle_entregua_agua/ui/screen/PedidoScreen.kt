@@ -26,10 +26,14 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoUseCase
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoUseCase
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ProdutoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoManager
+import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoManager
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagamentoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoListComponent
@@ -48,12 +52,17 @@ fun PedidoScreen(navController: NavController) {
 //    val entregaDAO = remember { EntregaService(EntregaDao(SupabaseClientProvider.supabase)) }
 //    val galaoDAO = remember { ProdutoService(ProdutoDAO(SupabaseClientProvider.supabase)) }
 
-    val pedidoDAO: PedidoUseCase = koinInject()
-    val clienteDAO: ClienteUseCase = koinInject()
-    val galaoDAO: ProdutoUseCase = koinInject()
-    val entregaDAO: EntregaUseCase = koinInject()
+    val pedidoDAO: PedidoManager = koinInject()
+    val clienteDAO: ClienteManager = koinInject()
+    val produtoDAO: ProdutoManager = koinInject()
+    val entregaDAO: EntregaManager = koinInject()
 
-    val galoes = remember { mutableStateListOf<Produto>() }
+    val pedidoQuery: PedidoQueryBuilder = koinInject()
+    val clienteQuery: ClienteQueryBuilder = koinInject()
+    val produtoQuery: ProdutoQueryBuilder = koinInject()
+    val entregaQuery: EntregaQueryBuilder = koinInject()
+
+    val produtos = remember { mutableStateListOf<Produto>() }
     val pedidos = remember { mutableStateListOf<Pair<Pedido, Cliente>>() }
 
     var showPedidoDetalhado by remember { mutableStateOf(false) }
@@ -66,17 +75,17 @@ fun PedidoScreen(navController: NavController) {
     var itemEntrega = remember { mutableStateListOf<Entrega>() }
 
     LaunchedEffect(Unit) {
-        val pedidoList = pedidoDAO.getAllPedidos()
+        val pedidoList = pedidoQuery.getAllPedidos().buildExecuteAsSList()
         pedidos.clear()
         pedidos.addAll(pedidoList.map {
             Pair(
                 it,
-                clienteDAO.getClienteById(it.cliente_id) ?: Cliente.emptyCliente()
+                clienteQuery.getClienteById(it.cliente_id).buildExecuteAsSingle()
             )
         })
 
-        galoes.clear()
-        galoes.addAll(galaoDAO.getAllProdutos())
+        produtos.clear()
+        produtos.addAll(produtoQuery.getAllProdutos().buildExecuteAsSList())
     }
 
     Column(modifier = Modifier.padding(30.dp)) {
@@ -96,7 +105,7 @@ fun PedidoScreen(navController: NavController) {
 //            showPedidoDetalhado = true
             //TODO melhorar esse async
             coroutineScope.launch {
-                itemEntrega.addAll(entregaDAO.getEntregaByPedidoId(itemPedidoSupabase.id))
+                itemEntrega.addAll(entregaQuery.getAllEntregasByPedido(itemPedidoSupabase.id).buildExecuteAsSList())
 
             }
             navController.navigate("pedidoDetalhe/${pedido.id}")
@@ -128,10 +137,10 @@ fun PedidoScreen(navController: NavController) {
         MessageBoxComponent(onDismiss = { showAddEntrega = false }) {
             CadastrarEntregaComponent(
                 clientePedidoId = listOf(itemPedidoSupabase.id to itemClienteSupabase.nome),
-                galoes = galoes.associate { it.id to it.nome })
+                galoes = produtos.associate { it.id to it.nome })
             { entrega, galoes ->
                 coroutineScope.launch {
-                    entregaDAO.saveEntrega(entrega, galoes)
+                    entregaDAO.registerEntrega(entrega, galoes)
 
                 }
                 showAddEntrega = false

@@ -35,6 +35,8 @@ android {
         buildConfigField("String", "SPREADSHEET_KEY", "\"$spreadsheetKey\"")
         val supabaseKey: String? = localProperties.getProperty("SUPABASE_KEY")
         buildConfigField( "String", "SUPABASE_KEY", "\"$supabaseKey\"")
+        val supabaseUrl: String? = localProperties.getProperty("SUPABASE_URL")
+        buildConfigField( "String", "SUPABASE_URL", "\"$supabaseUrl\"")
 
     }
     buildFeatures {

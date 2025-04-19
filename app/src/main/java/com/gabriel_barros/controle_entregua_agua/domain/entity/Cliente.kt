@@ -10,7 +10,7 @@ data class Cliente(
     val credito: Double,
     val apelidos: List<String>,
     val descricao: String,
-    val enderecos: List<Endereco>,
+    //val enderecos: List<Endereco> = emptyList(),
 ){
     init{
         require(nome.isNotBlank()) { "Nome não pode estar em branco." }
@@ -20,11 +20,11 @@ data class Cliente(
         fun emptyCliente(): Cliente{
             return Cliente(
                 id = 0,
-                        nome = "",
+                        nome = "none",
                         credito = 0.0,
                         apelidos = emptyList(),
                         descricao = "",
-                        enderecos = emptyList(),
+                        //enderecos = emptyList(),
             )
         }
     }
