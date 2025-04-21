@@ -2,31 +2,35 @@ package com.gabriel_barros.controle_entregua_agua.database.supabase.dao.query
 
 import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteSelecBuilder
 import io.github.jan.supabase.auth.PostgrestFilterDSL
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder
+import kotlin.reflect.KProperty1
 
-class ClienteQuery: ClienteQueryBuilder{
+class ClienteQuery: ClienteFilterBuilder, ClienteSelecBuilder{
 
     private val schema = SupabaseClientProvider.schema
     private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "clientes"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
+    private val columns = mutableListOf<String>()
 
-
-    override fun getAllClientes(): ClienteQueryBuilder {
+    override fun getAllClientes(): ClienteFilterBuilder {
         return this
     }
 
-    override fun getClienteById(id: Long): ClienteQueryBuilder {
-        query.add { eq(Cliente::id.name, id) }
+    override fun getClienteById(vararg id: Long): ClienteFilterBuilder {
+            query.add { isIn(Cliente::id.name, id.toList()) }
         return this
     }
 
     override suspend fun buildExecuteAsSingle(): Cliente {
+        var supabaseColumns = if(columns.isEmpty()) Columns.ALL else Columns.list(columns)
 
-        val result = supabase.from(schema, TABLE).select {
+        val result = supabase.from(schema, TABLE).select(supabaseColumns, ) {
             if(query.isNotEmpty()){
                 filter {
                     query.forEach { it() }
@@ -34,11 +38,14 @@ class ClienteQuery: ClienteQueryBuilder{
             }
         }.decodeSingle<Cliente>()
         query.clear()
+        columns.clear()
         return result
     }
 
     override suspend fun buildExecuteAsSList(): List<Cliente> {
-        val result = supabase.from(schema, TABLE).select {
+        var supabaseColumns = if(columns.isEmpty()) Columns.ALL else Columns.list(columns)
+
+        val result = supabase.from(schema, TABLE).select(supabaseColumns) {
             if(query.isNotEmpty()){
                 filter {
                     query.forEach { it() }
@@ -46,7 +53,18 @@ class ClienteQuery: ClienteQueryBuilder{
             }
         }.decodeList<Cliente>()
         query.clear()
+        columns.clear()
         return result
+    }
+
+    override fun get(vararg props: KProperty1<Cliente, *>): ClienteFilterBuilder {
+        columns.addAll(props.map { it.name })
+        return this
+    }
+
+    override fun get(vararg props: String): ClienteFilterBuilder {
+        columns.addAll(props)
+        return this
     }
 
 }

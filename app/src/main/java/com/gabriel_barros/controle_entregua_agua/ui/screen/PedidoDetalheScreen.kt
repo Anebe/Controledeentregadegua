@@ -24,7 +24,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemEntregaQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemPedidoQueryBuilder
@@ -52,7 +52,7 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
     val pagamentoDAO: PagamentoManager = koinInject()
     val produtoDAO: ProdutoManager = koinInject()
 
-    val clienteQuery: ClienteQueryBuilder = koinInject()
+    val clienteQuery: ClienteFilterBuilder = koinInject()
     val produtoQuery: ProdutoQueryBuilder = koinInject()
     val pedidoQuery: PedidoQueryBuilder = koinInject()
     val itemPedidoQuery: ItemPedidoQueryBuilder = koinInject()

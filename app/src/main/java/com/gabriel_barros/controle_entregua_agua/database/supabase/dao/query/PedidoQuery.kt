@@ -39,13 +39,13 @@ class PedidoQuery : PedidoQueryBuilder {
     private val TABLE: String = "pedidos"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
-    override fun getPedidoById(id: Long): PedidoQuery {
-        query.add { eq(Pedido::id.name, id) }
+    override fun getPedidoById(vararg id: Long): PedidoQuery {
+        query.add { isIn(Pedido::id.name, id.toList()) }
         return this
     }
 
-    override fun getPedidoByClienteId(clienteId: Long): PedidoQuery {
-        query.add { eq(Pedido::cliente_id.name, clienteId) }
+    override fun getPedidoByClienteId(vararg clienteId: Long): PedidoQuery {
+        query.add { isIn(Pedido::cliente_id.name, clienteId.toList()) }
         return this
     }
 

@@ -6,9 +6,9 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
 
 
 interface PedidoQueryBuilder{
-    fun getPedidoById(id: Long): PedidoQueryBuilder
+    fun getPedidoById(vararg id: Long): PedidoQueryBuilder
 
-    fun getPedidoByClienteId(clienteId: Long): PedidoQueryBuilder
+    fun getPedidoByClienteId(vararg clienteId: Long): PedidoQueryBuilder
 
     fun getPedidoByStatus(statusPedido: StatusPedido): PedidoQueryBuilder
 

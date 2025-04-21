@@ -18,7 +18,8 @@ import com.gabriel_barros.controle_entregua_agua.domain.portout.EntregaPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.portout.PagamentoPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.portout.PedidoPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.portout.ProdutoPortOut
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteSelecBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemEntregaQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemPedidoQueryBuilder
@@ -60,12 +61,14 @@ val appModule = module {
     single<EntregaManager> { EntregaManagerImp(get(),get(),get(),get(),get(),get(),get(),) }
     single<ClienteManager> { ClienteManagerImp(get(),) }
 
-    single<ProdutoQueryBuilder> { ProdutoQuery() }
-    single<PedidoQueryBuilder> { PedidoQuery() }
-    single<ItemPedidoQueryBuilder> { ItemPedidoQuery() }
-    single<PagamentoQueryBuilder> { PagamentoQuery() }
-    single<EntregaQueryBuilder> { EntregaQuery() }
-    single<ItemEntregaQueryBuilder> { ItemEntregaQuery() }
-    single<ClienteQueryBuilder> { ClienteQuery() }
+    factory<ProdutoQueryBuilder> { ProdutoQuery() }
+    factory<PedidoQueryBuilder> { PedidoQuery() }
+    factory<ItemPedidoQueryBuilder> { ItemPedidoQuery() }
+    factory<PagamentoQueryBuilder> { PagamentoQuery() }
+    factory<EntregaQueryBuilder> { EntregaQuery() }
+    factory<ItemEntregaQueryBuilder> { ItemEntregaQuery() }
+    factory<ClienteFilterBuilder> { ClienteQuery() }
+
+    single<ClienteSelecBuilder> { ClienteQuery() }
 
 }

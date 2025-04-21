@@ -12,7 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComponent
 import org.koin.compose.koinInject
@@ -25,7 +25,7 @@ fun TesteScreen() {
             .padding(16.dp)
     ) {
         val clienteDAO: ClienteManager = koinInject()
-        val clienteQuery: ClienteQueryBuilder = koinInject()
+        val clienteQuery: ClienteFilterBuilder = koinInject()
 
         var nomesClientes by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
 

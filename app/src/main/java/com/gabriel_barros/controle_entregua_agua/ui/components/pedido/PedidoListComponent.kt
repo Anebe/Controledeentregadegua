@@ -21,7 +21,7 @@ fun PedidoListComponent(
             items(pedidos.size) {
                 PedidoItemResumido(
                     pedido = pedidos[it].first,
-                    cliente = pedidos[it].second
+                    cliente = pedidos[it].second,
                 )
                 {
                     onItemClick(pedidos[it].first, pedidos[it].second)

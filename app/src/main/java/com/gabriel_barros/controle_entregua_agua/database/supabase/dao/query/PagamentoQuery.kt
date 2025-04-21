@@ -7,19 +7,19 @@ import io.github.jan.supabase.auth.PostgrestFilterDSL
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder
 
-class PagamentoQuery: PagamentoQueryBuilder {
+class PagamentoQuery : PagamentoQueryBuilder {
     private val schema = SupabaseClientProvider.schema
     private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "pagamentos"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
-    override fun getPagamentoById(pagamentoId: Long): PagamentoQueryBuilder {
-        query.add { eq(Pagamento::id.name, pagamentoId) }
+    override fun getPagamentoById(vararg pagamentoId: Long): PagamentoQueryBuilder {
+        query.add { isIn(Pagamento::id.name, pagamentoId.toList()) }
         return this
     }
 
-    override fun getPagamentosByPedido(pedidoId: Long): PagamentoQueryBuilder {
-        query.add { eq(Pagamento::pedido_id.name, pedidoId) }
+    override fun getPagamentosByPedido(vararg pedidoId: Long): PagamentoQueryBuilder {
+        query.add { isIn(Pagamento::pedido_id.name, pedidoId.toList()) }
         return this
     }
 
@@ -29,7 +29,7 @@ class PagamentoQuery: PagamentoQueryBuilder {
 
     override suspend fun buildExecuteAsSingle(): Pagamento {
         val result = supabase.from(schema, TABLE).select {
-            if(query.isNotEmpty()){
+            if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
@@ -41,7 +41,7 @@ class PagamentoQuery: PagamentoQueryBuilder {
 
     override suspend fun buildExecuteAsSList(): List<Pagamento> {
         val result = supabase.from(schema, TABLE).select {
-            if(query.isNotEmpty()){
+            if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }

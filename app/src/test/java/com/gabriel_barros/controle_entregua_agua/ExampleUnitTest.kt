@@ -6,7 +6,8 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
 import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteSelecBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
@@ -46,29 +47,13 @@ class ExampleUnitTest() : KoinTest {
     val pedidoQuery: PedidoQueryBuilder by inject()
     val pagamentoQuery: PagamentoQueryBuilder by inject()
     val entregaQuery: EntregaQueryBuilder by inject()
-    val clienteQuery: ClienteQueryBuilder by inject()
-
+    val clienteFilter: ClienteFilterBuilder by inject()
+    val clienteQuery: ClienteSelecBuilder by inject()
     @Test
     fun bbbbbbb() = runTest{
-        println(clienteQuery.getClienteById(1).buildExecuteAsSingle())
-        println(clienteQuery.getClienteById(2).buildExecuteAsSingle())
-        println(clienteQuery.getClienteById(3).buildExecuteAsSingle())
-        println(clienteQuery.getClienteById(4).buildExecuteAsSingle())
-
-//        println(pedidoQuery.getPedidoById(1).buildExecuteAsSingle())
-//        println(pedidoQuery.getPedidoById(2).buildExecuteAsSingle())
-//        println(pedidoQuery.getPedidoById(3).buildExecuteAsSingle())
-//        println(pedidoQuery.getPedidoById(4).buildExecuteAsSingle())
-
-//        val pedidoList = pedidoQuery.getAllPedidos().buildExecuteAsSList()
-//        val pedidos = mutableListOf<Pair<Pedido, Cliente>>()
-//        pedidos.addAll(pedidoList.map {
-//            Pair(
-//                it,
-//                clienteQuery.getClienteById(it.cliente_id).buildExecuteAsSingle()
-//            )
-//        })
-//        print(pedidos)
+        println(pagamentoQuery
+            .getPagamentosByPedido(2)
+            .buildExecuteAsSList())
     }
     @Test
     fun add() = runTest {

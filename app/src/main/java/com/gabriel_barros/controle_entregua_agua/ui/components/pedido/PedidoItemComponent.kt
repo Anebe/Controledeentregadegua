@@ -16,7 +16,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,9 +36,13 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
 import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemEntregaQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemPedidoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaResumidoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MyBox
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import org.koin.compose.koinInject
 
 
 @Composable
@@ -151,20 +157,24 @@ fun CadastrarPagamentoResumidoComponent(onSave: (Double) -> Unit){
     }
 
 }
+
 @Composable
 fun EntregaRelatorioComponent(
     produtos: List<Produto>,
     itensPedidos: List<ItensPedido>,
     produtosEntregues: List<ItensEntrega>
 ) {
+    val produtoWeight = 0.3f
+    val entregaWeight = 0.3f
+    val retornadoWeight = 0.3f
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text("Produto")
-            Text("Entregue")
-            Text("Retornado")
+            Text("Produto", Modifier.weight(produtoWeight))
+            Text("Entregue", Modifier.weight(entregaWeight))
+            Text("Retornado", Modifier.weight(retornadoWeight))
         }
         LazyColumn {
             itensPedidos.forEachIndexed { index, itensPedido ->
@@ -174,16 +184,17 @@ fun EntregaRelatorioComponent(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        val entregue =
-                            produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
+                        val entregue = produtosEntregues
+                                .filter { it.itemPedido_id == itensPedido.id }
                                 .sumOf { it.qtdEntregue }
-                        val retornado =
-                            produtosEntregues.filter { it.itemPedido_id == itensPedido.id }
+                        val retornado = produtosEntregues
+                                .filter { it.itemPedido_id == itensPedido.id }
                                 .sumOf { it.qtdRetornado }
                         val prod = produtos.find { itensPedido.produto_id == it.id }?.nome
-                        Text("${prod}")
-                        Text("${entregue}/${itensPedido.qtd}")
-                        Text("${retornado}")
+
+                        Text("${prod}", Modifier.weight(produtoWeight))
+                        Text("${entregue}/${itensPedido.qtd}", Modifier.weight(entregaWeight))
+                        Text("${retornado}", Modifier.weight(retornadoWeight))
                     }
                 }
             }
@@ -196,10 +207,33 @@ fun EntregaRelatorioComponent(
 fun PedidoItemResumido(
     pedido: Pedido,
     cliente: Cliente,
+
     onClick: () -> Unit
 ) {
+    val pagamentoDAO: PagamentoQueryBuilder = koinInject()
+    val itemEntregaDAO: ItemEntregaQueryBuilder = koinInject()
+    val itemPedidoDAO: ItemPedidoQueryBuilder = koinInject()
+
+    var totalPedido by remember { mutableIntStateOf(0) }
+    var totalEntregue by remember { mutableIntStateOf(0) }
+    var totalPago by remember { mutableDoubleStateOf(0.0) }
+
     var isEntregue by remember { mutableStateOf(false) }
     var isPago by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit){
+        totalPago = pagamentoDAO
+            .getPagamentosByPedido(pedido.id)
+            .buildExecuteAsSList()
+            .sumOf { it.valor }
+
+        val itensPedidos = itemPedidoDAO.getAllItensByPedidoId(pedido.id).buildExecuteAsSList()
+
+        totalPedido = itensPedidos.sumOf { it.qtd }
+
+        totalEntregue = itemEntregaDAO.getAllItensByItemPedidoId(*itensPedidos.map{it.id}.toLongArray()).buildExecuteAsSList().sumOf { it.qtdEntregue }
+    }
+
 
     MyBox(
         modifier = Modifier
@@ -219,30 +253,29 @@ fun PedidoItemResumido(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Text("QTD")
-                Text("TOTAL")
-                Text("TROCO")
+                Text("${totalEntregue}/$totalPedido")
+                Text("R$ $totalPago/${pedido.valor_total}")
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 //TODO fazer a lógica de cadastro de entrega e pagamento rápido
-                //TODO substituir placeholder por qtd entregue, total a pagar e troco
-                //Text("Marcar como:")
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.clickable{ isEntregue = !isEntregue}){
                     Text("Entregue")
-                    Checkbox(checked = isEntregue, onCheckedChange = { isEntregue = it }, enabled = false)
+                    Checkbox(checked = isEntregue, onCheckedChange = { isEntregue = it },)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable{ isPago = !isPago}){
                     Text("Pago")
-                    Checkbox(checked = isPago, onCheckedChange = { isPago = it }, enabled = false)
+                    Checkbox(checked = isPago, onCheckedChange = { isPago = it },)
                 }
             }
         }
 
     }
+
+
 }
 
 @Preview(showBackground = true)

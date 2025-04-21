@@ -10,14 +10,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.controle_entregua_agua.ui.components.ClienteListComponent
 import org.koin.compose.koinInject
 
 @Composable
 fun ClienteScreen(navController: NavController){
 //    val clienteDAO = remember { ClienteService(ClienteDAO(SupabaseClientProvider.supabase)) }
-    val clienteDAO: ClienteQueryBuilder = koinInject()
+    val clienteDAO: ClienteFilterBuilder = koinInject()
 
     val clientes = remember { mutableStateListOf<String>() }
 

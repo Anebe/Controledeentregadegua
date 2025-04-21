@@ -15,13 +15,13 @@ class EntregaQuery : EntregaQueryBuilder {
     private val TABLE: String = "entregas"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
-    override fun getEntregaById(entregaId: Long): EntregaQueryBuilder {
-        query.add { eq(Entrega::id.name, entregaId) }
+    override fun getEntregaById(vararg entregaId: Long): EntregaQueryBuilder {
+        query.add { isIn(Entrega::id.name, entregaId.toList()) }
         return this
     }
 
     override fun getEntregaById(entregaIds: List<Long>): EntregaQueryBuilder {
-        query.add { eq(Entrega::id.name, entregaIds) }
+        query.add { isIn(Entrega::id.name, entregaIds) }
         return this
     }
 
@@ -36,7 +36,7 @@ class EntregaQuery : EntregaQueryBuilder {
 
     override suspend fun buildExecuteAsSingle(): Entrega {
         val result = supabase.from(schema, TABLE).select {
-            if(query.isNotEmpty()){
+            if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
@@ -48,7 +48,7 @@ class EntregaQuery : EntregaQueryBuilder {
 
     override suspend fun buildExecuteAsSList(): List<Entrega> {
         val result = supabase.from(schema, TABLE).select {
-            if(query.isNotEmpty()){
+            if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }

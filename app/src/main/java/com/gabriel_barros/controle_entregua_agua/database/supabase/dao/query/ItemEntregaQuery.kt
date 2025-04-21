@@ -14,19 +14,19 @@ class ItemEntregaQuery : ItemEntregaQueryBuilder {
     private val TABLE: String = "itens_entregas"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
-    override fun getAllItensByEntregaId(entregaId: Long): ItemEntregaQueryBuilder {
-        query.add { eq(ItensEntrega::entrega_id.name, entregaId) }
+    override fun getAllItensByEntregaId(vararg entregaId: Long): ItemEntregaQueryBuilder {
+        query.add { isIn(ItensEntrega::entrega_id.name, entregaId.toList()) }
         return this
     }
 
-    override fun getAllItensByItemPedidoId(itemPedidoId: Long): ItemEntregaQueryBuilder {
-        query.add { eq(ItensEntrega::itemPedido_id.name, itemPedidoId) }
+    override fun getAllItensByItemPedidoId(vararg itemPedidoId: Long): ItemEntregaQueryBuilder {
+        query.add { isIn(ItensEntrega::itemPedido_id.name, itemPedidoId.toList()) }
         return this
     }
 
     override suspend fun buildExecuteAsSingle(): ItensEntrega {
         val result = supabase.from(schema, TABLE).select {
-            if(query.isNotEmpty()){
+            if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
@@ -38,7 +38,7 @@ class ItemEntregaQuery : ItemEntregaQueryBuilder {
 
     override suspend fun buildExecuteAsSList(): List<ItensEntrega> {
         val result = supabase.from(schema, TABLE).select {
-            if(query.isNotEmpty()){
+            if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }

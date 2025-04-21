@@ -3,7 +3,7 @@ package com.gabriel_barros.controle_entregua_agua.domain.service.deprecated
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
 import com.gabriel_barros.controle_entregua_agua.domain.portout.PagamentoPortOut
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
@@ -17,7 +17,7 @@ class PagamentoManagerImp(
     private val pedidoService: PedidoManager,
     private val pedidoQuery: PedidoQueryBuilder,
     private val clienteService: ClienteManager,
-    private val clienteQuery: ClienteQueryBuilder,
+    private val clienteQuery: ClienteFilterBuilder,
 ) : PagamentoManager {
 
     //Quando salvar pagamento. Salva apenas até o limite do total do pedido. O excesso vira Credito em cliente
@@ -70,11 +70,11 @@ class PagamentoManagerImp(
         }
         val resultPagamentos = mutableListOf<Pagamento>()
         novosPagamentos.forEachIndexed { index, pagamento ->
-            pagamentoOut.savePagamento(pagamento)?.let { pagamentoSalvo ->
+            pagamentoOut.savePagamento(pagamento).let { pagamentoSalvo ->
                 resultPagamentos.add(pagamentoSalvo)
                 if (verificaPedidos.contains(index.toLong())) {
-//                    val i = verificaPedidos.indexOf(index.toLong())
-//                    verificaPedidos[i] = pagamentoSalvo.id
+        //                    val i = verificaPedidos.indexOf(index.toLong())
+        //                    verificaPedidos[i] = pagamentoSalvo.id
                     pedidoService.checkAndFinalizePedido(pagamentoSalvo.id)
                 }
             }

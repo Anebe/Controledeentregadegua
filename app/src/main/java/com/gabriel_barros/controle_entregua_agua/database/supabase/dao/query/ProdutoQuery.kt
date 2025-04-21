@@ -13,8 +13,8 @@ class ProdutoQuery: ProdutoQueryBuilder {
     private val TABLE: String = "produtos"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
-    override fun getProdutoById(id: Long): ProdutoQueryBuilder {
-        query.add { Produto::id eq id }
+    override fun getProdutoById(vararg id: Long): ProdutoQueryBuilder {
+            query.add { Produto::id isIn id.toList() }
         return this
     }
 

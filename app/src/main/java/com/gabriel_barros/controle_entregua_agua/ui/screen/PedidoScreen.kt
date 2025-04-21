@@ -26,7 +26,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ProdutoQueryBuilder
@@ -58,7 +58,7 @@ fun PedidoScreen(navController: NavController) {
     val entregaDAO: EntregaManager = koinInject()
 
     val pedidoQuery: PedidoQueryBuilder = koinInject()
-    val clienteQuery: ClienteQueryBuilder = koinInject()
+    val clienteQuery: ClienteFilterBuilder = koinInject()
     val produtoQuery: ProdutoQueryBuilder = koinInject()
     val entregaQuery: EntregaQueryBuilder = koinInject()
 
@@ -99,6 +99,14 @@ fun PedidoScreen(navController: NavController) {
             }
         }
         HorizontalDivider()
+//        LazyColumn {
+//            items(pedidos.size ){ index ->
+//                PedidoItemResumido(
+//                     cliente = pedidos[index].second,
+//                    pedido = pedidos[index].first,
+//                )
+//            }
+//        }
         PedidoListComponent(pedidos) { pedido, cliente ->
             itemClienteSupabase = cliente
             itemPedidoSupabase = pedido
