@@ -72,8 +72,7 @@ object Mapper {
             id = pedido.id,
             cliente_id = pedido.cliente_id,
             data = pedido.data,
-            data_entrega = pedido.data_entrega,
-            troco = pedido.troco,
+            data_entrega = pedido.data_agendada_para_entrega,
             status = pedido.status,
             valor_total = pedido.valor_total,
         )
@@ -84,8 +83,7 @@ object Mapper {
             id = pedido.id,
             cliente_id = pedido.cliente_id,
             data = pedido.data,
-            data_entrega = pedido.data_entrega,
-            troco = pedido.troco,
+            data_agendada_para_entrega = pedido.data_entrega,
             status = pedido.status,
             valor_total = pedido.valor_total,
         )

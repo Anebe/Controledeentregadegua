@@ -26,7 +26,6 @@ class PedidoManagerImp(
     private val itemEntregaQuery: ItemEntregaQueryBuilder,
 ) : PedidoManager{
 
-
     override suspend fun checkAndFinalizePedido(pedidoId: Long) {
         var pedido = pedidoQuery.getPedidoById(pedidoId).buildExecuteAsSingle()
 
@@ -55,25 +54,26 @@ class PedidoManagerImp(
         }
 
     }
-    override suspend fun makePedido(pedido: PedidoManager.PedidoDTO): Pedido {
-        if (pedido.itensDoPedido.isEmpty()){
+
+    override suspend fun makePedido(pedidoInput: PedidoManager.PedidoInput): Pedido {
+        if (pedidoInput.itensDoPedido.isEmpty()){
             throw BadRequestException("Não foi possível adicionar pedido")
         }
-        val produtos = pedido.itensDoPedido.map {
+
+        val produtos = pedidoInput.itensDoPedido.map {
             produtoQuery.getProdutoById(it.produtoId).buildExecuteAsSingle()
         }.associateBy { it.id }.toMutableMap()
+
         val novoPedido = Pedido(
+            cliente_id = pedidoInput.clienteId,
             data = LocalDate.now(),
-            cliente_id = pedido.clienteId,
-            valor_total = produtos.values.sumOf { it.preco },
+            data_agendada_para_entrega = LocalDate.now(),
             status = StatusPedido.PENDENTE,
-            data_entrega = LocalDate.now(),
-            id = 0,
-            troco = 0.0
+            valor_total = produtos.values.sumOf { it.preco },
         )
 
         val itensPedido = mutableListOf<ItensPedido>()
-        pedido.itensDoPedido.forEach{item ->
+        pedidoInput.itensDoPedido.forEach{ item ->
             itensPedido.add(ItensPedido(0,0, item.produtoId, item.qtd))
 
             produtos[item.produtoId]?.let{produto ->
@@ -85,8 +85,41 @@ class PedidoManagerImp(
         return pedidoResult
     }
 
+    //pseudo codigo coeso
+//    override suspend fun criarPedido(pedidoInput: PedidoManager.PedidoInput): Pedido {
+//        try {
+//            pedidoInput.isValid()
+//        }catch (...){
+//            throw CustomException()
+//        }
+//
+//        if(!clientedao.existe(pedidoInput.clienteId)){
+//            throw NotFoundException()
+//        }
+//        val produtosIds = pedidoInput.itensDoPedido.map { it.produtoId }.toLongArray()
+//        val produtos = produtoQuery.getProdutoById(*produtosIds).buildExecuteAsSList()
+//        val qtdExigida = pedidoInput.itensDoPedido
+//
+//        if(!produtoDao.validaestoque(produtosIds, qtdExigida)){
+//            throw BadRequestException("Qtd insuficiente")
+//        }
+//
+//        val novoPedido = Pedido(
+//            cliente_id = pedidoInput.clienteId,
+//            data = LocalDate.now(),
+//            data_agendada_para_entrega = LocalDate.now(),
+//        )
+//        produtos.forEach { produto ->
+//            val qtd = qtdExigida.find { it.produtoId == produto.id }
+//            novoPedido.addProduto(produto, qtd)
+//        }
+//
+//        val pedidoResult = pedidoOut.savePedido(novoPedido)
+//        produtodao.updateEstoqueParaPedido(pedidoResult.id)
+//        return pedidoResult
+//    }
 
-    override suspend fun validateStockForPedido(itens: List<ItensPedido>): Boolean {
+        override suspend fun validateStockForPedido(itens: List<ItensPedido>): Boolean {
         TODO("Not yet implemented")
     }
 }

@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
 
         startKoin{
             androidContext(this@MainActivity.applicationContext)
-            modules(appModule)
+            modules(dependenceInjection)
         }
 
         enableEdgeToEdge()

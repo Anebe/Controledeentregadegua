@@ -15,10 +15,10 @@ interface ProdutoManager {
 }
 
 interface PedidoManager{
-    data class PedidoDTO(val clienteId: Long, val itensDoPedido: Set<ItemDoPedido>)
-    data class ItemDoPedido(val qtd: Int, val produtoId: Long)
+    data class PedidoInput(val clienteId: Long, val itensDoPedido: Set<ItemDoPedidoInput>)
+    data class ItemDoPedidoInput(val qtd: Int, val produtoId: Long)
 
-    suspend fun makePedido(pedido: PedidoDTO): Pedido
+    suspend fun makePedido(pedido: PedidoInput): Pedido
     suspend fun checkAndFinalizePedido(pedidoId: Long)
     suspend fun validateStockForPedido(itens: List<ItensPedido>): Boolean
 }
@@ -27,17 +27,22 @@ interface PagamentoManager{
     data class PagamentoDTO(val valor: Double, val tipoPagamento: TipoPagamento)
 
     suspend fun processPagamento(clienteId: Long, pagamento: PagamentoDTO): List<Pagamento>
+
     suspend fun payPedido(pedidoId: Long, pagamento: PagamentoDTO)
+    suspend fun payPedidoRemainder(pedidoId: Long)
     suspend fun payDebts(clienteId: Long, pagamento: PagamentoDTO)
+
     suspend fun increaseCredit(clienteId: Long, pagamento: PagamentoDTO)
 }
 
 interface EntregaManager {
     suspend fun registerEntrega(entrega: Entrega, produtosEntregues: List<ItensEntrega>): Entrega
+    suspend fun registerCompleteEntrega(pedidoId: Long): Entrega
 
 }
 
 interface ClienteManager {
+
     suspend fun registerCliente(cliente: Cliente): Cliente
     //suspend fun deleteCliente(id: Long): Cliente
 }

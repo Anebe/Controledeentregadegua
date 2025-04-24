@@ -45,10 +45,10 @@ fun CadastrarPedidoScreen (navController: NavController) {
     Box(modifier = Modifier.padding(10.dp)){
         CadastrarPedidoComponent(nomesClientes, nomesProdutos) { pedido, produtos ->
             val prod = produtos.map { (id, quantidade) ->
-                PedidoManager.ItemDoPedido(produtoId = id, qtd =  quantidade) }.toSet()
-            val pedidoDto = PedidoManager.PedidoDTO(pedido.cliente_id, prod)
+                PedidoManager.ItemDoPedidoInput(produtoId = id, qtd =  quantidade) }.toSet()
+            val pedidoInput = PedidoManager.PedidoInput(pedido.cliente_id, prod)
             coroutineScope.launch {
-                val newCliente = pedidoManager.makePedido(pedidoDto)
+                val newCliente = pedidoManager.makePedido(pedidoInput)
                 newCliente.let {
                     navController.popBackStack()
                 }

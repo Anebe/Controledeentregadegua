@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 @Serializable
 data class Entrega(
-    val id: Long,
+    val id: Long = 0,
     @Serializable(with = LocalDateSerializer::class)
     val data: LocalDate,
     val entregador: TipoEntregador = TipoEntregador.COMERCIO,

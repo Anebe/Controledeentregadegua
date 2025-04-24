@@ -1,7 +1,10 @@
 package com.gabriel_barros.controle_entregua_agua.domain.service.deprecated
 
+import android.util.Log
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
+import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusEntrega
+import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoEntregador
 import com.gabriel_barros.controle_entregua_agua.domain.error.BadRequestException
 import com.gabriel_barros.controle_entregua_agua.domain.portout.EntregaPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
@@ -13,6 +16,7 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaManager
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoManager
 import java.time.LocalDate
 
+//TODO adicionar logica pra produtos retornaveis(galão seco)
 class EntregaManagerImp(
     private val entregaOut: EntregaPortOut,
     private val produtoQuery: ProdutoQueryBuilder,
@@ -23,15 +27,15 @@ class EntregaManagerImp(
     private val itemEntregaQuery: ItemEntregaQueryBuilder,
 ): EntregaManager {
 
+
     override suspend fun registerEntrega(
         entrega: Entrega,
         produtosEntregues: List<ItensEntrega>
     ): Entrega {
-        //TODO adicionar logica pra produtos retornaveis(galão seco)
         val itensDoPedido = itemPedidoQuery.getAllItensByPedidoId(entrega.pedido_id).buildExecuteAsSList()
         val entregasOfActualPedido = entregaQuery.getAllEntregasByPedido(entrega.pedido_id).buildExecuteAsSList()
         //Valida Entrega
-        val isFutureEntrega = entrega.data.isAfter(LocalDate.now())
+        val isFutureDataEntrega = entrega.data.isAfter(LocalDate.now())
         produtosEntregues.isEmpty()
         val allPositiveAndAtLeastOne = produtosEntregues.all {
             (it.qtdEntregue >= 0 && it.qtdRetornado >= 0) &&
@@ -56,7 +60,7 @@ class EntregaManagerImp(
 
         if(produtosEntregues.isEmpty() ||
             !allPositiveAndAtLeastOne ||
-            isFutureEntrega ||
+            isFutureDataEntrega ||
             isOverFlowQtdItensPedido){
             throw BadRequestException("Não foi possível adicionar entrega")
         }
@@ -75,5 +79,38 @@ class EntregaManagerImp(
             }
         }
         return entregaSalva
+    }
+
+    override suspend fun registerCompleteEntrega(pedidoId: Long): Entrega {
+        val itensPedidos = itemPedidoQuery
+            .getAllItensByPedidoId(pedidoId)
+            .buildExecuteAsSList()
+
+        Log.i("Info", "ID $pedidoId ${itensPedidos.toString()}")
+        val itensEntregues = itemEntregaQuery
+            .getAllItensByItemPedidoId(*itensPedidos
+                .map { it.id }.toLongArray()).buildExecuteAsSList()
+
+        Log.i("Info", itensEntregues.toString())
+        val entregaParaRegistro = Entrega(
+            data = LocalDate.now(),
+            pedido_id = pedidoId,
+            status = StatusEntrega.FINALIZADO,
+            entregador = TipoEntregador.COMERCIO
+        )
+
+        val itensEntregasParaRegistro = mutableListOf<ItensEntrega>()
+        itensPedidos.forEach { itemPedido ->
+            val qtdFaltaEntregar = itemPedido.qtd - itensEntregues
+                .filter { it.itemPedido_id == itemPedido.id }
+                .sumOf { it.qtdEntregue }
+            itensEntregasParaRegistro.add(ItensEntrega(
+                itemPedido_id = itemPedido.id,
+                qtdEntregue = qtdFaltaEntregar,
+                //TODO
+                qtdRetornado = 0))
+        }
+
+        return entregaOut.saveEntrega(entregaParaRegistro, itensEntregasParaRegistro)
     }
 }

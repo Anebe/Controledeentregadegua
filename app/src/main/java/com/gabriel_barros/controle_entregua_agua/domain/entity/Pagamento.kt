@@ -3,23 +3,23 @@ package com.gabriel_barros.controle_entregua_agua.domain.entity
 import com.gabriel_barros.controle_entregua_agua.database.LocalDateSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
+
 @Serializable
 data class Pagamento(
-    val id: Long,
+    val id: Long = 0,
     val pedido_id: Long,
     @Serializable(with = LocalDateSerializer::class)
     val data: LocalDate,//TODO alterar nome para algo dê a entender que é a data do registro do pagamento e não do pagamento em si
     val valor: Double,
     val pagamento: TipoPagamento,
-){
-    companion object{
-        fun emptyPagamento(): Pagamento{
+) {
+    companion object {
+        fun emptyPagamento(): Pagamento {
             return Pagamento(
-                id = 0,
-                        pedido_id = 0,
-                        data = LocalDate.now(),
-                        valor = 0.0,
-                        pagamento = TipoPagamento.DINHEIRO,
+                pedido_id = 0,
+                data = LocalDate.now(),
+                valor = 0.0,
+                pagamento = TipoPagamento.DINHEIRO,
             )
         }
     }

@@ -1,6 +1,5 @@
 package com.gabriel_barros.controle_entregua_agua.database.supabase.dao
 
-import android.util.Log
 import com.gabriel_barros.controle_entregua_agua.database.supabase.SupabaseClientProvider
 import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
@@ -99,18 +98,16 @@ class PedidoDAO : PedidoPortOut {
 
     override suspend fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido {
         try {
-            val novoPedido =
-                supabase.from(schema, TABLE).upsert(pedido) { select() }
-                    .decodeSingleOrNull<Pedido>()
-            novoPedido?.let {
+            val novoPedido = supabase
+                .from(schema, TABLE)
+                .upsert(pedido) { select() }
+                    .decodeSingle<Pedido>()
 
-                val item =
-                    itens.map { it.copy(pedido_id = novoPedido.id) }
-                val itens = supabase.from(schema, "itens_pedidos").upsert(item)
-            }
-            novoPedido?.let { return it }
+            val item = itens.map { it.copy(pedido_id = novoPedido.id) }
+            supabase.from(schema, "itens_pedidos").upsert(item)
+            return novoPedido
         } catch (exception: Exception) {
-            Log.e("ERROR", exception.toString())
+            println(exception.message)
         }
         throw BadRequestException("Não foi possível adicionar pedido")
     }
@@ -123,7 +120,7 @@ class PedidoDAO : PedidoPortOut {
             }.decodeSingleOrNull<Pedido>()
             pedido?.let { return it }
         } catch (exception: Exception) {
-            Log.e("ERROR", exception.toString())
+            println(exception.toString())
         }
         throw BadRequestException("Não foi possível deletar pedido")
     }

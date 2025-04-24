@@ -12,17 +12,17 @@ data class Produto(
     val descricao: String,
     val reservado: Int,
 ) {
-    companion object{
-        fun emptyProduto(): Produto{
-            return Produto(
-                id = 0,
-                preco = 0.0,
-                nome = "",
-                custo = 0.0,
-                estoque = 0,
-                descricao = "",
-                reservado = 0,
-            )
-        }
-    }
+//    companion object{
+//        fun emptyProduto(): Produto{
+//            return Produto(
+//                id = 0,
+//                preco = 0.0,
+//                nome = "",
+//                custo = 0.0,
+//                estoque = 0,
+//                descricao = "",
+//                reservado = 0,
+//            )
+//        }
+//    }
 }

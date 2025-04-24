@@ -97,18 +97,17 @@ fun PedidoItemDetalhado(
             }
         }
         MyBox(modifier = Modifier.fillMaxWidth()) {
-            if(showCadastroPagamento){
+            if (showCadastroPagamento) {
                 CadastrarPagamentoResumidoComponent(
                     onSave = {
                         showCadastroPagamento = false
                         onSavePagamento(cliente.id, it, TipoPagamento.DINHEIRO)
                     }
                 )
-            }else{
+            } else {
                 PagamentoRelatorioComponent(pedido, pagamentos)
                 Button(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     onClick = { showCadastroPagamento = true }) {
                     Text(text = "Adicionar")
                 }
@@ -124,8 +123,10 @@ fun PedidoItemDetalhado(
 
 @Composable
 fun PagamentoRelatorioComponent(pedido: Pedido, pagamentos: List<Pagamento>) {
-    Column (modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally){
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
             Text("Total: R$${pedido.valor_total}")
             val total = pagamentos.sumOf { it.valor }
@@ -136,11 +137,13 @@ fun PagamentoRelatorioComponent(pedido: Pedido, pagamentos: List<Pagamento>) {
 }
 
 @Composable
-fun CadastrarPagamentoResumidoComponent(onSave: (Double) -> Unit){
+fun CadastrarPagamentoResumidoComponent(onSave: (Double) -> Unit) {
     //TODO Adicionar Tipo do pagamento na UI
     var totalStr by remember { mutableStateOf("") }
-    Row (modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
         OutlinedTextField(
             value = totalStr,
             onValueChange = { newText ->
@@ -185,11 +188,11 @@ fun EntregaRelatorioComponent(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         val entregue = produtosEntregues
-                                .filter { it.itemPedido_id == itensPedido.id }
-                                .sumOf { it.qtdEntregue }
+                            .filter { it.itemPedido_id == itensPedido.id }
+                            .sumOf { it.qtdEntregue }
                         val retornado = produtosEntregues
-                                .filter { it.itemPedido_id == itensPedido.id }
-                                .sumOf { it.qtdRetornado }
+                            .filter { it.itemPedido_id == itensPedido.id }
+                            .sumOf { it.qtdRetornado }
                         val prod = produtos.find { itensPedido.produto_id == it.id }?.nome
 
                         Text("${prod}", Modifier.weight(produtoWeight))
@@ -208,7 +211,9 @@ fun PedidoItemResumido(
     pedido: Pedido,
     cliente: Cliente,
 
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEntregaCheckChange: (Boolean, Long) -> Unit,
+    onPagamentoCheckChange: (Boolean, Long) -> Unit,
 ) {
     val pagamentoDAO: PagamentoQueryBuilder = koinInject()
     val itemEntregaDAO: ItemEntregaQueryBuilder = koinInject()
@@ -221,7 +226,7 @@ fun PedidoItemResumido(
     var isEntregue by remember { mutableStateOf(false) }
     var isPago by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         totalPago = pagamentoDAO
             .getPagamentosByPedido(pedido.id)
             .buildExecuteAsSList()
@@ -231,7 +236,9 @@ fun PedidoItemResumido(
 
         totalPedido = itensPedidos.sumOf { it.qtd }
 
-        totalEntregue = itemEntregaDAO.getAllItensByItemPedidoId(*itensPedidos.map{it.id}.toLongArray()).buildExecuteAsSList().sumOf { it.qtdEntregue }
+        totalEntregue =
+            itemEntregaDAO.getAllItensByItemPedidoId(*itensPedidos.map { it.id }.toLongArray())
+                .buildExecuteAsSList().sumOf { it.qtdEntregue }
     }
 
 
@@ -257,18 +264,33 @@ fun PedidoItemResumido(
                 Text("R$ $totalPago/${pedido.valor_total}")
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                //TODO fazer a lógica de cadastro de entrega e pagamento rápido
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.clickable{ isEntregue = !isEntregue}){
+                    modifier = Modifier.clickable { isEntregue = !isEntregue }) {
+                    //TODO bloquear se a entrega está completa
                     Text("Entregue")
-                    Checkbox(checked = isEntregue, onCheckedChange = { isEntregue = it },)
+                    Checkbox(
+                        checked = isEntregue,
+                        onCheckedChange = {
+                            isEntregue = it
+                            onEntregaCheckChange(it, pedido.id)
+                        },
+                    )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable{ isPago = !isPago}){
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { isPago = !isPago }) {
+                    //TODO bloquear se o pagamento está completo
+
                     Text("Pago")
-                    Checkbox(checked = isPago, onCheckedChange = { isPago = it },)
+                    Checkbox(
+                        checked = isPago,
+                        onCheckedChange = {
+                            isPago = it
+                            onPagamentoCheckChange(it, pedido.id)
+                        },
+                    )
                 }
             }
         }
@@ -282,9 +304,8 @@ fun PedidoItemResumido(
 @Composable
 private fun preview() {
     ControleDeEntregaDeAguaTheme {
-        PedidoItemResumido(pedido = Pedido.emptyPedido(), cliente = Cliente.emptyCliente()) {
-
-        }
+        PedidoItemResumido(pedido = Pedido.emptyPedido(), cliente = Cliente.emptyCliente(),
+            {}, {} as (Boolean, Long) -> Unit, {} as (Boolean, Long) -> Unit)
     }
 }
 

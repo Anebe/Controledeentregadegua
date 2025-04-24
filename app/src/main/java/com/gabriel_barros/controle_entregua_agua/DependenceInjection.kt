@@ -26,10 +26,10 @@ import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemPedido
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ProdutoQueryBuilder
+import com.gabriel_barros.controle_entregua_agua.domain.service.ClienteManagerImp
+import com.gabriel_barros.controle_entregua_agua.domain.service.PagamentoManagerImp
 import com.gabriel_barros.controle_entregua_agua.domain.service.PedidoManagerImp
-import com.gabriel_barros.controle_entregua_agua.domain.service.deprecated.ClienteManagerImp
 import com.gabriel_barros.controle_entregua_agua.domain.service.deprecated.EntregaManagerImp
-import com.gabriel_barros.controle_entregua_agua.domain.service.deprecated.PagamentoManagerImp
 import com.gabriel_barros.controle_entregua_agua.domain.service.deprecated.ProdutoManagerImp
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaManager
@@ -38,8 +38,9 @@ import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoManager
 import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoManager
 import org.koin.dsl.module
 
-val appModule = module {
+val dependenceInjection = module {
     single { SupabaseClientProvider.supabase }
+
     single<ClientePortOut> { ClienteDAO() }
 //    single<ClienteUseCase> { ClienteManagerImp(get()) }
 

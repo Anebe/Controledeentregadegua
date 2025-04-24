@@ -11,19 +11,19 @@ data class Cliente(
     val apelidos: List<String> = emptyList(),
     val descricao: String = "",
     val enderecos: List<Endereco> = emptyList(),
-){
-    init{
-        require(credito >= 0.0) { "Crédito não pode ser negativo"}
+) {
+    init {
+        require(credito >= 0.0) { "Crédito não pode ser negativo" }
     }
-    companion object{
-        fun emptyCliente(): Cliente{
+
+    companion object {
+        fun emptyCliente(): Cliente {
             return Cliente(
-                id = 0,
-                        nome = "none",
-                        credito = 0.0,
-                        apelidos = emptyList(),
-                        descricao = "",
-                        //enderecos = emptyList(),
+                nome = "none",
+                credito = 0.0,
+                apelidos = emptyList(),
+                descricao = "",
+                //enderecos = emptyList(),
             )
         }
     }

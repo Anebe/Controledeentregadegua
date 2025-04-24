@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Endereco(
-    val id: Long,
+    val id: Long = 0,
     val cliente_id: Long,
     val cep: String,
     val rua: String,
@@ -15,7 +15,6 @@ data class Endereco(
     companion object {
         fun emptyEndereco(): Endereco {
             return Endereco(
-                id = 0,
                 cliente_id = 0,
                 cep = "",
                 rua = "",

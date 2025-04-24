@@ -6,24 +6,23 @@ import java.time.LocalDate
 
 @Serializable
 data class Pedido(
-    val id: Long,
+    val id: Long = 0,
     val cliente_id: Long,
     @Serializable(with = LocalDateSerializer::class)
     val data: LocalDate,
     @Serializable(with = LocalDateSerializer::class)
-    val data_entrega: LocalDate, //TODO alterar pra um nome que dê a ideia de data escolhida pelo cliente
-    val troco: Double,//Substiuir por observação pois dá na mesma
+    val data_agendada_para_entrega: LocalDate, //TODO alterar pra um nome que dê a ideia de data escolhida pelo cliente
     val status: StatusPedido,
     val valor_total: Double,
+    val status_pagamento: StatusPedido = StatusPedido.PENDENTE,
+    val status_entrega: StatusPedido = StatusPedido.PENDENTE,
 ) {
     companion object {
         fun emptyPedido(): Pedido {
             return Pedido(
-                id = 0,
                 cliente_id = 0,
                 data = LocalDate.now(),
-                data_entrega = LocalDate.now(),
-                troco = 0.0,
+                data_agendada_para_entrega = LocalDate.now(),
                 status = StatusPedido.PENDENTE,
                 valor_total = 0.0,
             )

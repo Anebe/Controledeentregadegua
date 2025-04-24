@@ -18,18 +18,20 @@ class ItemPedidoQuery : ItemPedidoQueryBuilder {
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
     override fun getAllItensByPedidoId(pedidoId: Long): ItemPedidoQueryBuilder {
-        query.add { ItensPedido::pedido_id eq pedidoId }
+        query.add { (ItensPedido::pedido_id eq pedidoId)}
         return this
     }
 
     override suspend fun buildExecuteAsSList(): List<ItensPedido> {
-        return supabase.from(schema, TABLE).select {
+        val result = supabase.from(schema, TABLE).select {
             if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
             }
         }.decodeList<ItensPedido>()
+        query.clear()
+        return result
     }
 }
 
@@ -39,8 +41,8 @@ class PedidoQuery : PedidoQueryBuilder {
     private val TABLE: String = "pedidos"
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
-    override fun getPedidoById(vararg id: Long): PedidoQuery {
-        query.add { isIn(Pedido::id.name, id.toList()) }
+    override fun getPedidoById(vararg pedidoId: Long): PedidoQuery {
+        query.add { isIn(Pedido::id.name, pedidoId.toList()) }
         return this
     }
 

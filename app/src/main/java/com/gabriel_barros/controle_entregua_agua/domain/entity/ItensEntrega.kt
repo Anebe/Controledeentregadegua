@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class ItensEntrega(
 //    val entrega: Entrega,
 //    val ItemPedido: ItensPedido,
-    val entrega_id: Long,
+    val entrega_id: Long = 0,
     val itemPedido_id: Long,
     val qtdEntregue: Int,
     val qtdRetornado: Int,

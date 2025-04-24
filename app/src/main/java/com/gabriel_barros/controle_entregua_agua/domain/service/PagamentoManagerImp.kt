@@ -1,7 +1,8 @@
-package com.gabriel_barros.controle_entregua_agua.domain.service.deprecated
+package com.gabriel_barros.controle_entregua_agua.domain.service
 
 import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
 import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusPedido
+import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
 import com.gabriel_barros.controle_entregua_agua.domain.portout.PagamentoPortOut
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
@@ -20,7 +21,9 @@ class PagamentoManagerImp(
     private val clienteQuery: ClienteFilterBuilder,
 ) : PagamentoManager {
 
-    //Quando salvar pagamento. Salva apenas até o limite do total do pedido. O excesso vira Credito em cliente
+    /*Tenta fazer o seguinte:
+    *   Pagar dívidas
+    *   Incrementar crédito do cliente*/
     override suspend fun processPagamento(
         clienteId: Long,
         pagamento: PagamentoManager.PagamentoDTO
@@ -73,8 +76,8 @@ class PagamentoManagerImp(
             pagamentoOut.savePagamento(pagamento).let { pagamentoSalvo ->
                 resultPagamentos.add(pagamentoSalvo)
                 if (verificaPedidos.contains(index.toLong())) {
-        //                    val i = verificaPedidos.indexOf(index.toLong())
-        //                    verificaPedidos[i] = pagamentoSalvo.id
+                    //                    val i = verificaPedidos.indexOf(index.toLong())
+                    //                    verificaPedidos[i] = pagamentoSalvo.id
                     pedidoService.checkAndFinalizePedido(pagamentoSalvo.id)
                 }
             }
@@ -87,11 +90,29 @@ class PagamentoManagerImp(
         return resultPagamentos
     }
 
+    override suspend fun payPedidoRemainder(pedidoId: Long) {
+        val pagamentosFeitos = pagamentoQuery.getPagamentosByPedido(pedidoId).buildExecuteAsSList()
+        val pedido = pedidoQuery.getPedidoById(pedidoId).buildExecuteAsSingle()
+
+        var valorParaPagar = 0.0
+        val totalPagamentosFeitos = pagamentosFeitos.sumOf { it.valor }
+        valorParaPagar = pedido.valor_total - totalPagamentosFeitos
+
+        pagamentoOut.savePagamento(
+            Pagamento(
+                id = 0,
+                pedido_id = pedidoId,
+                data = LocalDate.now(),
+                pagamento = TipoPagamento.DINHEIRO,
+                valor = valorParaPagar
+            )
+        )    }
+
     override suspend fun increaseCredit(
         clienteId: Long,
         pagamento: PagamentoManager.PagamentoDTO
     ) {
-        TODO("Not yet implemented")
+        TODO("")
     }
 
 
@@ -99,7 +120,7 @@ class PagamentoManagerImp(
         pedidoId: Long,
         pagamento: PagamentoManager.PagamentoDTO
     ) {
-        TODO("Not yet implemented")
+
     }
 
     override suspend fun payDebts(
