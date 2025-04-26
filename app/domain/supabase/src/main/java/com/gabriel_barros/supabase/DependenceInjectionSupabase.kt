@@ -25,17 +25,28 @@ import com.gabriel_barros.supabase.dao.query.ItemPedidoQuery
 import com.gabriel_barros.supabase.dao.query.PagamentoQuery
 import com.gabriel_barros.supabase.dao.query.PedidoQuery
 import com.gabriel_barros.supabase.dao.query.ProdutoQuery
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
 import org.koin.dsl.module
 
 
 val dependenceInjectionSupabase = module {
 //    single { SupabaseClientProvider.supabase }
-
-    single<ClientePortOut> { ClienteDAO() }
-    single<PedidoPortOut> { PedidoDAO() }
-    single<ProdutoPortOut> { ProdutoDAO() }
-    single<EntregaPortOut> { EntregaDao() }
-    single<PagamentoPortOut> { PagamentoDao() }
+    single {
+        createSupabaseClient(
+            supabaseUrl = Supabase.URL,
+            supabaseKey = Supabase.KEY
+        ) {
+            install(Auth)
+            install(Postgrest)
+        }
+    }
+    factory<ClientePortOut> { ClienteDAO(get()) }
+    factory<PedidoPortOut> { PedidoDAO(get()) }
+    factory<ProdutoPortOut> { ProdutoDAO(get()) }
+    factory<EntregaPortOut> { EntregaDao() }
+    factory<PagamentoPortOut> { PagamentoDao() }
 
     factory<ProdutoQueryBuilder> { ProdutoQuery() }
     factory<PedidoQueryBuilder> { PedidoQuery() }
@@ -43,8 +54,8 @@ val dependenceInjectionSupabase = module {
     factory<PagamentoQueryBuilder> { PagamentoQuery() }
     factory<EntregaQueryBuilder> { EntregaQuery() }
     factory<ItemEntregaQueryBuilder> { ItemEntregaQuery() }
-    factory<ClienteFilterBuilder> { ClienteQuery() }
+    factory<ClienteFilterBuilder> { ClienteQuery(get()) }
 
-    single<ClienteSelecBuilder> { ClienteQuery() }
+    factory<ClienteSelecBuilder> { ClienteQuery(get()) }
 
 }

@@ -3,12 +3,13 @@ package com.gabriel_barros.supabase.dao
 import com.gabriel_barros.domain.domain.entity.Produto
 import com.gabriel_barros.domain.domain.error.BadRequestException
 import com.gabriel_barros.domain.domain.portout.ProdutoPortOut
-import com.gabriel_barros.supabase.SupabaseClientProvider
+import com.gabriel_barros.supabase.SUPABASE_SCHEMA
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 
-internal class ProdutoDAO : ProdutoPortOut {
-    private val supabase = SupabaseClientProvider.supabase
-    private val schema = SupabaseClientProvider.schema
+internal class ProdutoDAO(_supabase: SupabaseClient): ProdutoPortOut {
+    private val supabase = _supabase
+    private val schema = SUPABASE_SCHEMA.TESTE.toString()
     private val TABLE: String = "produtos"
 
 

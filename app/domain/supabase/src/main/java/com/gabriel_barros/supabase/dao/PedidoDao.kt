@@ -5,11 +5,12 @@ import com.gabriel_barros.domain.domain.entity.Pedido
 import com.gabriel_barros.domain.domain.error.BadRequestException
 import com.gabriel_barros.domain.domain.portout.PedidoPortOut
 import com.gabriel_barros.supabase.SupabaseClientProvider
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 
-internal class PedidoDAO : PedidoPortOut {
+internal class PedidoDAO(_supabase: SupabaseClient) : PedidoPortOut {
     private val schema = SupabaseClientProvider.schema
-    private val supabase = SupabaseClientProvider.supabase
+    private val supabase = _supabase
     private val TABLE: String = "pedidos"
 
 

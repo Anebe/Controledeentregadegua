@@ -1,11 +1,7 @@
 package com.gabriel_barros.controle_entregua_agua
 
 import com.gabriel_barros.domain.domain.entity.Cliente
-import com.gabriel_barros.domain.domain.entity.Entrega
-import com.gabriel_barros.domain.domain.entity.ItensEntrega
-import com.gabriel_barros.domain.domain.entity.Pagamento
 import com.gabriel_barros.domain.domain.entity.Produto
-import com.gabriel_barros.domain.domain.entity.TipoPagamento
 import com.gabriel_barros.domain.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.domain.domain.portout.query.ClienteSelecBuilder
 import com.gabriel_barros.domain.domain.portout.query.EntregaQueryBuilder
@@ -23,9 +19,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import java.time.LocalDate
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -35,6 +31,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExampleUnitTest() : KoinTest {
     init {
+        stopKoin()
         startKoin{
             modules(dependenceInjectionPrincipal)
         }
@@ -54,11 +51,7 @@ class ExampleUnitTest() : KoinTest {
     val clienteQuery: ClienteSelecBuilder by inject()
 
 
-    @Test
-    fun adsasd() = runTest{
 
-        println()
-    }
 
     @Test
     fun bbbbbbb() = runTest{
@@ -92,62 +85,62 @@ class ExampleUnitTest() : KoinTest {
 
 // Criando pedidos
 
-        val itensPedido1 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 1, qtd = 1))
-        val itensPedido2 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 2, qtd = 2))
-        val itensPedido3 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 3, qtd = 2))
-        val itensPedido4 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 4, qtd = 1))
-
-        val pedido1 = PedidoManager.PedidoInput(clienteId = 1, itensPedido1)
-        val pedido2 = PedidoManager.PedidoInput(clienteId = 2, itensPedido2)
-        val pedido3 = PedidoManager.PedidoInput(clienteId = 3, itensPedido3)
-        val pedido4 = PedidoManager.PedidoInput(clienteId = 4, itensPedido4)
-
-//        pedidoPort.makePedido(pedido1)
-//        pedidoPort.makePedido(pedido2)
-        pedidoPort.makePedido(pedido3)
-        pedidoPort.makePedido(pedido4)
-
-// Criando pagamentos
-        val pagamento1 = Pagamento(id = 1, pedido_id = 1, data = LocalDate.now(), valor = 100.0, pagamento = TipoPagamento.PIX)
-        val pagamento2 = Pagamento(id = 2, pedido_id = 2, data = LocalDate.now(), valor = 10.0, pagamento = TipoPagamento.DINHEIRO)
-        val pagamento3 = Pagamento(id = 3, pedido_id = 3, data = LocalDate.now(), valor = 40.0, pagamento = TipoPagamento.CARTAO)
-        val pagamento4 = Pagamento(id = 4, pedido_id = 4, data = LocalDate.now(), valor = 8.0, pagamento = TipoPagamento.PIX)
-
-        pagamentoPort.processPagamento(1, PagamentoManager.PagamentoDTO(pagamento1.valor, pagamento1.pagamento))
-        pagamentoPort.processPagamento(2, PagamentoManager.PagamentoDTO(pagamento2.valor, pagamento2.pagamento))
-        pagamentoPort.processPagamento(3, PagamentoManager.PagamentoDTO(pagamento3.valor, pagamento3.pagamento))
-        pagamentoPort.processPagamento(4, PagamentoManager.PagamentoDTO(pagamento4.valor, pagamento4.pagamento))
-
-// Criando entregas
-        val entrega1 = Entrega(id = 1, data = LocalDate.now(), pedido_id = 1)
-        val entrega2 = Entrega(id = 2, data = LocalDate.now(), pedido_id = 2)
-        val entrega3 = Entrega(id = 3, data = LocalDate.now(), pedido_id = 3)
-        val entrega4 = Entrega(id = 4, data = LocalDate.now(), pedido_id = 4)
-
-        val itensEntrega1 = listOf(
-            ItensEntrega(entrega_id = 1, itemPedido_id = 1, qtdEntregue = 1, qtdRetornado = 0),
-            ItensEntrega(entrega_id = 2, itemPedido_id = 1, qtdEntregue = 1, qtdRetornado = 0)
-        )
-
-        val itensEntrega2 = listOf(
-            ItensEntrega(entrega_id = 3, itemPedido_id = 2, qtdEntregue = 1, qtdRetornado = 1),
-            ItensEntrega(entrega_id = 4, itemPedido_id = 2, qtdEntregue = 1, qtdRetornado = 0)
-        )
-
-        val itensEntrega3 = listOf(
-            ItensEntrega(entrega_id = 5, itemPedido_id = 3, qtdEntregue = 2, qtdRetornado = 0)
-        )
-
-        val itensEntrega4 = listOf(
-            ItensEntrega(entrega_id = 6, itemPedido_id = 4, qtdEntregue = 1, qtdRetornado = 0)
-        )
-
-
-        entregaPort.registerEntrega(entrega1,itensEntrega1)
-        entregaPort.registerEntrega(entrega2,itensEntrega2)
-        entregaPort.registerEntrega(entrega3,itensEntrega3)
-        entregaPort.registerEntrega(entrega4,itensEntrega4)
-
+//        val itensPedido1 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 1, qtd = 1))
+//        val itensPedido2 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 2, qtd = 2))
+//        val itensPedido3 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 3, qtd = 2))
+//        val itensPedido4 = setOf(PedidoManager.ItemDoPedidoInput(produtoId = 4, qtd = 1))
+//
+//        val pedido1 = PedidoManager.PedidoInput(clienteId = 1, itensPedido1)
+//        val pedido2 = PedidoManager.PedidoInput(clienteId = 2, itensPedido2)
+//        val pedido3 = PedidoManager.PedidoInput(clienteId = 3, itensPedido3)
+//        val pedido4 = PedidoManager.PedidoInput(clienteId = 4, itensPedido4)
+//
+////        pedidoPort.makePedido(pedido1)
+////        pedidoPort.makePedido(pedido2)
+//        pedidoPort.makePedido(pedido3)
+//        pedidoPort.makePedido(pedido4)
+//
+//// Criando pagamentos
+//        val pagamento1 = Pagamento(id = 1, pedido_id = 1, data = LocalDate.now(), valor = 100.0, pagamento = TipoPagamento.PIX)
+//        val pagamento2 = Pagamento(id = 2, pedido_id = 2, data = LocalDate.now(), valor = 10.0, pagamento = TipoPagamento.DINHEIRO)
+//        val pagamento3 = Pagamento(id = 3, pedido_id = 3, data = LocalDate.now(), valor = 40.0, pagamento = TipoPagamento.CARTAO)
+//        val pagamento4 = Pagamento(id = 4, pedido_id = 4, data = LocalDate.now(), valor = 8.0, pagamento = TipoPagamento.PIX)
+//
+//        pagamentoPort.processPagamento(1, PagamentoManager.PagamentoDTO(pagamento1.valor, pagamento1.pagamento))
+//        pagamentoPort.processPagamento(2, PagamentoManager.PagamentoDTO(pagamento2.valor, pagamento2.pagamento))
+//        pagamentoPort.processPagamento(3, PagamentoManager.PagamentoDTO(pagamento3.valor, pagamento3.pagamento))
+//        pagamentoPort.processPagamento(4, PagamentoManager.PagamentoDTO(pagamento4.valor, pagamento4.pagamento))
+//
+//// Criando entregas
+//        val entrega1 = Entrega(id = 1, data = LocalDate.now(), pedido_id = 1)
+//        val entrega2 = Entrega(id = 2, data = LocalDate.now(), pedido_id = 2)
+//        val entrega3 = Entrega(id = 3, data = LocalDate.now(), pedido_id = 3)
+//        val entrega4 = Entrega(id = 4, data = LocalDate.now(), pedido_id = 4)
+//
+//        val itensEntrega1 = listOf(
+//            ItensEntrega(entrega_id = 1, itemPedido_id = 1, qtdEntregue = 1, qtdRetornado = 0),
+//            ItensEntrega(entrega_id = 2, itemPedido_id = 1, qtdEntregue = 1, qtdRetornado = 0)
+//        )
+//
+//        val itensEntrega2 = listOf(
+//            ItensEntrega(entrega_id = 3, itemPedido_id = 2, qtdEntregue = 1, qtdRetornado = 1),
+//            ItensEntrega(entrega_id = 4, itemPedido_id = 2, qtdEntregue = 1, qtdRetornado = 0)
+//        )
+//
+//        val itensEntrega3 = listOf(
+//            ItensEntrega(entrega_id = 5, itemPedido_id = 3, qtdEntregue = 2, qtdRetornado = 0)
+//        )
+//
+//        val itensEntrega4 = listOf(
+//            ItensEntrega(entrega_id = 6, itemPedido_id = 4, qtdEntregue = 1, qtdRetornado = 0)
+//        )
+//
+//
+//        entregaPort.registerEntrega(entrega1,itensEntrega1)
+//        entregaPort.registerEntrega(entrega2,itensEntrega2)
+//        entregaPort.registerEntrega(entrega3,itensEntrega3)
+//        entregaPort.registerEntrega(entrega4,itensEntrega4)
+//
     }
 
 //    @Test
