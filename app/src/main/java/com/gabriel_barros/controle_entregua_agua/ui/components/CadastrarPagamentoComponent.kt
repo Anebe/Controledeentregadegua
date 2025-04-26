@@ -16,11 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
-import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DatePicker
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropDownMenuComponent
+import com.gabriel_barros.domain.domain.entity.Pagamento
+import com.gabriel_barros.domain.domain.entity.TipoPagamento
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaManager
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PagamentoManager
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import com.gabriel_barros.domain.domain.entity.Cliente
+import com.gabriel_barros.domain.domain.entity.Pedido
+import com.gabriel_barros.domain.domain.usecase.EntregaManager
+import com.gabriel_barros.domain.domain.usecase.PagamentoManager
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 

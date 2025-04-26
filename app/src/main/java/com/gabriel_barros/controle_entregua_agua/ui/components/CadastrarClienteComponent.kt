@@ -3,10 +3,7 @@ package com.gabriel_barros.controle_entregua_agua.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -28,9 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Endereco
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import com.gabriel_barros.domain.domain.entity.Cliente
+import com.gabriel_barros.domain.domain.entity.Endereco
 
 @Composable
 fun CadastrarClienteComponent(onSave: (Cliente) -> Unit) {

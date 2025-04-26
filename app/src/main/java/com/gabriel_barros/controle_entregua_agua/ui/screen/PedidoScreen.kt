@@ -22,24 +22,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.EntregaQueryBuilder
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PedidoQueryBuilder
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ProdutoQueryBuilder
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ClienteManager
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.EntregaManager
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.PedidoManager
-import com.gabriel_barros.controle_entregua_agua.domain.usecase.ProdutoManager
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarPagamentoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.PedidoListComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.H3
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MessageBoxComponent
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import com.gabriel_barros.domain.domain.entity.Cliente
+import com.gabriel_barros.domain.domain.entity.Entrega
+import com.gabriel_barros.domain.domain.entity.Pedido
+import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.portout.query.ClienteFilterBuilder
+import com.gabriel_barros.domain.domain.portout.query.EntregaQueryBuilder
+import com.gabriel_barros.domain.domain.portout.query.PedidoQueryBuilder
+import com.gabriel_barros.domain.domain.portout.query.ProdutoQueryBuilder
+import com.gabriel_barros.domain.domain.usecase.ClienteManager
+import com.gabriel_barros.domain.domain.usecase.EntregaManager
+import com.gabriel_barros.domain.domain.usecase.PedidoManager
+import com.gabriel_barros.domain.domain.usecase.ProdutoManager
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -85,7 +85,7 @@ fun PedidoScreen(navController: NavController) {
         })
 
         produtos.clear()
-        produtos.addAll(produtoQuery.getAllProdutos().buildExecuteAsSList())
+        produtos.addAll(produtoQuery.buildExecuteAsSList())
     }
 
     Column(modifier = Modifier.padding(30.dp)) {

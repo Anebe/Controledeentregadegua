@@ -21,3 +21,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "Controle de entrega de água"
 include(":app")
+include(":app:domain")
+include(":app:domain:supabase")
+include(":app:domain:room")
+include(":app:ioc")
+include(":app:domain:usecase")
+include(":app:domain:spreedsheetgoogle")

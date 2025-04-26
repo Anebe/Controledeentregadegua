@@ -1,13 +1,11 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
 
     kotlin("plugin.serialization") version "1.9.0"
-    id("com.google.devtools.ksp")
-    kotlin("kapt")
+//    id("com.google.devtools.ksp")
+//    kotlin("kapt")
 
 }
 
@@ -28,15 +26,15 @@ android {
             useSupportLibrary = true
         }
 
-        val localProperties = Properties().apply {
-            load(rootProject.file("local.properties").inputStream())
-        }
-        val spreadsheetKey: String? = localProperties.getProperty("SPREADSHEET_KEY")
-        buildConfigField("String", "SPREADSHEET_KEY", "\"$spreadsheetKey\"")
-        val supabaseKey: String? = localProperties.getProperty("SUPABASE_KEY")
-        buildConfigField( "String", "SUPABASE_KEY", "\"$supabaseKey\"")
-        val supabaseUrl: String? = localProperties.getProperty("SUPABASE_URL")
-        buildConfigField( "String", "SUPABASE_URL", "\"$supabaseUrl\"")
+//        val localProperties = Properties().apply {
+//            load(rootProject.file("local.properties").inputStream())
+//        }
+//        val spreadsheetKey: String? = localProperties.getProperty("SPREADSHEET_KEY")
+//        buildConfigField("String", "SPREADSHEET_KEY", "\"$spreadsheetKey\"")
+//        val supabaseKey: String? = localProperties.getProperty("SUPABASE_KEY")
+//        buildConfigField( "String", "SUPABASE_KEY", "\"$supabaseKey\"")
+//        val supabaseUrl: String? = localProperties.getProperty("SUPABASE_URL")
+//        buildConfigField( "String", "SUPABASE_URL", "\"$supabaseUrl\"")
 
     }
     buildFeatures {
@@ -72,10 +70,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":app:ioc"))
+    implementation(project(":app:domain"))
+    releaseImplementation(project(":app:domain:supabase"))
+    releaseImplementation(project(":app:domain:usecase"))
 
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-    ksp(libs.ksp)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -97,22 +96,19 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.room.ktx)
-    implementation(libs.navigation.compose)
-    implementation(libs.okhttp)
+//    implementation(libs.room.ktx)
+//    implementation(libs.okhttp)
+//    implementation(libs.retrofit.kotlinx.serialization)
+//    implementation (libs.retrofit)
+//    implementation (libs.retrofit.gson)
+
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.retrofit.kotlinx.serialization)
-    implementation (libs.retrofit)
-    implementation (libs.retrofit.gson)
+
+    implementation(libs.navigation.compose)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation (libs.sheets.compose.dialogs.core)
     implementation (libs.sheets.compose.dialogs.calendar)
 
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.0.3"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("io.github.jan-tennert.supabase:auth-kt")
-    implementation("io.github.jan-tennert.supabase:realtime-kt")
-    implementation("io.ktor:ktor-client-android:3.0.3")
 
     implementation("io.insert-koin:koin-android:4.0.2")
     implementation ("io.insert-koin:koin-androidx-compose:4.0.2")

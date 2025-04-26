@@ -28,20 +28,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Cliente
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
-import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
-import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pagamento
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.entity.TipoPagamento
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemEntregaQueryBuilder
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ItemPedidoQueryBuilder
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.PagamentoQueryBuilder
 import com.gabriel_barros.controle_entregua_agua.ui.components.CadastrarEntregaResumidoComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MyBox
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import com.gabriel_barros.domain.domain.entity.Cliente
+import com.gabriel_barros.domain.domain.entity.Entrega
+import com.gabriel_barros.domain.domain.entity.ItensEntrega
+import com.gabriel_barros.domain.domain.entity.ItensPedido
+import com.gabriel_barros.domain.domain.entity.Pagamento
+import com.gabriel_barros.domain.domain.entity.Pedido
+import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.TipoPagamento
+import com.gabriel_barros.domain.domain.portout.query.ItemEntregaQueryBuilder
+import com.gabriel_barros.domain.domain.portout.query.ItemPedidoQueryBuilder
+import com.gabriel_barros.domain.domain.portout.query.PagamentoQueryBuilder
 import org.koin.compose.koinInject
 
 

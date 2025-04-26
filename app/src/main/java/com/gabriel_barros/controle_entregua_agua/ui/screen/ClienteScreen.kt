@@ -10,8 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.gabriel_barros.controle_entregua_agua.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.controle_entregua_agua.ui.components.ClienteListComponent
+import com.gabriel_barros.domain.domain.portout.query.ClienteFilterBuilder
 import org.koin.compose.koinInject
 
 @Composable

@@ -14,14 +14,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Entrega
-import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensEntrega
-import com.gabriel_barros.controle_entregua_agua.domain.entity.ItensPedido
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Produto
-import com.gabriel_barros.controle_entregua_agua.domain.entity.StatusEntrega
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.MyBox
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.NumberPicker
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import com.gabriel_barros.domain.domain.entity.Entrega
+import com.gabriel_barros.domain.domain.entity.ItensEntrega
+import com.gabriel_barros.domain.domain.entity.ItensPedido
+import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.StatusEntrega
 import java.time.LocalDate
 
 

@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.gabriel_barros.controle_entregua_agua.ui.AppNavigation
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import com.gabriel_barros.ioc.dependenceInjectionPrincipal
 import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
         startKoin{
             androidContext(this@MainActivity.applicationContext)
-            modules(dependenceInjection)
+            modules(dependenceInjectionPrincipal)
         }
 
         enableEdgeToEdge()

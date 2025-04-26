@@ -24,11 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabriel_barros.controle_entregua_agua.domain.entity.Pedido
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropDownMenuComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropdownWithQuantity
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
+import com.gabriel_barros.domain.domain.entity.Pedido
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import java.time.LocalDate
 
