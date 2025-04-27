@@ -1,7 +1,7 @@
 package com.gabriel_barros.controle_entregua_agua
 
 import com.gabriel_barros.domain.domain.entity.Cliente
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.domain.domain.portout.query.ClienteSelecBuilder
 import com.gabriel_barros.domain.domain.portout.query.EntregaQueryBuilder
@@ -62,10 +62,10 @@ class ExampleUnitTest() : KoinTest {
     @Test
     fun add() = runTest {
     // Criando produtos
-        val produto1 = Produto(id = 1, preco = 10.0, nome = "Coca-Cola", custo = 5.0, estoque = 50, descricao = "Refrigerante 2L", reservado = 0)
-        val produto2 = Produto(id = 2, preco = 5.0, nome = "Chocolate", custo = 2.5, estoque = 30, descricao = "Chocolate ao leite", reservado = 0)
-        val produto3 = Produto(id = 3, preco = 20.0, nome = "Pizza", custo = 12.0, estoque = 10, descricao = "Pizza grande de calabresa", reservado = 0)
-        val produto4 = Produto(id = 4, preco = 8.0, nome = "Suco de Laranja", custo = 4.0, estoque = 20, descricao = "Suco natural 500ml", reservado = 0)
+        val produto1 = ProdutoEntity(id = 1, preco = 10.0, nome = "Coca-Cola", custo = 5.0, estoque = 50, descricao = "Refrigerante 2L", reservado = 0)
+        val produto2 = ProdutoEntity(id = 2, preco = 5.0, nome = "Chocolate", custo = 2.5, estoque = 30, descricao = "Chocolate ao leite", reservado = 0)
+        val produto3 = ProdutoEntity(id = 3, preco = 20.0, nome = "Pizza", custo = 12.0, estoque = 10, descricao = "Pizza grande de calabresa", reservado = 0)
+        val produto4 = ProdutoEntity(id = 4, preco = 8.0, nome = "Suco de Laranja", custo = 4.0, estoque = 20, descricao = "Suco natural 500ml", reservado = 0)
 
         produtoPort.registerProduto(produto1)
         produtoPort.registerProduto(produto2)

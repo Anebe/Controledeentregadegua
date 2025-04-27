@@ -28,7 +28,7 @@ import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComp
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropDownMenuComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropdownWithQuantity
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
-import com.gabriel_barros.domain.domain.entity.Pedido
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import java.time.LocalDate
 
@@ -37,14 +37,14 @@ import java.time.LocalDate
 fun CadastrarPedidoComponent(
     nomes: List<Pair<Long, String>>,
     produtos: List<Pair<Long, String>>,
-    onSave: (Pedido, Map<Long, Int>) -> Unit
+    onSave: (PedidoEntity, Map<Long, Int>) -> Unit
 ) {
 //    val data by remember { mutableStateOf(PedidoItemState()) }
     var quandoPuder by remember { mutableStateOf(true) }
     var levarTroco by remember { mutableStateOf(false) }
     var troco by remember { mutableStateOf("") }
     val entregaShow = rememberUseCaseState(visible = false)
-    var pedido by remember { mutableStateOf(Pedido.emptyPedido()) }
+    var pedido by remember { mutableStateOf(PedidoEntity.emptyPedido()) }
     var produtosEscolhidos by remember { mutableStateOf(emptyMap<Long, Int>()) }
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),

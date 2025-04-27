@@ -30,8 +30,8 @@ import com.gabriel_barros.controle_entregua_agua.ui.components.util.MessageBoxCo
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
 import com.gabriel_barros.domain.domain.entity.Cliente
 import com.gabriel_barros.domain.domain.entity.Entrega
-import com.gabriel_barros.domain.domain.entity.Pedido
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.domain.domain.portout.query.EntregaQueryBuilder
 import com.gabriel_barros.domain.domain.portout.query.PedidoQueryBuilder
@@ -62,15 +62,15 @@ fun PedidoScreen(navController: NavController) {
     val produtoQuery: ProdutoQueryBuilder = koinInject()
     val entregaQuery: EntregaQueryBuilder = koinInject()
 
-    val produtos = remember { mutableStateListOf<Produto>() }
-    val pedidos = remember { mutableStateListOf<Pair<Pedido, Cliente>>() }
+    val produtos = remember { mutableStateListOf<ProdutoEntity>() }
+    val pedidos = remember { mutableStateListOf<Pair<PedidoEntity, Cliente>>() }
 
     var showPedidoDetalhado by remember { mutableStateOf(false) }
     var showAddEntrega by remember { mutableStateOf(false) }
     var showAddPagamento by remember { mutableStateOf(false) }
 
 
-    var itemPedidoSupabase by remember { mutableStateOf(Pedido.emptyPedido()) }
+    var itemPedidoSupabase by remember { mutableStateOf(PedidoEntity.emptyPedido()) }
     var itemClienteSupabase by remember { mutableStateOf(Cliente.emptyCliente()) }
     var itemEntrega = remember { mutableStateListOf<Entrega>() }
 

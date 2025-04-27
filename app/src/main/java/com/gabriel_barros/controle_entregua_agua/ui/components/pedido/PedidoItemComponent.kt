@@ -35,9 +35,9 @@ import com.gabriel_barros.domain.domain.entity.Cliente
 import com.gabriel_barros.domain.domain.entity.Entrega
 import com.gabriel_barros.domain.domain.entity.ItensEntrega
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pagamento
-import com.gabriel_barros.domain.domain.entity.Pedido
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.entity.TipoPagamento
 import com.gabriel_barros.domain.domain.portout.query.ItemEntregaQueryBuilder
 import com.gabriel_barros.domain.domain.portout.query.ItemPedidoQueryBuilder
@@ -47,13 +47,13 @@ import org.koin.compose.koinInject
 
 @Composable
 fun PedidoItemDetalhado(
-    produtos: List<Produto>,
-    pedido: Pedido,
+    produtos: List<ProdutoEntity>,
+    pedido: PedidoEntity,
     cliente: Cliente,
     entregas: List<Entrega>,
     produtosPedidos: List<ItensPedido>,
     produtosEntregues: List<ItensEntrega>,
-    pagamentos: List<Pagamento>,
+    pagamentos: List<PagamentoEntity>,
     onSave: (valorPago: Double, entrega: Int, galaoSeco: Int) -> Unit,
     onDelete: () -> Unit,
     onAddEntrega: () -> Unit,
@@ -122,7 +122,7 @@ fun PedidoItemDetalhado(
 }
 
 @Composable
-fun PagamentoRelatorioComponent(pedido: Pedido, pagamentos: List<Pagamento>) {
+fun PagamentoRelatorioComponent(pedido: PedidoEntity, pagamentos: List<PagamentoEntity>) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -163,7 +163,7 @@ fun CadastrarPagamentoResumidoComponent(onSave: (Double) -> Unit) {
 
 @Composable
 fun EntregaRelatorioComponent(
-    produtos: List<Produto>,
+    produtos: List<ProdutoEntity>,
     itensPedidos: List<ItensPedido>,
     produtosEntregues: List<ItensEntrega>
 ) {
@@ -208,7 +208,7 @@ fun EntregaRelatorioComponent(
 
 @Composable
 fun PedidoItemResumido(
-    pedido: Pedido,
+    pedido: PedidoEntity,
     cliente: Cliente,
 
     onClick: () -> Unit,
@@ -304,7 +304,7 @@ fun PedidoItemResumido(
 @Composable
 private fun preview() {
     ControleDeEntregaDeAguaTheme {
-        PedidoItemResumido(pedido = Pedido.emptyPedido(), cliente = Cliente.emptyCliente(),
+        PedidoItemResumido(pedido = PedidoEntity.emptyPedido(), cliente = Cliente.emptyCliente(),
             {}, {} as (Boolean, Long) -> Unit, {} as (Boolean, Long) -> Unit)
     }
 }
@@ -328,7 +328,7 @@ fun PedidoItemDetalhadoPreview() {
         Column(modifier = Modifier.fillMaxSize()) {
             PedidoItemDetalhado(
                 produtos = emptyList(),
-                pedido = Pedido.emptyPedido(),
+                pedido = PedidoEntity.emptyPedido(),
                 cliente = Cliente.emptyCliente(),
                 entregas = emptyList(),
                 produtosPedidos = itensPedido,

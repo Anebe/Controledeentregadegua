@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.ComboBoxComponent
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DatePicker
 import com.gabriel_barros.controle_entregua_agua.ui.components.util.DropDownMenuComponent
-import com.gabriel_barros.domain.domain.entity.Pagamento
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
 import com.gabriel_barros.domain.domain.entity.TipoPagamento
 import java.time.LocalDate
 
@@ -27,7 +27,7 @@ import java.time.LocalDate
 @Composable
 fun CadastrarPagamentoComponent(
     clientes: List<Pair<Long, String>>,
-    onSave: (Pagamento) -> Unit
+    onSave: (PagamentoEntity) -> Unit
 ) {
 
     var data by remember { mutableStateOf(LocalDate.now()) }
@@ -60,7 +60,7 @@ fun CadastrarPagamentoComponent(
             modifier = Modifier.align(Alignment.End),
             onClick = {
                 onSave(
-                    Pagamento(
+                    PagamentoEntity(
                         id = 0,
                         pedido_id = pedidoId,
                         valor = valor.toDouble(),

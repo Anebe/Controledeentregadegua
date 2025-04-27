@@ -1,6 +1,6 @@
 
 import com.gabriel_barros.domain.domain.entity.Cliente
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.portout.ClientePortOut
 import com.gabriel_barros.domain.domain.portout.EntregaPortOut
 import com.gabriel_barros.domain.domain.portout.PagamentoPortOut
@@ -54,7 +54,7 @@ class Teste : KoinTest {
     fun add() {
         runBlocking {
             // Criando produtos
-            val produto1 = Produto(
+            val produto1 = ProdutoEntity(
 
                 preco = 10.0,
                 nome = "Coca-Cola",
@@ -63,7 +63,7 @@ class Teste : KoinTest {
                 descricao = "Refrigerante 2L",
                 reservado = 0
             )
-            val produto2 = Produto(
+            val produto2 = ProdutoEntity(
 
                 preco = 5.0,
                 nome = "Chocolate",
@@ -72,7 +72,7 @@ class Teste : KoinTest {
                 descricao = "Chocolate ao leite",
                 reservado = 0
             )
-            val produto3 = Produto(
+            val produto3 = ProdutoEntity(
 
                 preco = 20.0,
                 nome = "Pizza",
@@ -81,7 +81,7 @@ class Teste : KoinTest {
                 descricao = "Pizza grande de calabresa",
                 reservado = 0
             )
-            val produto4 = Produto(
+            val produto4 = ProdutoEntity(
 
                 preco = 8.0,
                 nome = "Suco de Laranja",

@@ -7,9 +7,9 @@ import com.gabriel_barros.domain.domain.entity.Endereco
 import com.gabriel_barros.domain.domain.entity.Entrega
 import com.gabriel_barros.domain.domain.entity.ItensEntrega
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pagamento
-import com.gabriel_barros.domain.domain.entity.Pedido
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.supabase.entity.CategoriaSupabase
 import com.gabriel_barros.supabase.entity.ClienteSupabase
 import com.gabriel_barros.supabase.entity.EmprestimoPosseSupabase
@@ -68,7 +68,7 @@ internal object Mapper {
         )
     }
 
-    fun toPedidoSupabase(pedido: Pedido): PedidoSupabase {
+    fun toPedidoSupabase(pedido: PedidoEntity): PedidoSupabase {
         return PedidoSupabase(
             id = pedido.id,
             cliente_id = pedido.cliente_id,
@@ -79,8 +79,8 @@ internal object Mapper {
         )
     }
 
-    fun toPedido(pedido: PedidoSupabase): Pedido {
-        return Pedido(
+    fun toPedido(pedido: PedidoSupabase): PedidoEntity {
+        return PedidoEntity(
             id = pedido.id,
             cliente_id = pedido.cliente_id,
             data = pedido.data,
@@ -128,7 +128,7 @@ internal object Mapper {
         )
     }
 
-    fun toPagamentoSupabase(pagamento: Pagamento): PagamentoSupabase {
+    fun toPagamentoSupabase(pagamento: PagamentoEntity): PagamentoSupabase {
         return PagamentoSupabase(
             id = pagamento.id,
             pedido_id = pagamento.pedido_id, // Pedido_id no lugar de um objeto completo
@@ -138,8 +138,8 @@ internal object Mapper {
         )
     }
 
-    fun toPagamento(pagamentoSupabase: PagamentoSupabase): Pagamento {
-        return Pagamento(
+    fun toPagamento(pagamentoSupabase: PagamentoSupabase): PagamentoEntity {
+        return PagamentoEntity(
             id = pagamentoSupabase.id,
             pedido_id = pagamentoSupabase.pedido_id, // Pedido_id no lugar de um objeto completo
             data = pagamentoSupabase.data,
@@ -147,7 +147,7 @@ internal object Mapper {
             pagamento = pagamentoSupabase.pagamento,
         )
     }
-    fun toProdutoSupabase(produto: Produto): ProdutoSupabase {
+    fun toProdutoSupabase(produto: ProdutoEntity): ProdutoSupabase {
         return ProdutoSupabase(
             id = produto.id,
             preco = produto.preco,
@@ -158,8 +158,8 @@ internal object Mapper {
             reservado = produto.reservado)
     }
 
-    fun toProduto(produtoSupabase: ProdutoSupabase): Produto {
-        return Produto(
+    fun toProduto(produtoSupabase: ProdutoSupabase): ProdutoEntity {
+        return ProdutoEntity(
             id = produtoSupabase.id,
             preco = produtoSupabase.preco,
             nome = produtoSupabase.nome,

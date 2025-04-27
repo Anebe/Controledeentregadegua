@@ -7,8 +7,8 @@ import io.github.jan.supabase.postgrest.Postgrest
 internal object SupabaseClientProvider {
     var schema: String = SUPABASE_SCHEMA.TESTE.toString()
     val supabase = createSupabaseClient(
-        supabaseUrl = System.getProperty("SUPABASE_URL"),
-        supabaseKey = System.getProperty("SUPABASE_KEY")
+        supabaseUrl = Supabase.URL,
+        supabaseKey = Supabase.KEY
     ) {
         install(Auth)
         install(Postgrest)

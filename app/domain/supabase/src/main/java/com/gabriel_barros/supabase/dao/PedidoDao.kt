@@ -1,16 +1,15 @@
 package com.gabriel_barros.supabase.dao
 
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pedido
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
 import com.gabriel_barros.domain.domain.error.BadRequestException
 import com.gabriel_barros.domain.domain.portout.PedidoPortOut
 import com.gabriel_barros.supabase.SupabaseClientProvider
-import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 
-internal class PedidoDAO(_supabase: SupabaseClient) : PedidoPortOut {
+internal class PedidoDAO: PedidoPortOut {
     private val schema = SupabaseClientProvider.schema
-    private val supabase = _supabase
+    private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "pedidos"
 
 
@@ -97,12 +96,12 @@ internal class PedidoDAO(_supabase: SupabaseClient) : PedidoPortOut {
 //        }
 //    }
 
-    override suspend fun savePedido(pedido: Pedido, itens: Set<ItensPedido>): Pedido {
+    override suspend fun savePedido(pedido: PedidoEntity, itens: Set<ItensPedido>): PedidoEntity {
         try {
             val novoPedido = supabase
                 .from(schema, TABLE)
                 .upsert(pedido) { select() }
-                    .decodeSingle<Pedido>()
+                    .decodeSingle<PedidoEntity>()
 
             val item = itens.map { it.copy(pedido_id = novoPedido.id) }
             supabase.from(schema, "itens_pedidos").upsert(item)
@@ -113,12 +112,12 @@ internal class PedidoDAO(_supabase: SupabaseClient) : PedidoPortOut {
         throw BadRequestException("Não foi possível adicionar pedido")
     }
 
-    override suspend fun deletePedido(id: Long): Pedido {
+    override suspend fun deletePedido(id: Long): PedidoEntity {
         try {
             val pedido = supabase.from(schema, TABLE).delete {
-                filter { Pedido::id eq id }
+                filter { PedidoEntity::id eq id }
                 select()
-            }.decodeSingleOrNull<Pedido>()
+            }.decodeSingleOrNull<PedidoEntity>()
             pedido?.let { return it }
         } catch (exception: Exception) {
             println(exception.toString())

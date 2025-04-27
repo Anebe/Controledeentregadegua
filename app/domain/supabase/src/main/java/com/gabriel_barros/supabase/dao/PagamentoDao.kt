@@ -1,6 +1,6 @@
 package com.gabriel_barros.supabase.dao
 
-import com.gabriel_barros.domain.domain.entity.Pagamento
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
 import com.gabriel_barros.domain.domain.error.BadRequestException
 import com.gabriel_barros.domain.domain.portout.PagamentoPortOut
 import com.gabriel_barros.supabase.SupabaseClientProvider
@@ -26,11 +26,11 @@ internal class PagamentoDao : PagamentoPortOut {
 //    }
 
     //TODO tratar excpetions
-    override suspend fun savePagamento(pagamento: Pagamento): Pagamento {
+    override suspend fun savePagamento(pagamento: PagamentoEntity): PagamentoEntity {
         try {
             val response =
                 supabase.from(schema, TABLE).upsert(pagamento) { select() }
-                    .decodeSingleOrNull<Pagamento>()
+                    .decodeSingleOrNull<PagamentoEntity>()
             response?.let { return it }
 
         } catch (exception: Exception) {
@@ -39,12 +39,12 @@ internal class PagamentoDao : PagamentoPortOut {
     }
 
     //TODO tratar excpetions
-    override suspend fun deletePagamento(id: Long): Pagamento {
+    override suspend fun deletePagamento(id: Long): PagamentoEntity {
         try {
             val pagamento = supabase.from(schema, TABLE).delete {
-                filter { Pagamento::id eq id }
+                filter { PagamentoEntity::id eq id }
                 select()
-            }.decodeSingleOrNull<Pagamento>()
+            }.decodeSingleOrNull<PagamentoEntity>()
             pagamento?.let { return it }
         } catch (exception: Exception) {
         }

@@ -1,15 +1,14 @@
 package com.gabriel_barros.supabase.dao
 
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.error.BadRequestException
 import com.gabriel_barros.domain.domain.portout.ProdutoPortOut
-import com.gabriel_barros.supabase.SUPABASE_SCHEMA
-import io.github.jan.supabase.SupabaseClient
+import com.gabriel_barros.supabase.SupabaseClientProvider
 import io.github.jan.supabase.postgrest.from
 
-internal class ProdutoDAO(_supabase: SupabaseClient): ProdutoPortOut {
-    private val supabase = _supabase
-    private val schema = SUPABASE_SCHEMA.TESTE.toString()
+internal class ProdutoDAO: ProdutoPortOut {
+    private val schema = SupabaseClientProvider.schema
+    private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "produtos"
 
 
@@ -29,25 +28,25 @@ internal class ProdutoDAO(_supabase: SupabaseClient): ProdutoPortOut {
 //        return produto
 //    }
 
-    override suspend fun saveProduto(pedido: Produto): Produto {
+    override suspend fun saveProduto(pedido: ProdutoEntity): ProdutoEntity {
         try {
             val novoProduto = supabase.from(schema, TABLE)
                 .upsert(pedido) { select() }
-                .decodeSingleOrNull<Produto>()
+                .decodeSingleOrNull<ProdutoEntity>()
             novoProduto?.let { return it }
         } catch (exception: Exception) {
         }
         throw BadRequestException("Não foi possível adicionar produto")
     }
 
-    override suspend fun deleteProduto(id: Long): Produto {
+    override suspend fun deleteProduto(id: Long): ProdutoEntity {
         try {
             val produto = supabase.from(schema, TABLE)
                 .delete {
-                    filter { Produto::id eq id }
+                    filter { ProdutoEntity::id eq id }
                     select()
                 }
-                .decodeSingleOrNull<Produto>()
+                .decodeSingleOrNull<ProdutoEntity>()
             produto?.let { return it }
         } catch (exception: Exception) {
         }

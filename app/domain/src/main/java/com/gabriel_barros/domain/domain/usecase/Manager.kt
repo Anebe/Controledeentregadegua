@@ -4,14 +4,14 @@ import com.gabriel_barros.domain.domain.entity.Cliente
 import com.gabriel_barros.domain.domain.entity.Entrega
 import com.gabriel_barros.domain.domain.entity.ItensEntrega
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pagamento
-import com.gabriel_barros.domain.domain.entity.Pedido
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.entity.TipoPagamento
 import java.time.LocalDate
 
 interface ProdutoManager {
-    suspend fun registerProduto(produto: Produto): Produto
+    suspend fun registerProduto(produto: ProdutoEntity): ProdutoEntity
     //suspend fun deleteProduto(id: Long): Produto
 }
 
@@ -24,7 +24,7 @@ interface PedidoManager {
 
     data class ItemDoPedidoInput(val qtd: Int, val produtoId: Long)
 
-    suspend fun makePedido(pedido: PedidoInput): Pedido
+    suspend fun makePedido(pedido: PedidoInput): PedidoEntity
     suspend fun checkAndFinalizePedido(pedidoId: Long)
     suspend fun validateStockForPedido(itens: List<ItensPedido>): Boolean
 }
@@ -32,7 +32,7 @@ interface PedidoManager {
 interface PagamentoManager {
     data class PagamentoDTO(val valor: Double, val tipoPagamento: TipoPagamento)
 
-    suspend fun processPagamento(clienteId: Long, pagamento: PagamentoDTO): List<Pagamento>
+    suspend fun processPagamento(clienteId: Long, pagamento: PagamentoDTO): List<PagamentoEntity>
 
     suspend fun payPedido(pedidoId: Long, pagamento: PagamentoDTO)
     suspend fun payPedidoRemainder(pedidoId: Long)

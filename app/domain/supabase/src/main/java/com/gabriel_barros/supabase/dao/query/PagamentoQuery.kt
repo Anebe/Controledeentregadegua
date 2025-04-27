@@ -1,6 +1,6 @@
 package com.gabriel_barros.supabase.dao.query
 
-import com.gabriel_barros.domain.domain.entity.Pagamento
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
 import com.gabriel_barros.domain.domain.portout.query.PagamentoQueryBuilder
 import com.gabriel_barros.supabase.SupabaseClientProvider
 import io.github.jan.supabase.auth.PostgrestFilterDSL
@@ -14,12 +14,12 @@ internal class PagamentoQuery : PagamentoQueryBuilder {
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
     override fun getPagamentoById(vararg pagamentoId: Long): PagamentoQueryBuilder {
-        query.add { isIn(Pagamento::id.name, pagamentoId.toList()) }
+        query.add { isIn(PagamentoEntity::id.name, pagamentoId.toList()) }
         return this
     }
 
     override fun getPagamentosByPedido(vararg pedidoId: Long): PagamentoQueryBuilder {
-        query.add { isIn(Pagamento::pedido_id.name, pedidoId.toList()) }
+        query.add { isIn(PagamentoEntity::pedido_id.name, pedidoId.toList()) }
         return this
     }
 
@@ -27,26 +27,26 @@ internal class PagamentoQuery : PagamentoQueryBuilder {
         return this
     }
 
-    override suspend fun buildExecuteAsSingle(): Pagamento {
+    override suspend fun buildExecuteAsSingle(): PagamentoEntity {
         val result = supabase.from(schema, TABLE).select {
             if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
             }
-        }.decodeSingle<Pagamento>()
+        }.decodeSingle<PagamentoEntity>()
         query.clear()
         return result
     }
 
-    override suspend fun buildExecuteAsSList(): List<Pagamento> {
+    override suspend fun buildExecuteAsSList(): List<PagamentoEntity> {
         val result = supabase.from(schema, TABLE).select {
             if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
             }
-        }.decodeList<Pagamento>()
+        }.decodeList<PagamentoEntity>()
         query.clear()
         return result
     }

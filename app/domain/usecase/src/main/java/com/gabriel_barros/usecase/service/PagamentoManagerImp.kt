@@ -1,6 +1,6 @@
 package com.gabriel_barros.usecase.service
 
-import com.gabriel_barros.domain.domain.entity.Pagamento
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
 import com.gabriel_barros.domain.domain.entity.StatusPedido
 import com.gabriel_barros.domain.domain.entity.TipoPagamento
 import com.gabriel_barros.domain.domain.portout.PagamentoPortOut
@@ -27,7 +27,7 @@ class PagamentoManagerImp(
     override suspend fun processPagamento(
         clienteId: Long,
         pagamento: PagamentoManager.PagamentoDTO
-    ): List<Pagamento> {
+    ): List<PagamentoEntity> {
 
         if (pagamento.valor <= 0.0) return emptyList()
 
@@ -36,7 +36,7 @@ class PagamentoManagerImp(
             .getPedidoByStatus(StatusPedido.PENDENTE)
             .getPedidoByClienteId(clienteId)
             .buildExecuteAsSList()
-        val novosPagamentos = mutableListOf<Pagamento>()
+        val novosPagamentos = mutableListOf<PagamentoEntity>()
         val verificaPedidos = mutableListOf<Long>()
 
         pedidos.forEach { pedido ->
@@ -57,7 +57,7 @@ class PagamentoManagerImp(
                 }
 
                 novosPagamentos.add(
-                    Pagamento(
+                    PagamentoEntity(
                         id = 0,
                         pedido_id = pedido.id,
                         data = LocalDate.now(),
@@ -71,7 +71,7 @@ class PagamentoManagerImp(
 
             }
         }
-        val resultPagamentos = mutableListOf<Pagamento>()
+        val resultPagamentos = mutableListOf<PagamentoEntity>()
         novosPagamentos.forEachIndexed { index, pagamento ->
             pagamentoOut.savePagamento(pagamento).let { pagamentoSalvo ->
                 resultPagamentos.add(pagamentoSalvo)
@@ -99,7 +99,7 @@ class PagamentoManagerImp(
         valorParaPagar = pedido.valor_total - totalPagamentosFeitos
 
         pagamentoOut.savePagamento(
-            Pagamento(
+            PagamentoEntity(
                 id = 0,
                 pedido_id = pedidoId,
                 data = LocalDate.now(),

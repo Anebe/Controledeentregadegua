@@ -3,13 +3,12 @@ package com.gabriel_barros.supabase.dao
 import com.gabriel_barros.domain.domain.entity.Cliente
 import com.gabriel_barros.domain.domain.error.BadRequestException
 import com.gabriel_barros.domain.domain.portout.ClientePortOut
-import com.gabriel_barros.supabase.SUPABASE_SCHEMA
-import io.github.jan.supabase.SupabaseClient
+import com.gabriel_barros.supabase.SupabaseClientProvider
 import io.github.jan.supabase.postgrest.from
 
-internal class ClienteDAO(_supabase: SupabaseClient): ClientePortOut {
-    private val schema = SUPABASE_SCHEMA.TESTE.toString()
-    private val supabase = _supabase
+internal class ClienteDAO: ClientePortOut {
+    private val schema = SupabaseClientProvider.schema
+    private val supabase = SupabaseClientProvider.supabase
     private val TABLE: String = "clientes"
 
 //    override suspend fun getClienteById(id: Long): Cliente? {

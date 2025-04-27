@@ -1,6 +1,6 @@
 package com.gabriel_barros.supabase.dao.query
 
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.portout.query.ProdutoQueryBuilder
 import com.gabriel_barros.supabase.SupabaseClientProvider
 import io.github.jan.supabase.auth.PostgrestFilterDSL
@@ -19,31 +19,31 @@ internal class ProdutoQuery: ProdutoQueryBuilder {
     }
 
     override fun getProdutoById(id: List<Long>): ProdutoQueryBuilder {
-        query.add { Produto::id isIn id }
+        query.add { ProdutoEntity::id isIn id }
         return this
     }
 
 
-    override suspend fun buildExecuteAsSingle(): Produto {
+    override suspend fun buildExecuteAsSingle(): ProdutoEntity {
         val result = supabase.from(schema, TABLE).select {
             if(query.isNotEmpty()){
                 filter {
                     query.forEach { it() }
                 }
             }
-        }.decodeSingle<Produto>()
+        }.decodeSingle<ProdutoEntity>()
         query.clear()
         return result
     }
 
-    override suspend fun buildExecuteAsSList(): List<Produto> {
+    override suspend fun buildExecuteAsSList(): List<ProdutoEntity> {
         val result = supabase.from(schema, TABLE).select {
             if(query.isNotEmpty()){
                 filter {
                     query.forEach { it() }
                 }
             }
-        }.decodeList<Produto>()
+        }.decodeList<ProdutoEntity>()
         query.clear()
         return result
     }

@@ -1,7 +1,7 @@
 package com.gabriel_barros.supabase.dao.query
 
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pedido
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
 import com.gabriel_barros.domain.domain.entity.StatusPedido
 import com.gabriel_barros.domain.domain.portout.query.ItemPedidoQueryBuilder
 import com.gabriel_barros.domain.domain.portout.query.PedidoQueryBuilder
@@ -42,17 +42,17 @@ internal class PedidoQuery : PedidoQueryBuilder {
     private val query = mutableListOf<@PostgrestFilterDSL PostgrestFilterBuilder.() -> Unit>()
 
     override fun getPedidoById(vararg pedidoId: Long): PedidoQuery {
-        query.add { isIn(Pedido::id.name, pedidoId.toList()) }
+        query.add { isIn(PedidoEntity::id.name, pedidoId.toList()) }
         return this
     }
 
     override fun getPedidoByClienteId(vararg clienteId: Long): PedidoQuery {
-        query.add { isIn(Pedido::cliente_id.name, clienteId.toList()) }
+        query.add { isIn(PedidoEntity::cliente_id.name, clienteId.toList()) }
         return this
     }
 
     override fun getPedidoByStatus(statusPedido: StatusPedido): PedidoQuery {
-        query.add { eq(Pedido::status.name, statusPedido) }
+        query.add { eq(PedidoEntity::status.name, statusPedido) }
         return this
     }
 
@@ -60,26 +60,26 @@ internal class PedidoQuery : PedidoQueryBuilder {
         return this
     }
 
-    override suspend fun buildExecuteAsSingle(): Pedido {
+    override suspend fun buildExecuteAsSingle(): PedidoEntity {
         val result = supabase.from(schema, TABLE).select {
             if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
             }
-        }.decodeSingle<Pedido>()
+        }.decodeSingle<PedidoEntity>()
         query.clear()
         return result
     }
 
-    override suspend fun buildExecuteAsSList(): List<Pedido> {
+    override suspend fun buildExecuteAsSList(): List<PedidoEntity> {
         val result = supabase.from(schema, TABLE).select {
             if (query.isNotEmpty()) {
                 filter {
                     query.forEach { it() }
                 }
             }
-        }.decodeList<Pedido>()
+        }.decodeList<PedidoEntity>()
         query.clear()
         return result
     }

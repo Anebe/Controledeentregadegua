@@ -24,9 +24,9 @@ import com.gabriel_barros.domain.domain.entity.Cliente
 import com.gabriel_barros.domain.domain.entity.Entrega
 import com.gabriel_barros.domain.domain.entity.ItensEntrega
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pagamento
-import com.gabriel_barros.domain.domain.entity.Pedido
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.PagamentoEntity
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.portout.query.ClienteFilterBuilder
 import com.gabriel_barros.domain.domain.portout.query.EntregaQueryBuilder
 import com.gabriel_barros.domain.domain.portout.query.ItemEntregaQueryBuilder
@@ -62,11 +62,11 @@ fun PedidoDetalheScreen(navController: NavController, idPedido: Long) {
 
     val itensPedido = remember { mutableStateListOf<ItensPedido>() }
     var itensEntrega = remember { mutableStateListOf<ItensEntrega>() }
-    var pagamento = remember { mutableStateListOf<Pagamento>() }
-    var pedido by remember { mutableStateOf(Pedido.emptyPedido()) }
+    var pagamento = remember { mutableStateListOf<PagamentoEntity>() }
+    var pedido by remember { mutableStateOf(PedidoEntity.emptyPedido()) }
     var cliente by remember { mutableStateOf(Cliente.emptyCliente()) }
     var entregas = remember { mutableStateListOf<Entrega>() }
-    var produtos = remember { mutableStateListOf<Produto>() }
+    var produtos = remember { mutableStateListOf<ProdutoEntity>() }
 
     LaunchedEffect(Unit) {
         pedido = pedidoQuery.getPedidoById(idPedido).buildExecuteAsSingle()

@@ -20,14 +20,14 @@ import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAgu
 import com.gabriel_barros.domain.domain.entity.Entrega
 import com.gabriel_barros.domain.domain.entity.ItensEntrega
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.entity.StatusEntrega
 import java.time.LocalDate
 
 
 @Composable
 fun CadastrarEntregaResumidoComponent(
-    produtosEntregues: List<Produto>,
+    produtosEntregues: List<ProdutoEntity>,
     entregasAnteriores: List<ItensEntrega>,
     itensPedido: List<ItensPedido>,
     onSave: (Entrega, List<ItensEntrega>) -> Unit){

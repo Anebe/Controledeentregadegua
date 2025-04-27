@@ -1,7 +1,7 @@
 package com.gabriel_barros.domain.domain.portout.query
 
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pedido
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
 import com.gabriel_barros.domain.domain.entity.StatusPedido
 
 
@@ -14,8 +14,8 @@ interface PedidoQueryBuilder{
 
     fun getAllPedidos(): PedidoQueryBuilder
 
-    suspend fun buildExecuteAsSingle(): Pedido
-    suspend fun buildExecuteAsSList(): List<Pedido>
+    suspend fun buildExecuteAsSingle(): PedidoEntity
+    suspend fun buildExecuteAsSList(): List<PedidoEntity>
 }
 
 interface ItemPedidoQueryBuilder{

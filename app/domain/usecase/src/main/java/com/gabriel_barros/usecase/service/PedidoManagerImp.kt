@@ -1,8 +1,8 @@
 package com.gabriel_barros.usecase.service
 
 import com.gabriel_barros.domain.domain.entity.ItensPedido
-import com.gabriel_barros.domain.domain.entity.Pedido
-import com.gabriel_barros.domain.domain.entity.Produto
+import com.gabriel_barros.domain.domain.entity.PedidoEntity
+import com.gabriel_barros.domain.domain.entity.ProdutoEntity
 import com.gabriel_barros.domain.domain.entity.StatusPedido
 import com.gabriel_barros.domain.domain.error.BadRequestException
 import com.gabriel_barros.domain.domain.error.NotFoundException
@@ -66,7 +66,7 @@ class PedidoManagerImp(
     }
 
     private fun calculatePrecoTotalOfPedido(
-        produtos: Set<Produto>,
+        produtos: Set<ProdutoEntity>,
         produtoExigidos: Set<PedidoManager.ItemDoPedidoInput>
     ): Double {
         var valorTotal = 0.0
@@ -80,7 +80,7 @@ class PedidoManagerImp(
     }
 
     private fun validaQtdExigidaNoPedidoOrThrow(
-        produtos: Set<Produto>,
+        produtos: Set<ProdutoEntity>,
         produtoExigidos: Set<PedidoManager.ItemDoPedidoInput>
     ) {
         produtos.forEach { produto ->
@@ -94,7 +94,7 @@ class PedidoManagerImp(
     }
 
     private suspend fun reservarProdutosParaPedido(
-        produtos: Set<Produto>,
+        produtos: Set<ProdutoEntity>,
         produtoExigidos: Set<PedidoManager.ItemDoPedidoInput>
     ) {
         produtos.forEach { produto ->
@@ -106,7 +106,7 @@ class PedidoManagerImp(
         }
     }
 
-    private fun validarProdutosExistem(produtosIds: List<Long>, produtos: Set<Produto>) {
+    private fun validarProdutosExistem(produtosIds: List<Long>, produtos: Set<ProdutoEntity>) {
         if (produtosIds.size != produtos.size) {
             throw NotFoundException("Algum(ns) do(s) produto(s) não foi(ram) localizado(s)")
         }
@@ -117,7 +117,7 @@ class PedidoManagerImp(
             ItensPedido(produto_id = it.produtoId, qtd = it.qtd)
         }.toSet()
 
-    private fun criarPedido(input: PedidoManager.PedidoInput, valorTotal: Double) = Pedido(
+    private fun criarPedido(input: PedidoManager.PedidoInput, valorTotal: Double) = PedidoEntity(
         cliente_id = input.clienteId,
         data = LocalDate.now(),
         data_agendada_para_entrega = input.dataAgendadaParaEntrega,
@@ -125,7 +125,7 @@ class PedidoManagerImp(
         valor_total = valorTotal,
     )
 
-    override suspend fun makePedido(pedidoInput: PedidoManager.PedidoInput): Pedido {
+    override suspend fun makePedido(pedidoInput: PedidoManager.PedidoInput): PedidoEntity {
         ValidatePedidoInput.validateOrThrow(pedidoInput)
 
         val produtosIds = pedidoInput.itensDoPedido.map { it.produtoId }
