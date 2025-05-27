@@ -1,0 +1,24 @@
+package com.gabriel_barros.data_supabase
+
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+
+internal object SupabaseClientProvider {
+    var schema: String = SUPABASE_SCHEMA.TESTE.toString()
+    val supabase = createSupabaseClient(
+        supabaseUrl = Supabase.URL,
+        supabaseKey = Supabase.KEY
+    ) {
+        install(Auth)
+        install(Postgrest)
+    }
+}
+enum class SUPABASE_SCHEMA(val schemaName: String) {
+    PUBLIC("public"),
+    TESTE("teste");
+
+    override fun toString(): String {
+        return schemaName
+    }
+}

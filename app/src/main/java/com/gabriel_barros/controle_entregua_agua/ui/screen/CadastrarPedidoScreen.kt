@@ -13,12 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gabriel_barros.controle_entregua_agua.ui.components.pedido.CadastrarPedidoComponent
-import com.gabriel_barros.domain.domain.portout.query.ClienteFilterBuilder
-import com.gabriel_barros.domain.domain.portout.query.ProdutoQueryBuilder
-import com.gabriel_barros.domain.domain.usecase.ClienteManager
-import com.gabriel_barros.domain.domain.usecase.PedidoManager
-import com.gabriel_barros.domain.domain.usecase.ProdutoManager
-import kotlinx.coroutines.launch
+import com.gabriel_barros.usecase.usecase.ClienteManager
+import com.gabriel_barros.usecase.usecase.ClienteSearch
+import com.gabriel_barros.usecase.usecase.PedidoManager
+import com.gabriel_barros.usecase.usecase.ProdutoManager
+import com.gabriel_barros.usecase.usecase.ProdutoSearch
 import org.koin.compose.koinInject
 
 
@@ -32,27 +31,28 @@ fun CadastrarPedidoScreen (navController: NavController) {
     val pedidoManager: PedidoManager = koinInject()
     val clienteManager: ClienteManager = koinInject()
     val produtoManager: ProdutoManager = koinInject()
-    val clienteQuery: ClienteFilterBuilder = koinInject()
-    val produtoQuery: ProdutoQueryBuilder = koinInject()
+    val clienteSearch: ClienteSearch = koinInject()
+    val produtoSearch: ProdutoSearch = koinInject()
 
-    var nomesClientes by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
-    var nomesProdutos by remember { mutableStateOf(emptyList<Pair<Long, String>>()) }
+    var nomesClientes by remember { mutableStateOf(emptyMap<Long, String>()) }
+    var nomesProdutos by remember { mutableStateOf(emptyMap<Long, String>()) }
 
     LaunchedEffect(Unit) {
-        nomesClientes = clienteQuery.getAllClientes().buildExecuteAsSList().map { Pair(it.id,it.nome) }
-        nomesProdutos = produtoQuery.buildExecuteAsSList().map { Pair(it.id,it.nome) }
+        nomesClientes = clienteSearch.getAllClientesNomes()
+        nomesProdutos = produtoSearch.getAllProdutosNomes()
     }
     Box(modifier = Modifier.padding(10.dp)){
-        CadastrarPedidoComponent(nomesClientes, nomesProdutos) { pedido, produtos ->
-            val prod = produtos.map { (id, quantidade) ->
-                PedidoManager.ItemDoPedidoInput(produtoId = id, qtd =  quantidade) }.toSet()
-            val pedidoInput = PedidoManager.PedidoInput(pedido.cliente_id, prod)
-            coroutineScope.launch {
-                val newCliente = pedidoManager.makePedido(pedidoInput)
-                newCliente.let {
-                    navController.popBackStack()
-                }
-            }
-        }
+//        CadastrarPedidoComponent(nomesClientes, nomesProdutos) { pedido, produtos ->
+//            val prod = produtos.map { (id, quantidade) ->
+//                PedidoManager.ItemDoPedidoInput(produtoId = id, qtd =  quantidade) }.toSet()
+//            val pedidoInput = PedidoManager.PedidoInput(pedido.cliente_id, prod)
+//            coroutineScope.launch {
+//                val newCliente = pedidoManager.makePedido(pedidoInput)
+//                newCliente.let {
+//                    navController.popBackStack()
+//                }
+//            }
+//        }
+        CadastrarPedidoComponent()
     }
 }

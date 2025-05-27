@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.gabriel_barros.controle_entregua_agua.ui.AppNavigation
 import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
-import com.gabriel_barros.ioc.dependenceInjectionPrincipal
+import com.gabriel_barros.depence_injection.dependenceInjectionPrincipal
 import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -44,14 +44,8 @@ fun principal(){
     ControleDeEntregaDeAguaTheme {
         Scaffold() {
             Box(Modifier.padding(it)){
-                //PedidoList()
-                //formCadastro()
-                //CadastroPedido()
                 val navController = rememberNavController()
                 AppNavigation(navController = navController)
-//                list()
-//                ListaPedidosScreen(pedidos = listOf(Pedido()))
-                //ComboBoxComponent(names) {}
 
             }
         }

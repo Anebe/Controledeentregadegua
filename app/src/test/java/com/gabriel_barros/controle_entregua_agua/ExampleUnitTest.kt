@@ -50,7 +50,11 @@ class ExampleUnitTest() : KoinTest {
     val clienteFilter: ClienteFilterBuilder by inject()
     val clienteQuery: ClienteSelecBuilder by inject()
 
-
+    val produtoManager: ProdutoManager  by inject()
+    val pedidoManager: PedidoManager by inject()
+    val pagamentoManager: PagamentoManager by inject()
+    val entregaManager: EntregaManager by inject()
+    val clienteManager: ClienteManager by inject()
 
 
     @Test

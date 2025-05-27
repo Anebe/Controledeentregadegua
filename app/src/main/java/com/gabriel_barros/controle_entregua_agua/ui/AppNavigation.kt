@@ -10,7 +10,6 @@ import com.gabriel_barros.controle_entregua_agua.ui.screen.ClienteScreen
 import com.gabriel_barros.controle_entregua_agua.ui.screen.HomeScreen
 import com.gabriel_barros.controle_entregua_agua.ui.screen.PedidoDetalheScreen
 import com.gabriel_barros.controle_entregua_agua.ui.screen.PedidoScreen
-import com.gabriel_barros.controle_entregua_agua.ui.screen.TesteScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -24,7 +23,5 @@ fun AppNavigation(navController: NavHostController) {
             navController = navController,
             idPedido = it.arguments?.getString("pedidoId")?.toLong() ?: 0
         )}
-        composable("testeScreen") { TesteScreen() }
-
     }
 }

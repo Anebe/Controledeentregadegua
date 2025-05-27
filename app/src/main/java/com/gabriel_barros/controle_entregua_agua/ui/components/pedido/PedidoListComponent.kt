@@ -8,24 +8,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.tooling.preview.Preview
-import com.gabriel_barros.controle_entregua_agua.ui.theme.ControleDeEntregaDeAguaTheme
-import com.gabriel_barros.domain.domain.entity.Cliente
-import com.gabriel_barros.domain.domain.entity.PedidoEntity
-import com.gabriel_barros.domain.domain.usecase.EntregaManager
-import com.gabriel_barros.domain.domain.usecase.PagamentoManager
+import com.gabriel_barros.usecase.dto.PedidoCompletoOutput
+import com.gabriel_barros.usecase.usecase.EntregaManager
+import com.gabriel_barros.usecase.usecase.PagamentoManager
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 
+@Composable fun PedidoListComponent(onItemClick: (PedidoCompletoOutput) -> Unit){
+
+}
 @Composable
 fun PedidoListComponent(
-    pedidos: List<Pair<PedidoEntity, Cliente>>,
-    onItemClick: (PedidoEntity, Cliente) -> Unit
+    pedidos: List<PedidoCompletoOutput>,
+    onItemClick: (PedidoCompletoOutput) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
-    val pagamentoDAO: PagamentoManager = koinInject()
+    val pagamentoManager: PagamentoManager = koinInject()
     val entregaDAO: EntregaManager = koinInject()
 
     val pagamentos = remember { mutableListOf<Long>() }
@@ -35,11 +35,11 @@ fun PedidoListComponent(
         Button(onClick = {
             scope.launch {
                 pagamentos.forEach { pedidoId ->
-                    pagamentoDAO.payPedidoRemainder(pedidoId)
+                    pagamentoManager.payPedidoRemainder(pedidoId)
                 }
-                Log.i("Info", "Ids ${ entregas.toString() }")
+                Log.i("Info", "Ids ${entregas.toString()}")
                 entregas.forEach { pedidoId ->
-                    entregaDAO.registerCompleteEntrega(pedidoId)
+                    entregaDAO.registerEntrega(pedidoId)
                 }
 
             }
@@ -48,20 +48,34 @@ fun PedidoListComponent(
         }
         LazyColumn {
             items(pedidos.size) { index ->
+//                PedidoItemResumido(
+//                    pedido = pedidos[index].first,
+//                    cliente = pedidos[index].second,
+//                    onClick = {
+//                        onItemClick(pedidos[index].first, pedidos[index].second)
+//                    },
+//                    onEntregaCheckChange = { isForAdd, pedidoId ->
+//                        if (isForAdd) entregas.add(pedidoId)
+//                        else entregas.remove(pedidoId)
+//                    },
+//                    onPagamentoCheckChange = { isForAdd, pedidoId ->
+//                        if (isForAdd) pagamentos.add(pedidoId)
+//                        else pagamentos.remove(pedidoId)
+//                    },
+//                    valorTotal = TODO()
+//                )
+                val pedicoCompleto = pedidos.get(index)
+                val pedido = pedicoCompleto.pedido
+                val frete = pedicoCompleto.frete
+                val divida = pedicoCompleto.divida
+
                 PedidoItemResumido(
-                    pedido = pedidos[index].first,
-                    cliente = pedidos[index].second,
-                    onClick = {
-                        onItemClick(pedidos[index].first, pedidos[index].second)
-                    },
-                    onEntregaCheckChange = { isForAdd, pedidoId ->
-                        if (isForAdd) entregas.add(pedidoId)
-                        else entregas.remove(pedidoId)
-                    },
-                    onPagamentoCheckChange = { isForAdd, pedidoId ->
-                        if (isForAdd) pagamentos.add(pedidoId)
-                        else pagamentos.remove(pedidoId)
-                    }
+                    cliente = pedido.cliente.nome,
+                    qtdProdutoPedido = pedido.produtos.sumOf { it.qtd },
+                    qtdProdutoEntregue = frete.produtos.sumOf { it.qtdEntregue },
+                    valorPago = divida.pagamentos.sumOf { it.valor }.toDouble(),
+                    valorTotal = divida.valor.toDouble(),
+                    onClick = { onItemClick(pedicoCompleto) }
                 )
             }
         }
@@ -71,13 +85,3 @@ fun PedidoListComponent(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun previewPedidoList() {
-    ControleDeEntregaDeAguaTheme {
-        PedidoListComponent(emptyList()) { pedido, cliente ->
-
-        }
-
-    }
-}

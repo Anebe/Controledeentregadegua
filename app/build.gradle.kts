@@ -70,10 +70,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":app:ioc"))
-    implementation(project(":app:domain"))
-    releaseImplementation(project(":app:domain:supabase"))
-    releaseImplementation(project(":app:domain:usecase"))
+    //implementation(project(":app:ioc"))
+//    implementation(project(":domain"))
+    implementation(project(":usecase"))
+    implementation(project(":depence-injection"))
+
+    releaseImplementation(project(":data-supabase"))
 
 
     implementation(libs.androidx.core.ktx)
@@ -109,9 +111,9 @@ dependencies {
     implementation (libs.sheets.compose.dialogs.core)
     implementation (libs.sheets.compose.dialogs.calendar)
 
-
-    implementation("io.insert-koin:koin-android:4.0.2")
-    implementation ("io.insert-koin:koin-androidx-compose:4.0.2")
-    implementation("io.insert-koin:koin-test:4.0.2")
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation("io.insert-koin:koin-android")
+    implementation ("io.insert-koin:koin-androidx-compose")
+    implementation(libs.koin.test)
 
 }
