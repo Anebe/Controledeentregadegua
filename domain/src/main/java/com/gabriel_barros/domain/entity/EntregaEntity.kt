@@ -45,6 +45,7 @@ class ProdutoEntregue(
         require(qtdRetornado >= 0) { "Quantidade de Retornavies não pode ser negativa" }
         require(qtdEntregue >= 0) { "Quantidade Entrege não pode ser negativa" }
     }
+
 }
 
 class ProdutoEntregaStatus(

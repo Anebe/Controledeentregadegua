@@ -5,16 +5,17 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.ClienteRoom
-import com.gabriel_barros.controle_entregua_agua.database.room.entity.ClienteComPedidoRoom
+import com.gabriel_barros.data_room.entity.ClienteComPedidoRoom
+import com.gabriel_barros.data_room.entity.ClienteRoom
+import com.gabriel_barros.domain_portout.ClientePortOut
 
 @Dao
-interface ClienteDaoRoom {
+interface ClienteDaoRoom: ClientePortOut {
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCliente(clienteRoom: ClienteRoom)
 
-    @Transaction
     @Query("SELECT * FROM ClienteRoom WHERE id = :clienteId")
     suspend fun getClienteComPedidos(clienteId: Long): ClienteComPedidoRoom
 

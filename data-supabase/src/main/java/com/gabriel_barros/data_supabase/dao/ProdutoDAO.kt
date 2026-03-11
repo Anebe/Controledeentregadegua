@@ -1,6 +1,8 @@
 package com.gabriel_barros.data_supabase.dao
 
+import com.gabriel_barros.data_supabase.Mapper
 import com.gabriel_barros.data_supabase.SupabaseClientProvider
+import com.gabriel_barros.data_supabase.entity.ProdutoSupabase
 import com.gabriel_barros.domain.entity.Produto
 import com.gabriel_barros.domain.error.BadRequestException
 import com.gabriel_barros.domain_portout.ProdutoPortOut
@@ -28,13 +30,15 @@ internal class ProdutoDAO: ProdutoPortOut {
 //        return produto
 //    }
 
-    override suspend fun saveProduto(pedido: Produto): Produto {
+    override suspend fun saveProduto(produto: Produto): Produto {
         try {
             val novoProduto = supabase.from(schema, TABLE)
-                .upsert(pedido) { select() }
-                .decodeSingleOrNull<Produto>()
-            novoProduto?.let { return it }
+                .upsert(Mapper.toProdutoSupabase(produto)) { select() }
+                .decodeSingleOrNull<ProdutoSupabase>()
+            novoProduto?.let { return Mapper.toProduto(it) }
         } catch (exception: Exception) {
+            throw  exception
+            //TODO
         }
         throw BadRequestException("Não foi possível adicionar produto")
     }
@@ -43,11 +47,11 @@ internal class ProdutoDAO: ProdutoPortOut {
         try {
             val produto = supabase.from(schema, TABLE)
                 .delete {
-                    filter { Produto::id eq id }
+                    filter { ProdutoSupabase::id eq id }
                     select()
                 }
-                .decodeSingleOrNull<Produto>()
-            produto?.let { return it }
+                .decodeSingleOrNull<ProdutoSupabase>()
+            produto?.let { return Mapper.toProduto(it) }
         } catch (exception: Exception) {
         }
         throw BadRequestException("Não foi possível deletar produto")

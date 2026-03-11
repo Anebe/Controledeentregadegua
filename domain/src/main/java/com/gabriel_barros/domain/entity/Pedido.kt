@@ -30,14 +30,25 @@ class Pedido(
     }
 
     fun addProduto(produto: Produto, qtd: Int) {
-        require(produtos.any { it.produtoId == produto.id }) { "O produto já está no pedido" }
+        require(produtos.all { it.produtoId != produto.id }) { "O produto já está no pedido" }
 
+        addProduto(produto.id, qtd)
+    }
+
+    fun addProduto(produtoId: Id, qtd: Int){
         produtos.add(ProdutoPedido(
-            produtoId = produto.id,
+            produtoId = produtoId,
             pedidoId = this.id,
             qtd = qtd
         ))
     }
+
+    fun addProduto(produto: List<ProdutoPedido>) = produtos.addAll(produto)
+
+    fun addProduto(produto: ProdutoPedido){
+        produtos.add(produto)
+    }
+
 
 //    fun atualizaProduto(produto: Produto, qtd: Int) {
 //        require(qtd > 0) { "A quantidade deve ser maior que 0." }

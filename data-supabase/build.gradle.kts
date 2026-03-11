@@ -20,20 +20,23 @@ tasks.test {
 
 dependencies {
     implementation(project(":data"))
-    //implementation(project(":domain-core"))
     implementation(project(":domain"))
+
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
-    implementation("io.insert-koin:koin-test:4.0.2")
+    implementation(libs.koin.test)
 
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(platform(libs.junit5.bom))
+    testImplementation(libs.junit5.jupiter.api)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit5.jupiter.engine)
 
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
 
     implementation(platform("io.github.jan-tennert.supabase:bom:3.0.3"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:auth-kt")
-    implementation("io.ktor:ktor-client-android:3.0.3")
+    implementation("io.ktor:ktor-client-android:3.1.3")
 }

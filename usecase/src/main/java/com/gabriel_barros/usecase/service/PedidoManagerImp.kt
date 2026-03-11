@@ -12,6 +12,7 @@ import com.gabriel_barros.domain_portout.query.ItemPedidoQueryBuilder
 import com.gabriel_barros.domain_portout.query.PagamentoQueryBuilder
 import com.gabriel_barros.domain_portout.query.PedidoQueryBuilder
 import com.gabriel_barros.domain_portout.query.ProdutoQueryBuilder
+import com.gabriel_barros.usecase.dto.ClienteOutput
 import com.gabriel_barros.usecase.dto.PedidoInput
 import com.gabriel_barros.usecase.dto.PedidoOutput
 import com.gabriel_barros.usecase.dto.ProdutoPedidoOutPut
@@ -68,8 +69,12 @@ internal class PedidoManagerImp(
 
     }
 
+    override suspend fun delete(id: Long) {
+        pedidoOut.deletePedido(id)
+    }
 
-    override suspend fun makePedido(pedidoInput: PedidoInput) {
+
+    override suspend fun makePedido(pedidoInput: PedidoInput): PedidoOutput {
 
         val produtosIds = pedidoInput.produtos.map { it.produtoId }
         val produtos = produtoQuery.getProdutoById(produtosIds).buildExecuteAsSList().toSet()
@@ -86,14 +91,33 @@ internal class PedidoManagerImp(
                 novoPedido.addProduto(produto, input.qtd)
             }
         }
+        //TODO Criar frete
         //TODO Criar Divida
         //TODO alguns cliente podem receber desconto
 
-
+        val cliente = clienteQuery.getClienteById(pedidoInput.clienteId).buildExecuteAsSingle()
         val pedidoResult = pedidoOut.savePedido(novoPedido)
-        produtos.forEach {
-            produtoManager.updateProduto(it)
+
+        val produtosOut = mutableSetOf<ProdutoPedidoOutPut>()
+
+        produtos.forEach { produto ->
+            produtoManager.updateProduto(produto)
+            produtosOut.add(ProdutoPedidoOutPut(
+                produtoId = produto.id.id,
+                qtd = pedidoResult.getProdutos().find { it.produtoId == produto.id }?.qtd ?: 0,
+                pedidoId = pedidoResult.id.id,
+                nome = produto.nome
+            ))
         }
+
+
+        return PedidoOutput(
+            id = pedidoResult.id.id,
+            data = pedidoResult.dataPedido,
+            status = pedidoResult.status,
+            cliente = ClienteOutput(cliente),
+            produtos = produtosOut
+        )
     }
 
     override suspend fun getByClienteId(clienteId: Long): PedidoOutput {
@@ -111,7 +135,7 @@ internal class PedidoManagerImp(
             val produto = produtosMap[pedido.produtoId]
             produto?.let {
                 ProdutoPedidoOutPut(
-                    id = pedido.pedidoId.id,
+                    pedidoId = pedido.pedidoId.id,
                     produtoId = pedido.produtoId.id,
                     nome = it.nome,
                     qtd = pedido.qtd

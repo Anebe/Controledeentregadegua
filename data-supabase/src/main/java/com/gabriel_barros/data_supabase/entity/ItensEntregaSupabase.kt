@@ -8,4 +8,5 @@ data class ItensEntregaSupabase(
     val itemPedido_id: Long,
     val qtdEntregue: Int,
     val qtdRetornado: Int,
-)
+){
+}

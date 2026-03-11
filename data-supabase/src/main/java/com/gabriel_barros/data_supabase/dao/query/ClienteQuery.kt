@@ -1,6 +1,8 @@
 package com.gabriel_barros.data_supabase.dao.query
 
+import com.gabriel_barros.data_supabase.Mapper
 import com.gabriel_barros.data_supabase.SupabaseClientProvider
+import com.gabriel_barros.data_supabase.entity.ClienteSupabase
 import com.gabriel_barros.domain.entity.Cliente
 import com.gabriel_barros.domain_portout.query.ClienteFilterBuilder
 import com.gabriel_barros.domain_portout.query.ClienteSelecBuilder
@@ -8,6 +10,7 @@ import io.github.jan.supabase.auth.PostgrestFilterDSL
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder
+import io.github.jan.supabase.postgrest.result.PostgrestResult
 import kotlin.reflect.KProperty1
 
 internal class ClienteQuery: ClienteFilterBuilder, ClienteSelecBuilder{
@@ -26,34 +29,31 @@ internal class ClienteQuery: ClienteFilterBuilder, ClienteSelecBuilder{
         return this
     }
 
-    override suspend fun buildExecuteAsSingle(): Cliente {
+    private suspend fun execute(): PostgrestResult {
         var supabaseColumns = if(columns.isEmpty()) Columns.ALL else Columns.list(columns)
 
-        val result = supabase.from(schema, TABLE).select(supabaseColumns, ) {
+        return supabase.from(schema, TABLE).select(supabaseColumns) {
             if(query.isNotEmpty()){
                 filter {
                     query.forEach { it() }
                 }
             }
-        }.decodeSingle<Cliente>()
+        }
+    }
+    override suspend fun buildExecuteAsSingle(): Cliente {
+        val result = execute().decodeSingle<ClienteSupabase>()
+
         query.clear()
         columns.clear()
-        return result
+        return Mapper.toCliente(result)
     }
 
     override suspend fun buildExecuteAsSList(): List<Cliente> {
-        var supabaseColumns = if(columns.isEmpty()) Columns.ALL else Columns.list(columns)
+        val result = execute().decodeList<ClienteSupabase>()
 
-        val result = supabase.from(schema, TABLE).select(supabaseColumns) {
-            if(query.isNotEmpty()){
-                filter {
-                    query.forEach { it() }
-                }
-            }
-        }.decodeList<Cliente>()
         query.clear()
         columns.clear()
-        return result
+        return result.map { Mapper.toCliente(it) }
     }
 
     override fun get(vararg props: KProperty1<Cliente, *>): ClienteFilterBuilder {

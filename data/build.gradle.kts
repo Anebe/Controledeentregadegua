@@ -19,5 +19,5 @@ dependencies {
 
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
-    implementation("io.insert-koin:koin-test:4.0.2")
+    implementation(libs.koin.test)
 }

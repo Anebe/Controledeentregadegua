@@ -38,6 +38,16 @@ internal object Mapper {
         )
     }
 
+    fun toProdutoSupabase(produto: Produto) = ProdutoSupabase(
+        id = produto.id.id,
+        preco = produto.preco,
+        nome = produto.nome,
+        custo = produto.custo,
+        estoque = produto.estoque(),
+        descricao = produto.descricao,
+        reservado = produto.reservado()
+    )
+
     fun toCliente(clienteSupabase: ClienteSupabase): Cliente {
         return Cliente(
             id = clienteSupabase.id,
@@ -112,6 +122,14 @@ internal object Mapper {
     }
 
 
+    fun toEntregaSupabase(entrega: Entrega, freteId: Long): EntregaSupabase {
+        return EntregaSupabase(
+            id = entrega.id,
+            data = entrega.data,
+            entregador = entrega.entregador,
+            frete_id = freteId,
+        )
+    }
 
     fun toEntregaSupabase(entrega: Entrega): EntregaSupabase {
         return EntregaSupabase(
@@ -163,6 +181,7 @@ internal object Mapper {
             reservado = produtoSupabase.reservado
         )
     }
+
     fun toEmprestimoPosseSupabase(emprestimo: EmprestimoAndPosseOfProdutoRetornavelEntity): EmprestimoPosseSupabase {
         return EmprestimoPosseSupabase(
             qtd_emprestado = emprestimo.qtd_emprestado,
@@ -180,7 +199,8 @@ internal object Mapper {
             produto_id = emprestimoSupabase.produto_id // O produto é identificado pelo id
         )
     }
-//    fun toCategoriaSupabase(categoria: Categoria): CategoriaSupabase {
+
+    //    fun toCategoriaSupabase(categoria: Categoria): CategoriaSupabase {
 //        return CategoriaSupabase(
 //            id = categoria.id,
 //            categoria_pai = categoria.categoria_pai, // Mapeia `categoriaPai` para `categoria_pai`
@@ -215,17 +235,27 @@ internal object Mapper {
         return ProdutoEntregue(
             qtdEntregue = iteMEntregaSupabase.qtdEntregue,
             qtdRetornado = iteMEntregaSupabase.qtdRetornado,
-            produto_pedido_id = iteMEntregaSupabase.itemPedido_id
+            produto_pedido_id = iteMEntregaSupabase.itemPedido_id,
         )
     }
 
-    fun toItemEntregaSupabase(produtoEntregue: ProdutoEntregue, entregaId: Long): ItensEntregaSupabase{
+    fun toItemEntregaSupabase(
+        produtoEntregue: ProdutoEntregue,
+        entregaId: Long
+    ): ItensEntregaSupabase {
         return ItensEntregaSupabase(
             entrega_id = entregaId,
             itemPedido_id = produtoEntregue.produto_pedido_id,
             qtdEntregue = produtoEntregue.qtdEntregue,
             qtdRetornado = produtoEntregue.qtdRetornado
         )
+    }
+
+    fun toItemEntregaSupabase(
+        produtoEntregue: List<ProdutoEntregue>,
+        entregaId: Long
+    ): List<ItensEntregaSupabase> {
+        return produtoEntregue.map { this.toItemEntregaSupabase(it, entregaId) }
     }
 
     fun toEntrega(entregaSupabase: EntregaSupabase): Entrega {
@@ -236,13 +266,15 @@ internal object Mapper {
             freteId = entregaSupabase.frete_id
         )
     }
-    fun toFreteSupabase(frete: Frete): FreteSupabase{
+
+    fun toFreteSupabase(frete: Frete): FreteSupabase {
         return FreteSupabase(
             id = frete.id,
             pedido_id = frete.pedido_id,
             status = frete.status()
         )
     }
+
     fun toFrete(freteSupabase: FreteSupabase): Frete {
         return Frete(
             id = freteSupabase.id,
@@ -257,6 +289,7 @@ internal object Mapper {
             pedido_id = dividaSupabase.pedido_id,
             valor = dividaSupabase.valor_total,
         )
+
     fun toDividaSupabase(divida: Divida) =
         DividaSupabase(
             id = divida.id,
@@ -264,12 +297,22 @@ internal object Mapper {
             valor_total = divida.valor,
         )
 
+    fun toPedido(pedidoSupabase: PedidoSupabase, produtoPedidos: List<ItensPedidoSupabase>): Pedido{
+        val pedido = toPedido(pedidoSupabase)
+        val itens = toProdutoPedido(produtoPedidos)
+        pedido.addProduto(itens)
+        return pedido
+}
     fun toPedido(pedidoSupabase: PedidoSupabase) = Pedido(
         id = Id(pedidoSupabase.id),
         cliente_id = Id(pedidoSupabase.cliente_id),
         dataPedido = pedidoSupabase.data,
         status = pedidoSupabase.status
     )
+
+    fun toProdutoPedido(produtoPedidosupabase: List<ItensPedidoSupabase>): List<ProdutoPedido> {
+        return produtoPedidosupabase.map { this.toProdutoPedido(it) }
+    }
 
     fun toProdutoPedido(produtoPedidosupabase: ItensPedidoSupabase) = ProdutoPedido(
         produtoId = Id(produtoPedidosupabase.produto_id),

@@ -1,4 +1,4 @@
-package com.gabriel_barros.database.room.entity
+package com.gabriel_barros.data_room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

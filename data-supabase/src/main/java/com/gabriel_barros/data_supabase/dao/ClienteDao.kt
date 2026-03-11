@@ -1,8 +1,11 @@
 package com.gabriel_barros.data_supabase.dao
 
+import com.gabriel_barros.data_supabase.Mapper
 import com.gabriel_barros.data_supabase.SupabaseClientProvider
+import com.gabriel_barros.data_supabase.entity.ClienteSupabase
 import com.gabriel_barros.domain.entity.Cliente
 import com.gabriel_barros.domain.error.BadRequestException
+import com.gabriel_barros.domain.error.NotFoundException
 import com.gabriel_barros.domain_portout.ClientePortOut
 import io.github.jan.supabase.postgrest.from
 
@@ -27,11 +30,12 @@ internal class ClienteDAO: ClientePortOut {
 
     override suspend fun saveCliente(cliente: Cliente): Cliente {
         try {
-            val response = supabase.from(schema, TABLE).upsert(cliente) { select() }
-                .decodeSingleOrNull<Cliente>()
+            val response = supabase.from(schema, TABLE)
+                .upsert(Mapper.toClienteSupabase(cliente)) { select() }
+                .decodeSingleOrNull<ClienteSupabase>()
 
             response?.let {
-                var novoCliente =response
+                var novoCliente = response
 //                if (cliente.enderecos.isNotEmpty()) {
 //                    val enderecosAtualizados =
 //                        cliente.enderecos.map { it.copy(cliente_id = response.id) }
@@ -43,7 +47,7 @@ internal class ClienteDAO: ClientePortOut {
 //                    val enderecos = enderecosSupabase
 //                    novoCliente = novoCliente.copy(enderecos = enderecos)
 //                }
-                return novoCliente
+                return Mapper.toCliente(novoCliente)
             }
 
         }catch (exception: Exception){
@@ -53,15 +57,20 @@ internal class ClienteDAO: ClientePortOut {
     }
 
     override suspend fun deleteCliente(id: Long): Cliente {
-        require(id>0){ "Id inválido" }
         try {
             val cliente = supabase.from(schema, TABLE).delete {
-                filter { Cliente::id eq id }
                 select()
-            }.decodeSingleOrNull<Cliente>()
+                filter { ClienteSupabase::id eq id }
+            }.decodeSingleOrNull<ClienteSupabase>()
 
-            cliente?.let { return it }
+            if (cliente != null) {
+                return Mapper.toCliente(cliente)
+            }else{
+                throw NotFoundException("Cliente Não Encontrado para deletar")
+            }
         } catch (exception: Exception) {
+            println(exception)
+            throw exception
         }
         throw BadRequestException("Não foi possível deletar cliente")
 

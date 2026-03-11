@@ -1,9 +1,7 @@
 package com.gabriel_barros.domain.entity
 
-import kotlinx.serialization.Serializable
 
 
-@Serializable
 data class EmprestimoAndPosseOfProdutoRetornavelEntity(
     val qtd_emprestado: Int,
     val qtd_posse: Int,

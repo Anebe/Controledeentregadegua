@@ -4,9 +4,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
 
     kotlin("plugin.serialization") version "1.9.0"
-//    id("com.google.devtools.ksp")
-//    kotlin("kapt")
-
 }
 
 
@@ -95,14 +92,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-//    implementation(libs.room.ktx)
-//    implementation(libs.okhttp)
-//    implementation(libs.retrofit.kotlinx.serialization)
-//    implementation (libs.retrofit)
-//    implementation (libs.retrofit.gson)
 
     implementation(libs.kotlinx.serialization.json)
 
@@ -112,8 +105,8 @@ dependencies {
     implementation (libs.sheets.compose.dialogs.calendar)
 
     implementation(project.dependencies.platform(libs.koin.bom))
-    implementation("io.insert-koin:koin-android")
-    implementation ("io.insert-koin:koin-androidx-compose")
+    implementation(libs.koin.android)
+    implementation (libs.koin.compose)
     implementation(libs.koin.test)
 
 }

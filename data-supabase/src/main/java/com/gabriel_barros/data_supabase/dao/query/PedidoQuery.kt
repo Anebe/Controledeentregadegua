@@ -7,6 +7,7 @@ import com.gabriel_barros.data_supabase.entity.PedidoSupabase
 import com.gabriel_barros.domain.entity.Pedido
 import com.gabriel_barros.domain.entity.ProdutoPedido
 import com.gabriel_barros.domain.entity.StatusPedido
+import com.gabriel_barros.domain.error.NotFoundException
 import com.gabriel_barros.domain_portout.query.ItemPedidoQueryBuilder
 import com.gabriel_barros.domain_portout.query.PedidoQueryBuilder
 import io.github.jan.supabase.auth.PostgrestFilterDSL
@@ -74,15 +75,31 @@ internal class PedidoQuery : PedidoQueryBuilder {
         }
     }
     override suspend fun buildExecuteAsSingle(): Pedido {
-        val result = execute().decodeSingle<PedidoSupabase>()
+        val result = execute().decodeSingleOrNull<PedidoSupabase>()
+        if (result == null) throw  NotFoundException("Pedido não encontrado")
         query.clear()
-        return Mapper.toPedido(result)
+
+        val pedido = getProdutoPedido(result)
+
+        return pedido
+    }
+
+    private suspend fun getProdutoPedido(pedido: PedidoSupabase): Pedido{
+        val pedido = Mapper.toPedido(pedido)
+        val produtoPedido = (ItemPedidoQuery().getAllItensByPedidoId(pedido.id.id).buildExecuteAsSList())
+        pedido.addProduto(produtoPedido)
+        return pedido
     }
 
     override suspend fun buildExecuteAsSList(): List<Pedido> {
         var result = execute().decodeList<PedidoSupabase>()
         query.clear()
-        return result.map { Mapper.toPedido(it) }
+
+        val pedidos = result.map {
+            getProdutoPedido(it)
+        }
+
+        return pedidos
     }
 }
 

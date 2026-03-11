@@ -150,8 +150,8 @@ internal class PedidoDAO : PedidoPortOut {
 
             val itensPedido = convert(pedidoCadastrado.id, pedido.getProdutos())
 
-            supabase.from(schema, "itens_pedidos").upsert(itensPedido)
-            return Mapper.toPedido(pedidoCadastrado)
+            val itensPedidoSupa = supabase.from(schema, "itens_pedidos").upsert(itensPedido){ select() }.decodeList<ItensPedidoSupabase>()
+            return Mapper.toPedido(pedidoCadastrado, itensPedidoSupa)
         } catch (exception: Exception) {
             println(exception.message)
         }
@@ -161,12 +161,13 @@ internal class PedidoDAO : PedidoPortOut {
     override suspend fun deletePedido(id: Long): Pedido {
         try {
             val pedido = supabase.from(schema, TABLE).delete {
-                filter { Pedido::id eq id }
+                filter { PedidoSupabase::id eq id }
                 select()
-            }.decodeSingleOrNull<Pedido>()
-            pedido?.let { return it }
+            }.decodeSingleOrNull<PedidoSupabase>()
+            pedido?.let { return Mapper.toPedido(it) }
         } catch (exception: Exception) {
-            println(exception.toString())
+            //TODO
+            throw exception
         }
         throw BadRequestException("Não foi possível deletar pedido")
     }

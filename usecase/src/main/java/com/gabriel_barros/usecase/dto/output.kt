@@ -2,6 +2,7 @@ package com.gabriel_barros.usecase.dto
 
 import com.gabriel_barros.domain.entity.Cliente
 import com.gabriel_barros.domain.entity.Pedido
+import com.gabriel_barros.domain.entity.ProdutoPedido
 import com.gabriel_barros.domain.entity.Status
 import com.gabriel_barros.domain.entity.StatusPedido
 import com.gabriel_barros.domain.entity.TipoPagamento
@@ -18,6 +19,7 @@ data class ClienteOutput(
     )
 }
 
+
 data class PedidoOutput(
     val id: Long,
     val cliente: ClienteOutput,
@@ -33,14 +35,28 @@ data class PedidoOutput(
         produtos = produtos,
     )
 
+//    internal constructor(pedido: Pedido, cliente: Cliente) : this(
+//        id = pedido.id.id,
+//        cliente = ClienteOutput(cliente),
+//        data = pedido.dataPedido,
+//        status = pedido.status,
+//        produtos = pedido.getProdutos().map { ProdutoPedidoOutPut(it) },
+//    )
 }
 
 data class ProdutoPedidoOutPut(
-    val id: Long,
+    val pedidoId: Long,
     val produtoId: Long,
     val nome: String,
     val qtd: Int,
-)
+) {
+    internal constructor(nome: String, produto: ProdutoPedido) : this(
+        pedidoId = produto.pedidoId.id,
+        produtoId = produto.produtoId.id,
+        nome = nome,
+        qtd = produto.qtd,
+    )
+}
 
 data class PagamentoOutput(
     val id: Long,

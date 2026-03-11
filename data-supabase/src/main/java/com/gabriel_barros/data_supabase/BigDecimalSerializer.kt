@@ -17,6 +17,8 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     }
 
     override fun deserialize(decoder: Decoder): BigDecimal {
-        return BigDecimal(decoder.decodeString())
+        return BigDecimal(decoder.decodeDouble())
     }
+
+
 }

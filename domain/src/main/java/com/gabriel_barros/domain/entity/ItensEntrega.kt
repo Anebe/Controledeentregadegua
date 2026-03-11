@@ -1,9 +1,7 @@
 package com.gabriel_barros.domain.entity
 
-import kotlinx.serialization.Serializable
 
 @Deprecated("")
-@Serializable
 data class ItensEntrega(
 //    val entrega: Entrega,
 //    val ItemPedido: ItensPedido,

@@ -9,6 +9,7 @@ import com.gabriel_barros.usecase.usecase.ClienteManager
 import com.gabriel_barros.usecase.usecase.EntregaManager
 import com.gabriel_barros.usecase.usecase.PagamentoManager
 import com.gabriel_barros.usecase.usecase.PedidoManager
+import com.gabriel_barros.usecase.usecase.PedidoSearch
 import com.gabriel_barros.usecase.usecase.ProdutoManager
 import org.koin.dsl.module
 
@@ -17,6 +18,19 @@ val dependenceInjectionUsecase = module {
 
     single<ProdutoManager> { ProdutoManagerImp(get()) }
     single<PedidoManager> {
+        PedidoManagerImp(
+            pedidoOut = get(),
+            pedidoQuery = get(),
+            itemPedidoQuery = get(),
+            produtoManager = get(),
+            produtoQuery = get(),
+            pagamentoQuery = get(),
+            entregaQuery = get(),
+            itemEntregaQuery = get(),
+            clienteQuery = get()
+        )
+    }
+    single<PedidoSearch> {
         PedidoManagerImp(
             pedidoOut = get(),
             pedidoQuery = get(),
